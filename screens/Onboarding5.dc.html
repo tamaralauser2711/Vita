@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Onboarding: Körperfokus</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  body{margin:0;background:#F3F1EC;font-family:'Inter',sans-serif;color:#111111}
+  a{color:#1F4D3A}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Geist:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;background:#F3F1EC;display:flex;flex-direction:column;overflow:hidden;">
+  <div style="flex:1 1 auto;overflow-y:auto;padding:48px 20px 32px;display:flex;flex-direction:column;gap:32px;">
+
+    <sc-if value="{{notEdit}}" hint-placeholder-val="{{true}}">
+    <div style="display:flex;gap:8px;">
+      <div style="flex:1;height:4px;border-radius:999px;background:#1F4D3A;"></div>
+      <div style="flex:1;height:4px;border-radius:999px;background:#1F4D3A;"></div>
+      <div style="flex:1;height:4px;border-radius:999px;background:#1F4D3A;"></div>
+      <div style="flex:1;height:4px;border-radius:999px;background:#1F4D3A;"></div>
+    </div>
+    </sc-if>
+
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#6F706D;">{{stepLabel}}</span>
+      <h1 style="margin:0;font-family:'DM Serif Display',Georgia,serif;font-size:32px;font-weight:400;letter-spacing:-0.01em;">Dein Körperfokus</h1>
+    </div>
+
+    <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px;">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <label style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Wo möchtest du ansetzen?</label>
+        <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#6F706D;">Tippe auf eine Körperregion: 1x Straffen/Abnehmen, 2x Muskulöser/Definierter, 3x beides, 4x zurücksetzen.</p>
+      </div>
+
+      <div style="display:flex;justify-content:center;gap:32px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="position:relative;width:112px;height:210px;">
+            <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:26px;height:26px;border-radius:50%;background:#EDEAE3;border:1px solid #E6E3DC;"></div>
+            <button type="button" onClick="{{cycleArme}}" aria-label="{{armeAria}}" style="all:unset;box-sizing:border-box;cursor:pointer;position:absolute;top:30px;left:0;width:15px;height:72px;border-radius:10px;{{armeStyle}}"></button>
+            <button type="button" onClick="{{cycleArme}}" aria-label="{{armeAria}}" style="all:unset;box-sizing:border-box;cursor:pointer;position:absolute;top:30px;right:0;width:15px;height:72px;border-radius:10px;{{armeStyle}}"></button>
+            <button type="button" onClick="{{cycleBrust}}" aria-label="{{brustAria}}" style="all:unset;box-sizing:border-box;cursor:pointer;position:absolute;top:30px;left:20px;right:20px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#6F706D;{{brustStyle}}">Brust</button>
+            <button type="button" onClick="{{cycleBauch}}" aria-label="{{bauchAria}}" style="all:unset;box-sizing:border-box;cursor:pointer;position:absolute;top:68px;left:24px;right:24px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#6F706D;{{bauchStyle}}">Bauch</button>
+            <div style="position:absolute;top:106px;left:18px;right:18px;height:18px;border-radius:10px;background:#EDEAE3;border:1px solid #E6E3DC;"></div>
+            <button type="button" onClick="{{cycleBeineVorne}}" aria-label="{{beineVorneAria}}" style="all:unset;box-sizing:border-box;cursor:pointer;position:absolute;top:128px;left:20px;width:30px;height:80px;border-radius:10px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#6F706D;{{beineVorneStyle}}">Beine</button>
+            <button type="button" onClick="{{cycleBeineVorne}}" aria-label="{{beineVorneAria}}" style="all:unset;box-sizing:border-box;cursor:pointer;position:absolute;top:128px;right:20px;width:30px;height:80px;border-radius:10px;{{beineVorneStyle}}"></button>
+          </div>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#6F706D;">Vorne</span>
+        </div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="position:relative;width:112px;height:210px;">
+            <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:26px;height:26px;border-radius:50%;background:#EDEAE3;border:1px solid #E6E3DC;"></div>
+            <button type="button" onClick="{{cycleRuecken}}" aria-label="{{rueckenAria}}" style="all:unset;box-sizing:border-box;cursor:pointer;position:absolute;top:30px;left:6px;right:6px;height:76px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#6F706D;text-align:center;line-height:1.3;{{rueckenStyle}}">Schultern &amp;<br>Rücken</button>
+            <button type="button" onClick="{{cyclePo}}" aria-label="{{poAria}}" style="all:unset;box-sizing:border-box;cursor:pointer;position:absolute;top:108px;left:16px;right:16px;height:26px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#6F706D;{{poStyle}}">Po</button>
+            <button type="button" onClick="{{cycleWaden}}" aria-label="{{wadenAria}}" style="all:unset;box-sizing:border-box;cursor:pointer;position:absolute;top:136px;left:20px;width:30px;height:72px;border-radius:10px;{{wadenStyle}}"></button>
+            <button type="button" onClick="{{cycleWaden}}" aria-label="{{wadenAria}}" style="all:unset;box-sizing:border-box;cursor:pointer;position:absolute;top:136px;right:20px;width:30px;height:72px;border-radius:10px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#6F706D;{{wadenStyle}}">Waden</button>
+          </div>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#6F706D;">Hinten</span>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;align-items:center;">
+        <span style="display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;"><span style="width:10px;height:10px;border-radius:50%;background:#C4532D;display:inline-block;"></span>Straffen/Abnehmen</span>
+        <span style="display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;"><span style="width:10px;height:10px;border-radius:50%;background:#1F4D3A;display:inline-block;"></span>Muskulöser/Definierter</span>
+      </div>
+
+      <div style="border-top:1px solid #EDEAE3;padding-top:10px;font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#111111;">{{zonesSummary}}</div>
+      <div style="background:#F3F1EC;border-radius:16px;padding:12px 16px;display:flex;gap:12px;align-items:flex-start;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#1F4D3A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;margin-top:1px;"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg>
+        <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#111111;">Fett verlierst du am ganzen Körper, nicht gezielt an einer Stelle. Deine Auswahl bestimmt, welche Muskeln wir stärker trainieren, damit genau diese Zonen straffer werden.</span>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <label for="dreambody" style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Traumkörper-Ziel</label>
+      <input id="dreambody" type="text" placeholder="z.B. definierter Bauch, mehr Energie im Alltag" value="{{dreambody}}" onInput="{{setDreambody}}" style="box-sizing:border-box;width:100%;padding:12px 16px;border-radius:16px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+    </div>
+
+    <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px;">
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Dein Haushalt</span>
+        <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;line-height:1.45;">Füg so viele Personen hinzu, wie bei euch mitessen. Jede Person richtet ihr eigenes Profil ein.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <sc-for list="{{members}}" as="m" hint-placeholder-count="2">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Geist',sans-serif;font-size:13px;font-weight:700;flex:0 0 auto;{{m.avatarStyle}}">{{m.initial}}</span>
+            <span style="flex:1;font-family:'Inter',sans-serif;font-size:13px;">{{m.name}}</span>
+            <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{m.status}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <sc-if value="{{isAdding}}" hint-placeholder-val="{{false}}">
+        <div style="display:flex;gap:8px;align-items:center;">
+          <label for="membername" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Name der Person</label>
+          <input id="membername" type="text" placeholder="Name, z.B. Cristian" value="{{draftName}}" onInput="{{setDraftName}}" style="flex:1;box-sizing:border-box;padding:12px 12px;border-radius:10px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+          <button type="button" onClick="{{confirmAdd}}" style="all:unset;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#FFFFFF;background:#1F4D3A;padding:12px 16px;border-radius:999px;">Einladen</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{isNotAdding}}" hint-placeholder-val="{{true}}">
+        <button type="button" onClick="{{startAdd}}" style="all:unset;cursor:pointer;align-self:flex-start;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#1F4D3A;padding:4px 0;">+ Person hinzufügen</button>
+      </sc-if>
+      <button type="button" onClick="{{toggleVisible}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid #EDEAE3;padding-top:12px;">
+        <span style="display:flex;flex-direction:column;gap:2px;">
+          <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Mein Profil im Haushalt teilen</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;line-height:1.4;">Die anderen sehen deine Kalorien, Mahlzeiten und dein Training. Dein Gewicht bleibt privat.</span>
+        </span>
+        <span style="width:44px;height:26px;border-radius:999px;flex:0 0 auto;position:relative;{{switchTrack}}"><span style="position:absolute;top:3px;width:20px;height:20px;border-radius:50%;background:#FFFFFF;{{switchKnob}}"></span></span>
+      </button>
+    </div>
+
+    <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px;">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Wann esst ihr zusammen?</span>
+        <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;line-height:1.45;">Gemeinsame Mahlzeiten bekommen ein Gericht für alle, mit Extras pro Person. Die anderen plant jeder für sich, gern zum Mitnehmen.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:grid;grid-template-columns:72px repeat(7, minmax(0, 1fr));gap:4px;align-items:center;">
+          <span></span>
+          <sc-for list="{{weekHead}}" as="w" hint-placeholder-count="7">
+            <span style="text-align:center;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#6F706D;">{{w}}</span>
+          </sc-for>
+        </div>
+        <sc-for list="{{sharedRows}}" as="r" hint-placeholder-count="3">
+          <div style="display:grid;grid-template-columns:72px repeat(7, minmax(0, 1fr));gap:4px;align-items:center;">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;">{{r.label}}</span>
+            <sc-for list="{{r.cells}}" as="c" hint-placeholder-count="7">
+              <button type="button" onClick="{{c.toggle}}" aria-pressed="{{c.pressed}}" aria-label="{{c.aria}}" style="all:unset;box-sizing:border-box;cursor:pointer;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;{{c.style}}">
+                <sc-if value="{{c.on}}" hint-placeholder-val="{{true}}"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if>
+              </button>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+      <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;line-height:1.45;">{{sharedSummary}} Einzelne Tage kannst du im Essensplan mit „Ich esse auswärts“ ändern. Snacks plant jeder für sich.</span>
+    </div>
+
+  </div>
+
+  <div style="flex:0 0 auto;padding:14px 24px 20px;background:#F3F1EC;display:flex;gap:16px;align-items:center;">
+    <sc-if value="{{notEdit}}" hint-placeholder-val="{{true}}">
+      <a href="{{backHref}}" style="text-decoration:none;color:#6F706D;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;padding:16px 4px;">Zurück</a>
+      <a href="{{nextHref}}" style="flex:1;display:block;text-decoration:none;text-align:center;background:#1F4D3A;color:#FFFFFF;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;padding:15px;border-radius:999px;">Weiter</a>
+    </sc-if>
+    <sc-if value="{{isEdit}}" hint-placeholder-val="{{false}}">
+      <a href="{{editBackHref}}" onClick="{{finishEdit}}" style="flex:1;display:block;text-decoration:none;text-align:center;background:#1F4D3A;color:#FFFFFF;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;padding:15px;border-radius:999px;">Fertig</a>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.zoneLabels = {
+      arme: 'Arme', brust: 'Brust', bauch: 'Bauch', beineVorne: 'Beine',
+      ruecken: 'Schultern & Rücken', po: 'Po', waden: 'Waden'
+    };
+    this.incoming = this.parseD();
+    const d = this.incoming;
+    this.state = {
+      zones: d.zones || { arme: null, brust: null, bauch: null, beineVorne: null, ruecken: null, po: null, waden: null },
+      dreambody: d.dreambody || '',
+      members: d.members || [{ name: 'Cristian', status: 'Einladung gesendet' }],
+      shareProfile: d.shareProfile === undefined ? true : d.shareProfile,
+      adding: false,
+      draftName: '',
+      sharedMeals: d.sharedMeals || {
+        fruehstueck: ['Sa', 'So'],
+        mittag: ['Sa', 'So'],
+        abend: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
+      }
+    };
+    this.weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+  }
+  toggleShared(meal, day) {
+    const cur = this.state.sharedMeals[meal] || [];
+    const next = cur.indexOf(day) >= 0 ? cur.filter((x) => x !== day) : this.weekdays.filter((w) => w === day || cur.indexOf(w) >= 0);
+    this.setState({ sharedMeals: { ...this.state.sharedMeals, [meal]: next } });
+  }
+  editInfo() { try { const e = JSON.parse(localStorage.getItem('vitaEdit') || 'null'); return e && e.step === 'Onboarding5.dc.html' ? e : null; } catch (x) { return null; } }
+  parseD() {
+    if (this.editInfo()) { try { return JSON.parse(localStorage.getItem('vitaOnboardingData') || '{}') || {}; } catch (x) { return {}; } }
+    let stored = {};
+    try { stored = JSON.parse(localStorage.getItem('vitaOnboardingData') || '{}') || {}; } catch (e) { stored = {}; }
+    try {
+      const params = new URLSearchParams(__vitaLoc.search);
+      const raw = params.get('d');
+      return raw ? { ...stored, ...JSON.parse(raw) } : stored;
+    } catch (e) { return stored; }
+  }
+  saveLS(full) {
+    try { localStorage.setItem('vitaOnboardingData', JSON.stringify(full)); } catch (e) {}
+  }
+  cycleZone(key) {
+    const order = [null, 'straffen', 'muskel', 'both'];
+    const cur = this.state.zones[key];
+    const next = order[(order.indexOf(cur) + 1) % order.length];
+    const zones = { ...this.state.zones, [key]: next };
+    this.setState({ zones });
+  }
+  setDreambody(e) {
+    this.setState({ dreambody: e.target.value });
+  }
+  zoneStyle(val) {
+    if (val === 'straffen') return 'background:#F5E3DA;border:1.5px solid #C4532D;';
+    if (val === 'muskel') return 'background:#E3EEE6;border:1.5px solid #1F4D3A;';
+    if (val === 'both') return 'background:linear-gradient(90deg,#F5E3DA 50%,#E3EEE6 50%);border:1.5px solid #111111;';
+    return 'background:#FFFFFF;border:1.5px solid #E6E3DC;';
+  }
+  zoneStateLabel(val) {
+    if (val === 'straffen') return 'Straffen/Abnehmen';
+    if (val === 'muskel') return 'Muskulöser/Definierter';
+    if (val === 'both') return 'Straffen/Abnehmen + Muskulöser/Definierter';
+    return 'nicht ausgewählt';
+  }
+  zoneAria(key) {
+    return this.zoneLabels[key] + ': ' + this.zoneStateLabel(this.state.zones[key]);
+  }
+  componentDidMount() {
+    const e0 = this.editInfo();
+    this.__editTs = e0 ? e0.ts : 0;
+    this.__editPoll = setInterval(() => {
+      const e = this.editInfo();
+      const ts = e ? e.ts : 0;
+      if (ts !== this.__editTs) {
+        this.__editTs = ts;
+        if (e) {
+          const fresh = new this.constructor(this.props);
+          this.incoming = fresh.incoming;
+          this.setState(fresh.state);
+        } else this.forceUpdate();
+      }
+    }, 200);
+  }
+  componentWillUnmount() { if (this.__editPoll) clearInterval(this.__editPoll); }
+  renderVals() {
+    const v = this.__edRV();
+    const e = this.editInfo();
+    v.isEdit = !!e;
+    v.notEdit = !e;
+    v.stepLabel = e ? 'Einstellungen' : 'Schritt 4 von 4';
+    v.editBackHref = e ? (e.back || 'Profil.dc.html') : 'Profil.dc.html';
+    v.finishEdit = () => { try { localStorage.removeItem('vitaEdit'); } catch (x) {} };
+    return v;
+  }
+  __edRV() {
+    const z = this.state.zones;
+    const picked = Object.keys(z)
+      .filter((k) => z[k])
+      .map((k) => this.zoneLabels[k] + ': ' + this.zoneStateLabel(z[k]));
+    const zonesSummary = picked.length
+      ? 'Ausgewählt: ' + picked.join(' · ')
+      : 'Noch nichts ausgewählt.';
+    const s = this.state;
+    const full = { ...this.incoming, zones: z, dreambody: s.dreambody, members: s.members, shareProfile: s.shareProfile, sharedMeals: s.sharedMeals };
+    const mealLabels = { fruehstueck: 'Frühstück', mittag: 'Mittag', abend: 'Abend' };
+    const sm = s.sharedMeals;
+    const sharedRows = Object.keys(mealLabels).map((m) => ({
+      label: mealLabels[m],
+      cells: this.weekdays.map((w) => {
+        const on = (sm[m] || []).indexOf(w) >= 0;
+        return {
+          on: on,
+          pressed: on ? 'true' : 'false',
+          aria: mealLabels[m] + ' am ' + w + (on ? ': gemeinsam' : ': getrennt'),
+          style: on ? 'background:#1F4D3A;' : 'background:#F3F1EC;border:1px solid #E6E3DC;',
+          toggle: () => this.toggleShared(m, w)
+        };
+      })
+    }));
+    const cnt = Object.keys(sm).reduce((a, k) => a + (sm[k] || []).length, 0);
+    const sharedSummary = cnt + ' von 21 Mahlzeiten gemeinsam.';
+    const palette = [['#F5E3DA', '#C2410C'], ['#E3E8FF', '#3B4FC4'], ['#FFF1C7', '#8A6100']];
+    const members = [{ name: (this.incoming.name || 'Du') + ' (du)', initial: (this.incoming.name || 'D').charAt(0).toUpperCase(), status: 'Profil angelegt', avatarStyle: 'background:#E3EEE6;color:#1F4D3A;' }]
+      .concat(s.members.map((m, i) => ({ name: m.name, initial: m.name.charAt(0).toUpperCase(), status: m.status, avatarStyle: 'background:' + palette[i % 3][0] + ';color:' + palette[i % 3][1] + ';' })));
+    const backHref = 'Onboarding4.dc.html?d=' + encodeURIComponent(JSON.stringify(full));
+    this.saveLS(full);
+    const nextHref = 'Onboarding6.dc.html?d=' + encodeURIComponent(JSON.stringify(full));
+    return {
+      armeStyle: this.zoneStyle(z.arme),
+      armeAria: this.zoneAria('arme'),
+      cycleArme: () => this.cycleZone('arme'),
+      brustStyle: this.zoneStyle(z.brust),
+      brustAria: this.zoneAria('brust'),
+      cycleBrust: () => this.cycleZone('brust'),
+      bauchStyle: this.zoneStyle(z.bauch),
+      bauchAria: this.zoneAria('bauch'),
+      cycleBauch: () => this.cycleZone('bauch'),
+      beineVorneStyle: this.zoneStyle(z.beineVorne),
+      beineVorneAria: this.zoneAria('beineVorne'),
+      cycleBeineVorne: () => this.cycleZone('beineVorne'),
+      rueckenStyle: this.zoneStyle(z.ruecken),
+      rueckenAria: this.zoneAria('ruecken'),
+      cycleRuecken: () => this.cycleZone('ruecken'),
+      poStyle: this.zoneStyle(z.po),
+      poAria: this.zoneAria('po'),
+      cyclePo: () => this.cycleZone('po'),
+      wadenStyle: this.zoneStyle(z.waden),
+      wadenAria: this.zoneAria('waden'),
+      cycleWaden: () => this.cycleZone('waden'),
+      zonesSummary: zonesSummary,
+      weekHead: this.weekdays,
+      sharedRows: sharedRows,
+      sharedSummary: sharedSummary,
+      dreambody: this.state.dreambody,
+      members: members,
+      isAdding: s.adding,
+      isNotAdding: !s.adding,
+      draftName: s.draftName,
+      setDraftName: (e) => this.setState({ draftName: e.target.value }),
+      startAdd: () => this.setState({ adding: true, draftName: '' }),
+      confirmAdd: () => {
+        const n = (this.state.draftName || '').trim();
+        if (!n) return;
+        this.setState({ members: [...this.state.members, { name: n, status: 'Einladung gesendet' }], adding: false, draftName: '' });
+      },
+      toggleVisible: () => this.setState({ shareProfile: !this.state.shareProfile }),
+      switchTrack: s.shareProfile ? 'background:#1F4D3A;' : 'background:#C9C6BE;',
+      switchKnob: s.shareProfile ? 'left:21px;' : 'left:3px;',
+      setDreambody: (e) => this.setDreambody(e),
+      backHref: backHref,
+      nextHref: nextHref
+    };
+  }
+}
+</script>
+</body>
+</html>

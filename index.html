@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Vita</title>
+<meta name="description" content="Vita: Ernährung und Training für Tami und Cristian">
+<meta name="theme-color" content="#F3F1EC">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Vita">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Geist:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+  html { height: 100%; box-sizing: border-box; background: #F3F1EC; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  body { height: 100%; margin: 0; background: #F3F1EC; font-family: 'Inter', system-ui, sans-serif; color: #111111; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
+  #vita { position: relative; height: 100%; max-width: 480px; margin: 0 auto; overflow: hidden; background: #F3F1EC; }
+  @media (min-width: 520px) { #vita { box-shadow: 0 0 0 1px #E6E3DC; } }
+  input, textarea, select { font-size: 16px !important; } /* keeps iOS from zooming into fields */
+</style>
+</head>
+<body>
+<div id="vita"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script src="vita-runtime.js"></script>
+</body>
+</html>

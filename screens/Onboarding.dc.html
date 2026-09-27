@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Onboarding: Willkommen</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  body{margin:0;background:#F3F1EC;font-family:'Inter',sans-serif;color:#111111}
+  a{color:#1F4D3A}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Geist:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;background:#F3F1EC;display:flex;flex-direction:column;overflow:hidden;">
+  <div style="flex:1 1 auto;overflow-y:auto;padding:72px 20px 32px;display:flex;flex-direction:column;gap:32px;">
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <span style="width:56px;height:56px;border-radius:20px;background:#1F4D3A;display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"></path></svg>
+      </span>
+      <h1 style="margin:0;font-family:'DM Serif Display',Georgia,serif;font-size:56px;font-weight:400;letter-spacing:-0.01em;line-height:1;">Vita</h1>
+      <p style="margin:0;font-family:'Inter',sans-serif;font-size:16px;line-height:1.5;color:#111111;">Zusammen essen, jeder erreicht sein Ziel.</p>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <span style="width:36px;height:36px;border-radius:16px;background:#E3EEE6;color:#1F4D3A;flex:0 0 auto;display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3v8M4.5 3v5a2.5 2.5 0 0 0 5 0V3M7 11v10"></path><path d="M17 21V3c-2 1-3.5 3.5-3.5 7h3.5"></path></svg>
+        </span>
+        <span style="display:flex;flex-direction:column;gap:2px;"><span style="font-family:'Inter',sans-serif;font-size:14px;font-weight:600;">Ein Essensplan für den ganzen Haushalt</span><span style="font-family:'Inter',sans-serif;font-size:13px;line-height:1.45;color:#6F706D;">Gemeinsame Gerichte, die Portionen und Extras passen zu jedem Ziel.</span></span>
+      </div>
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <span style="width:36px;height:36px;border-radius:16px;background:#E3EEE6;color:#1F4D3A;flex:0 0 auto;display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 7v10M3.5 9.5v5M17.5 7v10M20.5 9.5v5M6.5 12h11"></path></svg>
+        </span>
+        <span style="display:flex;flex-direction:column;gap:2px;"><span style="font-family:'Inter',sans-serif;font-size:14px;font-weight:600;">Training, das zu dir passt</span><span style="font-family:'Inter',sans-serif;font-size:13px;line-height:1.45;color:#6F706D;">Plan fürs Studio oder Ergänzungen zu deinem Sport, der Verbrauch wird eingerechnet.</span></span>
+      </div>
+      <div style="display:flex;gap:16px;align-items:flex-start;">
+        <span style="width:36px;height:36px;border-radius:16px;background:#E3EEE6;color:#1F4D3A;flex:0 0 auto;display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L20.5 8H6"></path><circle cx="9.5" cy="20" r="1.3"></circle><circle cx="17" cy="20" r="1.3"></circle></svg>
+        </span>
+        <span style="display:flex;flex-direction:column;gap:2px;"><span style="font-family:'Inter',sans-serif;font-size:14px;font-weight:600;">Einkaufen und sparen</span><span style="font-family:'Inter',sans-serif;font-size:13px;line-height:1.45;color:#6F706D;">Die Einkaufsliste kommt aus dem Plan, die App sagt dir, wo es heute am günstigsten ist.</span></span>
+      </div>
+    </div>
+
+    <p style="margin:0;font-family:'Inter',sans-serif;font-size:13px;line-height:1.5;color:#6F706D;">Das Einrichten dauert ca. 3 Minuten.</p>
+  </div>
+
+  <div style="flex:0 0 auto;padding:14px 24px 24px;background:#F3F1EC;display:flex;flex-direction:column;gap:12px;">
+    <a href="Onboarding2.dc.html" onClick="{{clearEdit}}" style="display:block;text-decoration:none;text-align:center;background:#1F4D3A;color:#FFFFFF;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;padding:15px;border-radius:999px;">Los geht's</a>
+    <a href="Onboarding2.dc.html" onClick="{{clearEdit}}" style="display:block;text-decoration:none;text-align:center;color:#1F4D3A;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;padding:10px;">Ich wurde in einen Haushalt eingeladen</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { clearEdit: () => { try { localStorage.removeItem('vitaEdit'); } catch (x) {} } };
+  }
+}
+</script>
+</body>
+</html>

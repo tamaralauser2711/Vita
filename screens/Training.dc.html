@@ -1,0 +1,1160 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Training</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  body{margin:0;background:#F3F1EC;font-family:'Inter',sans-serif;color:#111111}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Geist:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+</helmet>
+<div style="position:relative;width:390px;height:844px;box-sizing:border-box;background:#F3F1EC;display:flex;flex-direction:column;overflow:hidden;">
+  <div id="vita-scroll-training" style="flex:1 1 auto;overflow-y:auto;padding:32px 20px 32px;display:flex;flex-direction:column;gap:32px;">
+
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        <h1 style="margin:0;font-family:'DM Serif Display',Georgia,serif;font-size:32px;font-weight:400;letter-spacing:-0.01em;">Training</h1>
+        <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{subtitle}}</p>
+        <a href="Onboarding2.dc.html" onClick="{{editGoal}}" style="align-self:flex-start;display:inline-flex;align-items:center;gap:4px;min-height:32px;text-decoration:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#1F4D3A;">Ziel ändern<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></a>
+        <span style="align-self:flex-start;margin-top:6px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:4px 12px;border-radius:999px;background:#E3EEE6;color:#1F4D3A;">Heute verbraucht · {{burnedToday}} kcal</span>
+      </div>
+      <button type="button" onClick="{{openPersonSheet}}" aria-label="{{switchAria}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:40px;height:40px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-family:'Geist',sans-serif;font-size:15px;font-weight:700;{{avatarStyle}}">{{avatarInitial}}</button>
+    </div>
+
+    <sc-if value="{{hasTrainingPlan}}" hint-placeholder-val="{{true}}">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:-6px;">
+      <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;">Deine Woche</span>
+      <button type="button" onClick="{{togglePlanEdit}}" aria-expanded="{{planEditExpanded}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;{{editBtnStyle}}">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"></path><path d="M13.5 6.5l4 4"></path></svg>{{editBtnLabel}}
+      </button>
+    </div>
+
+    <sc-if value="{{planEdit}}" hint-placeholder-val="{{false}}">
+      <div style="background:#FFFFFF;border:1.5px solid #1F4D3A;border-radius:20px;padding:24px;display:flex;flex-direction:column;">
+        <sc-for list="{{weekRows}}" as="wr" hint-placeholder-count="7">
+          <div style="display:flex;flex-direction:column;gap:12px;padding:16px 0;border-bottom:1px solid #EDEAE3;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <span style="width:28px;font-family:'Geist',sans-serif;font-size:13px;font-weight:700;flex:0 0 auto;{{wr.dayStyle}}">{{wr.short}}</span>
+              <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;">
+                <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;{{wr.titleStyle}}">{{wr.title}}</span>
+                <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{wr.meta}}</span>
+              </span>
+              <button type="button" onClick="{{wr.up}}" aria-label="{{wr.upAria}}" style="all:unset;box-sizing:border-box;flex:0 0 auto;cursor:pointer;width:32px;height:32px;border-radius:50%;border:1px solid #E6E3DC;display:flex;align-items:center;justify-content:center;color:#111111;{{wr.upStyle}}">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"></path></svg>
+              </button>
+              <button type="button" onClick="{{wr.down}}" aria-label="{{wr.downAria}}" style="all:unset;box-sizing:border-box;flex:0 0 auto;cursor:pointer;width:32px;height:32px;border-radius:50%;border:1px solid #E6E3DC;display:flex;align-items:center;justify-content:center;color:#111111;{{wr.downStyle}}">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+              </button>
+              <button type="button" onClick="{{wr.toggleRemove}}" aria-label="{{wr.removeAria}}" style="all:unset;box-sizing:border-box;flex:0 0 auto;cursor:pointer;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;{{wr.removeStyle}}">
+                <sc-if value="{{wr.removed}}" hint-placeholder-val="{{false}}"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.6"></path><path d="M4 4v4h4"></path></svg></sc-if>
+                <sc-if value="{{wr.notRemoved}}" hint-placeholder-val="{{true}}"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></sc-if>
+              </button>
+            </div>
+            <sc-if value="{{wr.hasDuration}}" hint-placeholder-val="{{true}}">
+              <div style="display:flex;align-items:center;gap:8px;padding-left:38px;">
+                <button type="button" onClick="{{wr.less}}" aria-label="{{wr.lessAria}}" style="all:unset;box-sizing:border-box;flex:0 0 auto;cursor:pointer;width:32px;height:32px;border-radius:50%;border:1px solid #E6E3DC;display:flex;align-items:center;justify-content:center;font-size:16px;">−</button>
+                <span style="min-width:62px;text-align:center;font-family:'Geist',sans-serif;font-size:14px;font-weight:700;">{{wr.duration}} Min</span>
+                <button type="button" onClick="{{wr.more}}" aria-label="{{wr.moreAria}}" style="all:unset;box-sizing:border-box;flex:0 0 auto;cursor:pointer;width:32px;height:32px;border-radius:50%;border:1px solid #1F4D3A;color:#1F4D3A;display:flex;align-items:center;justify-content:center;font-size:16px;">+</button>
+                <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">ca. {{wr.kcal}} kcal</span>
+              </div>
+            </sc-if>
+            <sc-for list="{{wr.added}}" as="ad" hint-placeholder-count="1">
+              <div style="display:flex;align-items:center;gap:8px;padding-left:38px;">
+                <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;background:#E3E8FF;color:#3B4FC4;">neu</span>
+                <span style="flex:1;font-family:'Inter',sans-serif;font-size:13px;">{{ad.name}} · {{ad.duration}} Min · ca. {{ad.kcal}} kcal</span>
+                <button type="button" onClick="{{ad.remove}}" aria-label="{{ad.aria}}" style="all:unset;box-sizing:border-box;flex:0 0 auto;cursor:pointer;width:32px;height:32px;border-radius:50%;background:#F5E3DA;color:#A63A1E;display:flex;align-items:center;justify-content:center;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+                </button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-for>
+        <sc-if value="{{addPlanOpen}}" hint-placeholder-val="{{false}}">
+          <div style="display:flex;flex-direction:column;gap:12px;padding:12px 0 4px;border-bottom:1px solid #EDEAE3;">
+            <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Einheit hinzufügen</span>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">An welchem Tag?</span>
+              <div style="display:grid;grid-template-columns:repeat(7, minmax(0, 1fr));gap:4px;">
+                <sc-for list="{{apDays}}" as="apd" hint-placeholder-count="7">
+                  <button type="button" onClick="{{apd.pick}}" aria-pressed="{{apd.pressed}}" style="all:unset;box-sizing:border-box;cursor:pointer;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{apd.style}}">{{apd.short}}</button>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Was?</span>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                <sc-for list="{{apActs}}" as="apa" hint-placeholder-count="8">
+                  <button type="button" onClick="{{apa.pick}}" aria-pressed="{{apa.pressed}}" style="padding:8px 12px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;{{apa.style}}">{{apa.name}}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{apIsOwn}}" hint-placeholder-val="{{false}}">
+                <input type="text" aria-label="Eigene Einheit" placeholder="z.B. Bouldern, Zumba" value="{{apName}}" onInput="{{setApName}}" style="box-sizing:border-box;width:100%;padding:12px 12px;border-radius:10px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+              </sc-if>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;margin-right:auto;">Dauer</span>
+              <button type="button" onClick="{{apLess}}" aria-label="5 Minuten weniger" style="all:unset;box-sizing:border-box;flex:0 0 auto;cursor:pointer;width:32px;height:32px;border-radius:50%;border:1px solid #E6E3DC;display:flex;align-items:center;justify-content:center;font-size:16px;">−</button>
+              <span style="min-width:62px;text-align:center;font-family:'Geist',sans-serif;font-size:14px;font-weight:700;">{{apMin}} Min</span>
+              <button type="button" onClick="{{apMore}}" aria-label="5 Minuten mehr" style="all:unset;box-sizing:border-box;flex:0 0 auto;cursor:pointer;width:32px;height:32px;border-radius:50%;border:1px solid #1F4D3A;color:#1F4D3A;display:flex;align-items:center;justify-content:center;font-size:16px;">+</button>
+              <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">ca. {{apKcal}} kcal</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <button type="button" onClick="{{closeAddPlan}}" style="all:unset;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;color:#6F706D;padding:8px 0;">Abbrechen</button>
+              <button type="button" onClick="{{saveAddPlan}}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:12px 16px;border-radius:999px;background:#1F4D3A;color:#FFFFFF;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Zum Plan hinzufügen</button>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{addPlanClosed}}" hint-placeholder-val="{{true}}">
+          <button type="button" onClick="{{openAddPlan}}" style="all:unset;box-sizing:border-box;cursor:pointer;margin-top:10px;text-align:center;padding:11px;border-radius:16px;border:1.5px dashed #1F4D3A;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#1F4D3A;">+ Einheit hinzufügen</button>
+        </sc-if>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding-top:10px;">
+          <button type="button" onClick="{{resetPlan}}" style="all:unset;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;color:#6F706D;padding:8px 0;">Plan zurücksetzen</button>
+          <button type="button" onClick="{{togglePlanEdit}}" style="all:unset;box-sizing:border-box;cursor:pointer;padding:12px 20px;border-radius:999px;background:#1F4D3A;color:#FFFFFF;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Fertig</button>
+        </div>
+      </div>
+    </sc-if>
+    </sc-if>
+
+    <div style="display:flex;gap:8px;">
+      <sc-for list="{{days}}" as="d" hint-placeholder-count="7">
+        <button type="button" onClick="{{d.pick}}" aria-label="{{d.aria}}" style="all:unset;box-sizing:border-box;cursor:pointer;flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;border-radius:16px;{{d.style}}">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;">{{d.short}}</span>
+          <span style="width:6px;height:6px;border-radius:50%;{{d.dot}}"></span>
+        </button>
+      </sc-for>
+    </div>
+    <sc-if value="{{noTrainingPlan}}" hint-placeholder-val="{{false}}">
+      <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px;">
+        <span style="width:48px;height:48px;border-radius:16px;background:#E3EEE6;color:#1F4D3A;display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 7v10M3.5 9.5v5M17.5 7v10M20.5 9.5v5M6.5 12h11"></path></svg>
+        </span>
+        <span style="font-family:'DM Serif Display',Georgia,serif;font-size:22px;font-weight:400;letter-spacing:-0.01em;line-height:1.2;">Du trainierst nach deinem eigenen Plan</span>
+        <span style="font-family:'Inter',sans-serif;font-size:13px;line-height:1.5;color:#6F706D;">Trag unten ein, was du gemacht hast. Der Verbrauch zählt direkt in dein Kalorienziel.</span>
+        <button type="button" onClick="{{enableTrainingPlan}}" style="all:unset;box-sizing:border-box;cursor:pointer;text-align:center;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;color:#1F4D3A;background:#E3EEE6;padding:14px;border-radius:999px;">Trainingsplan aktivieren</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{hasTrainingPlan}}" hint-placeholder-val="{{true}}">
+    <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;">{{kindLabel}}</span>
+          <span style="font-family:'DM Serif Display',Georgia,serif;font-size:17px;font-weight:400;letter-spacing:-0.01em;">{{title}}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex:0 0 auto;">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:4px 12px;border-radius:999px;white-space:nowrap;{{accentChip}}">{{durationLabel}}</span>
+        </div>
+      </div>
+      <sc-if value="{{hasDuration}}" hint-placeholder-val="{{true}}">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#6F706D;">Dauer</span>
+          <button type="button" onClick="{{durLess}}" aria-label="5 Minuten kürzer" style="all:unset;box-sizing:border-box;flex:0 0 auto;cursor:pointer;width:30px;height:30px;border-radius:50%;border:1px solid #E6E3DC;display:flex;align-items:center;justify-content:center;font-size:15px;color:#111111;">−</button>
+          <input type="number" min="5" inputmode="numeric" value="{{editMinutes}}" onInput="{{setDur}}" onKeyDown="{{blockMinus}}" style="width:50px;border:none;background:#F3F1EC;border-radius:10px;text-align:center;font-family:'Geist',sans-serif;font-size:15px;font-weight:700;color:#111111;padding:4px 2px;">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Min</span>
+          <button type="button" onClick="{{durMore}}" aria-label="5 Minuten länger" style="all:unset;box-sizing:border-box;flex:0 0 auto;cursor:pointer;width:30px;height:30px;border-radius:50%;border:1px solid #1F4D3A;color:#1F4D3A;display:flex;align-items:center;justify-content:center;font-size:15px;">+</button>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;margin-left:auto;">{{editKcalLine}}</span>
+        </div>
+      </sc-if>
+      <sc-if value="{{isModified}}" hint-placeholder-val="{{false}}">
+        <span style="align-self:flex-start;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:4px 12px;border-radius:999px;background:#E3E8FF;color:#3B4FC4;">{{modifiedLine}}</span>
+      </sc-if>
+      <p style="margin:0;font-family:'Inter',sans-serif;font-size:13px;line-height:1.5;color:#6F706D;">{{why}}</p>
+      <sc-if value="{{hasBurn}}" hint-placeholder-val="{{true}}">
+        <div style="display:flex;align-items:center;gap:12px;background:#F3F1EC;border-radius:16px;padding:12px 12px;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#1F4D3A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;"><path d="M12 3c1 3 4 4.5 4 8.5a4 4 0 0 1-8 0c0-1.6.7-2.8 1.5-3.8.3 1.4 1 2.3 2 2.8C11 8 11.5 5.5 12 3z"></path></svg>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.45;color:#111111;">{{burnLine}}</span>
+        </div>
+      </sc-if>
+      <sc-if value="{{hasSession}}" hint-placeholder-val="{{true}}">
+        <sc-for list="{{session}}" as="ss" hint-placeholder-count="1">
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <sc-if value="{{ss.swapped}}" hint-placeholder-val="{{false}}">
+              <span style="font-family:'Inter',sans-serif;font-size:12px;color:#3B4FC4;">Getauscht gegen: {{ss.swapName}}</span>
+            </sc-if>
+                <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+                  <button type="button" onClick="{{ss.markDone}}" aria-pressed="{{ss.donePressed}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{ss.doneStyle}}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>Erledigt</button>
+                  <button type="button" onClick="{{ss.markSkip}}" aria-pressed="{{ss.skipPressed}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{ss.skipStyle}}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>Nicht gemacht</button>
+                  <button type="button" onClick="{{ss.openSwap}}" aria-expanded="{{ss.swapExpanded}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{ss.swapStyle}}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13l-3-3M20 16H7l3 3"></path></svg>Tauschen</button>
+                </div>
+          </div>
+            <sc-if value="{{ss.swapOpen}}" hint-placeholder-val="{{false}}">
+              <div style="background:#F3F1EC;border-radius:16px;padding:16px;margin:0 0 10px;display:flex;flex-direction:column;gap:8px;">
+                <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;">Vorschläge aus der App</span>
+                <sc-for list="{{ss.alts}}" as="a" hint-placeholder-count="3">
+                  <button type="button" onClick="{{a.pick}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;background:#FFFFFF;border:1px solid #E6E3DC;border-radius:10px;padding:12px 12px;">
+                    <span style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">{{a.name}}</span><span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{a.sub}}</span></span>
+                    <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;">Wählen</span>
+                  </button>
+                </sc-for>
+                <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;margin-top:4px;">Oder etwas Eigenes</span>
+                <div style="display:flex;gap:8px;align-items:center;">
+                  <input type="text" aria-label="Eigene Alternative" placeholder="{{ss.ownPlaceholder}}" value="{{draftOwn}}" onInput="{{setDraftOwn}}" style="flex:1;min-width:0;box-sizing:border-box;padding:12px 12px;border-radius:10px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+                  <button type="button" onClick="{{ss.useOwn}}" style="all:unset;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#FFFFFF;background:#1F4D3A;padding:12px 12px;border-radius:999px;">Übernehmen</button>
+                </div>
+                <button type="button" onClick="{{closeSwap}}" style="all:unset;cursor:pointer;align-self:flex-start;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;padding:4px 0;">Abbrechen</button>
+              </div>
+            </sc-if>
+        </sc-for>
+      </sc-if>
+      <sc-if value="{{sessionSkipped}}" hint-placeholder-val="{{false}}">
+        <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#6F706D;">Kein Stress, das passiert. Wir rechnen den Verbrauch heute raus und passen dein Kalorienziel an.</p>
+      </sc-if>
+    </div>
+
+    <sc-if value="{{hasExercises}}" hint-placeholder-val="{{true}}">
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;">{{exerciseHeading}}</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{doneCount}}</span>
+        </div>
+        <div style="background:#FFFFFF;border-radius:20px;padding:24px;">
+          <sc-for list="{{exercises}}" as="e" hint-placeholder-count="4">
+            <div style="display:flex;align-items:flex-start;gap:16px;padding:20px 0;border-bottom:1px solid #EDEAE3;">
+              <div role="img" aria-label="{{e.name}}" style="width:56px;height:56px;border-radius:16px;background:#E3EEE6;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:28px;line-height:1;">{{e.emoji}}</div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;">
+                <span style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                  <span style="font-family:'Inter',sans-serif;font-size:14px;font-weight:600;{{e.textStyle}}">{{e.name}}</span>
+                  <span style="font-family:'Inter',sans-serif;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:#E3E8FF;color:#3B4FC4;{{e.swapTagStyle}}">{{e.swapTag}}</span>
+                </span>
+                <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{e.device}}</span>
+                <span style="display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;">
+                  <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#111111;">{{e.setsVal}} Sätze × </span>
+                  <span style="display:inline-flex;align-items:center;gap:4px;background:#F3F1EC;border-radius:999px;padding:4px 8px;">
+                    <button type="button" onClick="{{e.lessReps}}" style="all:unset;cursor:pointer;font-size:16px;font-weight:700;color:#6F706D;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;">−</button>
+                    <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:700;min-width:20px;text-align:center;">{{e.repsVal}}</span>
+                    <button type="button" onClick="{{e.moreReps}}" style="all:unset;cursor:pointer;font-size:16px;font-weight:700;color:#6F706D;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;">+</button>
+                  </span>
+                  <sc-if value="{{e.hasKg}}" hint-placeholder-val="{{true}}">
+                    <span style="display:inline-flex;align-items:center;gap:4px;background:#F3F1EC;border-radius:999px;padding:4px 8px;">
+                      <button type="button" onClick="{{e.lessKg}}" style="all:unset;cursor:pointer;font-size:16px;font-weight:700;color:#6F706D;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;">−</button>
+                      <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:700;min-width:28px;text-align:center;">{{e.kgVal}} kg</span>
+                      <button type="button" onClick="{{e.moreKg}}" style="all:unset;cursor:pointer;font-size:16px;font-weight:700;color:#6F706D;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;">+</button>
+                    </span>
+                  </sc-if>
+                  <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;{{e.kcalStyle}}">{{e.kcalLabel}}</span>
+                </span>
+                <sc-if value="{{e.hasRange}}" hint-placeholder-val="{{true}}">
+                  <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{e.rangeText}}</span>
+                </sc-if>
+                <sc-if value="{{e.progShow}}" hint-placeholder-val="{{false}}">
+                  <div style="display:flex;align-items:center;gap:8px;background:#E3EEE6;border-radius:16px;padding:8px 8px 8px 12px;">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#1F4D3A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:0 0 auto;"><path d="M4 16l6-6 4 4 6-7"></path><path d="M15 7h5v5"></path></svg>
+                    <span style="flex:1;font-family:'Inter',sans-serif;font-size:12px;line-height:1.4;color:#1F4D3A;">{{e.progText}}</span>
+                    <button type="button" onClick="{{e.progApply}}" style="all:unset;box-sizing:border-box;cursor:pointer;flex:0 0 auto;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#FFFFFF;background:#1F4D3A;padding:8px 12px;border-radius:999px;">Übernehmen</button>
+                  </div>
+                </sc-if>
+                <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+                  <button type="button" onClick="{{e.markDone}}" aria-pressed="{{e.donePressed}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{e.doneStyle}}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>Erledigt</button>
+                  <button type="button" onClick="{{e.markSkip}}" aria-pressed="{{e.skipPressed}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{e.skipStyle}}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>Nicht gemacht</button>
+                  <button type="button" onClick="{{e.openSwap}}" aria-expanded="{{e.swapExpanded}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{e.swapStyle}}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13l-3-3M20 16H7l3 3"></path></svg>Tauschen</button>
+                </div>
+              </div>
+            </div>
+            <sc-if value="{{e.swapOpen}}" hint-placeholder-val="{{false}}">
+              <div style="background:#F3F1EC;border-radius:16px;padding:16px;margin:0 0 10px;display:flex;flex-direction:column;gap:8px;">
+                <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;">Vorschläge aus der App</span>
+                <sc-for list="{{e.alts}}" as="a" hint-placeholder-count="3">
+                  <button type="button" onClick="{{a.pick}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;background:#FFFFFF;border:1px solid #E6E3DC;border-radius:10px;padding:12px 12px;">
+                    <span style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">{{a.name}}</span><span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{a.sub}}</span></span>
+                    <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;">Wählen</span>
+                  </button>
+                </sc-for>
+                <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;margin-top:4px;">Oder etwas Eigenes</span>
+                <div style="display:flex;gap:8px;align-items:center;">
+                  <input type="text" aria-label="Eigene Alternative" placeholder="{{e.ownPlaceholder}}" value="{{draftOwn}}" onInput="{{setDraftOwn}}" style="flex:1;min-width:0;box-sizing:border-box;padding:12px 12px;border-radius:10px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+                  <button type="button" onClick="{{e.useOwn}}" style="all:unset;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#FFFFFF;background:#1F4D3A;padding:12px 12px;border-radius:999px;">Übernehmen</button>
+                </div>
+                <button type="button" onClick="{{closeSwap}}" style="all:unset;cursor:pointer;align-self:flex-start;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;padding:4px 0;">Abbrechen</button>
+              </div>
+            </sc-if>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{hasExtra}}" hint-placeholder-val="{{true}}">
+      <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#1F4D3A;">Ergänzung für dein Ziel</span>
+          <span style="font-family:'DM Serif Display',Georgia,serif;font-size:15px;font-weight:400;letter-spacing:-0.01em;">{{extraTitle}}</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.45;color:#6F706D;">{{extraWhy}}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;">
+          <sc-for list="{{extraExercises}}" as="x" hint-placeholder-count="4">
+            <sc-if value="{{x.visible}}" hint-placeholder-val="{{true}}">
+              <div style="display:flex;align-items:center;gap:12px;padding:16px 0;border-top:1px solid #EDEAE3;{{x.rowStyle}}">
+                <button type="button" onClick="{{x.toggleDone}}" style="all:unset;cursor:pointer;width:22px;height:22px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;{{x.checkStyle}}">
+                  <sc-if value="{{x.isDone}}" hint-placeholder-val="{{false}}"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></sc-if>
+                </button>
+                <span style="flex:1;font-family:'Inter',sans-serif;font-size:13px;{{x.textStyle}}">{{x.name}}</span>
+                <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#6F706D;white-space:nowrap;{{x.textStyle}}">{{x.volume}}</span>
+                <button type="button" onClick="{{x.dismiss}}" aria-label="Übung ausblenden" style="all:unset;cursor:pointer;display:flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:#F5E3DA;flex:0 0 auto;">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#A63A1E" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+                </button>
+              </div>
+            </sc-if>
+          </sc-for>
+        </div>
+        <sc-if value="{{extraDoneCount}}" hint-placeholder-val="{{true}}">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;text-align:right;">{{extraDoneLabel}}</span>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{hasPlanned}}" hint-placeholder-val="{{false}}">
+      <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px;">
+        <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;">Außerdem geplant</span>
+        <sc-for list="{{planned}}" as="pl" hint-placeholder-count="1">
+          <div style="display:flex;align-items:center;gap:12px;border-top:1px solid #EDEAE3;padding-top:16px;">
+            <span style="flex:1;display:flex;flex-direction:column;gap:4px;">
+              <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;{{pl.textStyle}}">{{pl.name}}</span>
+              <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{pl.meta}}</span>
+            </span>
+            <button type="button" onClick="{{pl.toggle}}" aria-pressed="{{pl.pressed}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{pl.style}}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>Erledigt</button>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+    </sc-if>
+
+    <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;">{{extraHeading}}</span>
+        <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;">{{extraTotal}}</span>
+      </div>
+      <sc-for list="{{extraList}}" as="x" hint-placeholder-count="1">
+        <div style="display:flex;align-items:center;gap:12px;border-top:1px solid #EDEAE3;padding-top:16px;">
+          <span style="flex:1;display:flex;flex-direction:column;gap:1px;">
+            <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">{{x.name}}</span>
+            <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{x.meta}}</span>
+          </span>
+          <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#1F4D3A;white-space:nowrap;">{{x.kcal}}</span>
+          <button type="button" onClick="{{x.remove}}" aria-label="{{x.aria}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:36px;height:44px;display:flex;align-items:center;justify-content:center;color:#8C8C86;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+          </button>
+        </div>
+      </sc-for>
+      <sc-if value="{{noExtras}}" hint-placeholder-val="{{false}}">
+        <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.45;color:#6F706D;">Warst du heute noch unterwegs, zum Beispiel spazieren oder schwimmen? Trag es hier ein, dann passt sich dein Kalorienziel an.</span>
+      </sc-if>
+      <sc-if value="{{addOpen}}" hint-placeholder-val="{{false}}">
+        <div style="border-top:1px solid #EDEAE3;padding-top:12px;">
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;">Was hast du gemacht?</span>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                <sc-for list="{{actChips}}" as="ac" hint-placeholder-count="8">
+                  <button type="button" onClick="{{ac.pick}}" aria-pressed="{{ac.pressed}}" style="padding:8px 12px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{ac.style}}">{{ac.name}}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{isOwnAct}}" hint-placeholder-val="{{false}}">
+                <input type="text" aria-label="Eigene Aktivität" placeholder="z.B. Gartenarbeit, Stand-up-Paddling" value="{{fName}}" onInput="{{setFName}}" style="box-sizing:border-box;width:100%;padding:12px 12px;border-radius:10px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+              </sc-if>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label for="{{durId}}" style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;">Dauer</label>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <button type="button" onClick="{{decMin}}" aria-label="5 Minuten weniger" style="all:unset;box-sizing:border-box;flex:0 0 auto;cursor:pointer;width:44px;height:44px;border-radius:50%;border:1px solid #E6E3DC;background:#FFFFFF;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:20px;color:#111111;">−</button>
+                <div style="flex:1;display:flex;align-items:baseline;justify-content:center;gap:8px;background:#F3F1EC;border:1px solid #E6E3DC;border-radius:16px;padding:8px 12px;">
+                  <input id="{{durId}}" type="number" min="1" inputmode="numeric" value="{{fMin}}" onInput="{{setFMin}}" onKeyDown="{{blockMinus}}" style="width:70px;border:none;background:transparent;text-align:right;font-family:'Geist',sans-serif;font-size:24px;font-weight:700;color:#111111;padding:0;">
+                  <span style="font-family:'Inter',sans-serif;font-size:13px;color:#6F706D;">Minuten</span>
+                </div>
+                <button type="button" onClick="{{incMin}}" aria-label="5 Minuten mehr" style="all:unset;box-sizing:border-box;flex:0 0 auto;cursor:pointer;width:44px;height:44px;border-radius:50%;border:1px solid #1F4D3A;background:#FFFFFF;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:20px;color:#1F4D3A;">+</button>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <sc-for list="{{minuteChips}}" as="mc" hint-placeholder-count="5">
+                  <button type="button" onClick="{{mc.pick}}" aria-pressed="{{mc.pressed}}" style="flex:1;padding:8px 0;border-radius:10px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;{{mc.style}}">{{mc.label}} Min</button>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;">Wie anstrengend?</span>
+              <div style="display:flex;gap:8px;">
+                <sc-for list="{{intensityChips}}" as="ic" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ic.pick}}" aria-pressed="{{ic.pressed}}" style="flex:1;padding:9px 0;border-radius:10px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{ic.style}}">{{ic.label}}</button>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:#E3EEE6;border-radius:16px;padding:12px 12px;">
+              <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.4;color:#1F4D3A;">{{previewLine}}</span>
+              <span style="font-family:'Geist',sans-serif;font-size:16px;font-weight:700;color:#1F4D3A;white-space:nowrap;">{{previewKcal}}</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <button type="button" onClick="{{cancelExtra}}" style="all:unset;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;color:#6F706D;padding:10px 0;">Abbrechen</button>
+              <button type="button" onClick="{{saveExtra}}" style="all:unset;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#FFFFFF;background:#1F4D3A;padding:12px 20px;border-radius:999px;">Eintragen</button>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{addClosed}}" hint-placeholder-val="{{true}}">
+        <button type="button" onClick="{{openAdd}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:100%;text-align:center;padding:12px;border-radius:16px;border:1.5px dashed #1F4D3A;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#1F4D3A;">+ Training hinzufügen</button>
+      </sc-if>
+    </div>
+
+    <sc-if value="{{hasTrainingPlan}}" hint-placeholder-val="{{true}}">
+    <sc-if value="{{isRest}}" hint-placeholder-val="{{false}}">
+      <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:8px;">
+        <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Erholung zählt auch</span>
+        <span style="font-family:'Inter',sans-serif;font-size:13px;line-height:1.5;color:#6F706D;">Deine Muskeln wachsen in der Pause. Ein Spaziergang oder 10 Min Dehnen reichen völlig.</span>
+      </div>
+    </sc-if>
+
+    <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#6F706D;">Die Bilder sind Platzhalter, später kommen hier echte Übungsfotos rein. Trag deine Gewichte selbst ein. Die App speichert sie und passt nach zwei Wochen Gewicht und Wiederholungen an deinen Fortschritt an.</p>
+    </sc-if>
+
+  </div>
+
+  <nav style="flex:0 0 auto;display:flex;border-top:1px solid #E6E3DC;background:#FFFFFF;padding:10px 8px 16px;">
+    <a onClick="{{navClick}}" href="Dashboard.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#6F706D;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="21" height="21"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10v9a1 1 0 0 0 1 1H10v-5h4v5h3.5a1 1 0 0 0 1-1v-9"></path></svg>
+      <span>Startseite</span>
+    </a>
+    <a onClick="{{navClick}}" href="Essensplan.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#6F706D;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="21" height="21"><rect x="3.5" y="5" width="17" height="15" rx="2"></rect><path d="M3.5 9.5h17"></path><path d="M8 3v4M16 3v4"></path></svg>
+      <span>Essensplan</span>
+    </a>
+    <button type="button" onClick="{{openPlus}}" aria-label="Essen oder Training eintragen" aria-haspopup="dialog" style="all:unset;box-sizing:border-box;cursor:pointer;flex:0 0 64px;display:flex;align-items:flex-start;justify-content:center;">
+      <span style="width:54px;height:54px;margin-top:-26px;border-radius:50%;background:#1F4D3A;border:4px solid #F3F1EC;box-shadow:0 6px 16px rgba(31,77,58,.25);display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+      </span>
+    </button>
+    <a onClick="{{navClick}}" href="Training.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#1F4D3A;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="21" height="21"><path d="M6.5 7v10M3.5 9.5v5M17.5 7v10M20.5 9.5v5M6.5 12h11"></path></svg>
+      <span>Training</span>
+    </a>
+    <a onClick="{{navClick}}" href="Einkaufsliste.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#6F706D;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="21" height="21"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L20.5 8H6"></path><circle cx="9.5" cy="20" r="1.3"></circle><circle cx="17" cy="20" r="1.3"></circle></svg>
+      <span>Einkaufsliste</span>
+    </a>
+  </nav>
+  <sc-if value="{{plusOpen}}" hint-placeholder-val="{{false}}">
+    <dc-import name="Hinzufuegen" person="{{plusPerson}}" close-fn="{{closePlus}}" saved-fn="{{plusSaved}}" hint-size="390px,844px"></dc-import>
+  </sc-if>
+  <sc-if value="{{personSheetOpen}}" hint-placeholder-val="{{false}}">
+    <dc-import name="PersonSheet" person="{{sheetPerson}}" pick-fn="{{pickPersonFn}}" close-fn="{{closePersonSheet}}" hint-size="390px,844px"></dc-import>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  exEmoji(name) {
+    const n = String(name || '').toLowerCase();
+    const map = [['lauf', '🏃'], ['jogg', '🏃'], ['sprint', '🏃'], ['rad', '🚴'], ['bike', '🚴'], ['schwimm', '🏊'], ['yoga', '🧘'], ['dehn', '🧘'], ['mobil', '🧘'], ['fußball', '⚽'], ['seil', '🤾'], ['plank', '🤸'], ['crunch', '🤸'], ['bauch', '🤸'], ['sit-up', '🤸'], ['beinheben', '🤸'], ['russian', '🤸'], ['hip thrust', '🦵'], ['glute', '🦵'], ['kickback', '🦵'], ['abdukt', '🦵'], ['kniebeuge', '🦵'], ['squat', '🦵'], ['beinpresse', '🦵'], ['ausfall', '🦵'], ['lunge', '🦵'], ['wade', '🦵'], ['bein', '🦵'], ['kreuzheben', '🏋️'], ['deadlift', '🏋️'], ['rudern', '💪'], ['latzug', '💪'], ['klimmzug', '💪'], ['bizeps', '💪'], ['trizeps', '💪'], ['curl', '💪'], ['schulter', '💪'], ['drück', '🏋️'], ['brust', '🏋️'], ['butterfly', '🏋️'], ['liegestütz', '🤸']];
+    const hit = map.find((m) => n.indexOf(m[0]) !== -1);
+    return hit ? hit[1] : '🏋️';
+  }
+  constructor(props) {
+    super(props);
+    /* w = weighted (kg-Stepper sichtbar), default true */
+    const ex = (name, device, sets, reps, hint, w) => ({ name, device, sets, reps: String(reps), hint: hint || '', kg: '', weighted: w !== false });
+    const bauch = {
+      title: '30 Min Bauchworkout direkt danach',
+      why: 'Du bist nach dem Fußball schon warm. Perfekter Moment für deinen Rumpf, der dich auch auf dem Platz stabiler macht.',
+      exercises: [
+        { name: 'Crunches', volume: '3 × 20' },
+        { name: 'Beinheben liegend', volume: '3 × 12' },
+        { name: 'Russian Twists', volume: '3 × 20' },
+        { name: 'Unterarmstütz (Plank)', volume: '3 × 45 s' },
+        { name: 'Mountain Climbers', volume: '3 × 30 s' },
+        { name: 'Seitstütz je Seite', volume: '2 × 30 s' }
+      ]
+    };
+    this.people = {
+      tami: {
+        subtitle: 'Abnehmen · Fokus: Bauch straffen, Beine aufbauen, Rücken definieren',
+        accent: '#1F4D3A', accentBg: '#E3EEE6', accentText: '#1F4D3A',
+        week: [
+          { short: 'Mo', kind: 'gym', title: 'Kraft: Beine & Po', duration: 60, kcal: 400,
+            why: 'Unterkörper mit Fokus auf Po und Oberschenkel. Mittleres Gewicht, 10 bis 12 Wiederholungen, 60 bis 90 s Pause.',
+            exercises: [
+              ex('Kniebeugen', 'Multipresse', 4, 12, 'Knie hinter den Zehen, tief gehen'),
+              ex('Hip Thrust', 'Hip-Thrust-Maschine', 4, 10, 'Hüfte oben 2 s halten'),
+              ex('Beinpresse', 'Beinpressmaschine', 3, 12, 'Füße hoch und breit für mehr Po'),
+              ex('Rumänisches Kreuzheben', 'Kurzhanteln', 3, 12, 'Rücken gerade, Hüfte nach hinten'),
+              ex('Ausfallschritte', 'Kurzhanteln', 3, 12, 'je Bein, Knie nicht über die Zehen'),
+              ex('Abduktoren', 'Abduktorenmaschine', 3, 15, 'Langsam und kontrolliert'),
+              ex('Beinbeuger', 'Beinbeuger sitzend', 3, 12, 'Volle Bewegung, nicht schwingen'),
+              ex('Kickbacks', 'Kabelzug mit Fußschlaufe', 3, 15, 'je Seite, Po anspannen'),
+              ex('Wadenheben', 'Wadenmaschine', 3, 15, 'Oben kurz halten'),
+              ex('Glute Bridge', 'Matte', 3, 20, 'Po oben fest zusammendrücken', false)
+            ] },
+          { short: 'Di', kind: 'sport', title: 'Yoga', duration: 60, kcal: 200,
+            why: 'Beweglichkeit und Rumpfstabilität. Unterstützt deine Haltung und damit einen definierten Rücken.', exercises: [] },
+          { short: 'Mi', kind: 'gym', title: 'Kraft: Rücken & Schultern', duration: 55, kcal: 350,
+            why: 'Für einen definierten Rücken und aufrechte Haltung. 12 bis 15 Wiederholungen, saubere Ausführung vor Gewicht.',
+            exercises: [
+              ex('Latziehen', 'Latzugmaschine', 4, 12, 'Schulterblätter zusammenziehen'),
+              ex('Rudern sitzend', 'Rudermaschine', 3, 12, 'Ellbogen eng am Körper'),
+              ex('Schulterdrücken', 'Schulterpressmaschine', 3, 10, 'Nicht ins Hohlkreuz'),
+              ex('Face Pulls', 'Kabelzug mit Seil', 3, 15, 'Hände neben die Ohren ziehen'),
+              ex('Rückenstrecker', 'Hyperextension-Bank', 3, 15, 'Langsam hoch, oben halten', false),
+              ex('Seitheben', 'Kurzhanteln', 3, 15, 'Leicht vorgebeugt, Daumen nach unten'),
+              ex('Reverse Flys', 'Butterfly-Maschine rückwärts', 3, 12, 'Schulterblätter zusammen'),
+              ex('Einarmiges Rudern', 'Kurzhantel + Flachbank', 3, 10, 'je Seite, Rumpf stabil'),
+              ex('Shrugs', 'Kurzhanteln', 3, 12, 'Schultern gerade hochziehen'),
+              ex('Unterarmstütz', 'Matte', 3, '45 s', 'Körper bildet eine gerade Linie', false)
+            ] },
+          { short: 'Do', kind: 'rest', title: 'Ruhetag', duration: 0, kcal: 0, why: 'Aktive Erholung. Heute planen wir dir etwas weniger Kalorien ein.', exercises: [] },
+          { short: 'Fr', kind: 'gym', title: 'Kraft: Bauch & Ganzkörper', duration: 60, kcal: 400,
+            why: 'Straffer Bauch plus Ganzkörper-Grundübungen. Zum Schluss 20 Min Cardio für den Kalorienverbrauch.',
+            exercises: [
+              ex('Beinpresse', 'Beinpressmaschine', 3, 12, 'Kontrolliert runter, explosiv hoch'),
+              ex('Brustpresse', 'Brustpressmaschine', 3, 12, 'Schulterblätter zusammen'),
+              ex('Latziehen', 'Latzugmaschine', 3, 12, 'Weiter Griff, bis zur Brust'),
+              ex('Bauchcrunch', 'Crunch-Maschine', 3, 15, 'Langsam und ohne Schwung'),
+              ex('Holzhacker', 'Kabelzug', 3, 12, 'je Seite, Rotation aus der Mitte'),
+              ex('Beinheben', 'Beinheben-Station', 3, 12, 'Kein Schwung, Beine kontrolliert'),
+              ex('Russian Twists', 'Medizinball', 3, 20, 'Füße angehoben, Oberkörper drehen', false),
+              ex('Unterarmstütz', 'Matte', 3, '45 s', 'Bauch fest anspannen', false),
+              ex('Seitstütz', 'Matte', 2, '30 s', 'je Seite, Hüfte oben halten', false),
+              ex('Cardio', 'Laufband, 6 % Steigung', 1, '20 Min', 'Zügig gehen, Puls 130 bis 140', false)
+            ] },
+          { short: 'Sa', kind: 'sport', title: 'Yoga', duration: 60, kcal: 200, why: 'Entspannt ins Wochenende. Zählt voll in deinen Wochenverbrauch.', exercises: [] },
+          { short: 'So', kind: 'rest', title: 'Ruhetag', duration: 0, kcal: 0, why: 'Dehnen oder Spaziergang. Morgen geht es weiter.', exercises: [] }
+        ]
+      },
+      cristian: {
+        subtitle: 'Zunehmen · Fokus: Muskeln aufbauen, Fußball 3x pro Woche',
+        accent: '#C4532D', accentBg: '#F5E3DA', accentText: '#A63A1E',
+        week: [
+          { short: 'Mo', kind: 'gym', title: 'Oberkörper: Brust, Rücken & Arme', duration: 60, kcal: 400,
+            why: 'Hypertrophie: 8 bis 10 Wiederholungen, schwer genug, dass die letzten zwei richtig fordern. 2 Min Pause.',
+            exercises: [
+              ex('Brustpresse', 'Brustpressmaschine', 4, 10, 'Schulterblätter fest in die Lehne'),
+              ex('Schrägbankdrücken', 'Multipresse', 3, 10, '30 Grad Neigung, Brust oben'),
+              ex('Latziehen', 'Latzugmaschine', 4, 10, 'Weiter Griff, Schulterblätter runter'),
+              ex('Rudern sitzend', 'Rudermaschine', 3, 10, 'Ellbogen eng, Brust raus'),
+              ex('Butterfly', 'Butterfly-Maschine', 3, 12, 'Arme leicht gebeugt lassen'),
+              ex('Bizepscurls', 'Bizepsmaschine', 3, 10, 'Kein Schwung, nur der Bizeps'),
+              ex('Trizepsdrücken', 'Kabelzug mit Seil', 3, 12, 'Ellbogen am Körper fixieren'),
+              ex('Hammer Curls', 'Kurzhanteln', 3, 10, 'Daumen zeigen nach oben'),
+              ex('Dips assistiert', 'Dip-Maschine', 3, 10, 'Oberkörper leicht nach vorne'),
+              ex('Schulterdrücken', 'Schulterpressmaschine', 3, 10, 'Nicht ins Hohlkreuz')
+            ] },
+          { short: 'Di', kind: 'sport', title: 'Fußballtraining', duration: 90, kcal: 650,
+            why: 'Knie vorher gut aufwärmen und mobilisieren.', exercises: [], extra: bauch },
+          { short: 'Mi', kind: 'gym', title: 'Beine & Knie-Stabilität', duration: 50, kcal: 320,
+            why: 'Knieschonende Übungen mit kontrolliertem Tempo. Schützt ACL und Meniskus und baut trotzdem Muskeln auf.',
+            exercises: [
+              ex('Beinpresse', 'Beinpressmaschine', 4, 12, 'Kleiner Bewegungsradius, knieschonend'),
+              ex('Beinbeuger', 'Beinbeuger liegend', 3, 12, 'Volle Streckung, langsam zurück'),
+              ex('Beinstrecker', 'Beinstreckermaschine', 3, 12, 'Oben 1 s halten'),
+              ex('Wadenheben', 'Wadenmaschine', 3, 15, 'Voller Bewegungsradius'),
+              ex('Ausfallschritte', 'Kurzhanteln', 3, 10, 'je Bein, kontrolliert absenken'),
+              ex('Abduktoren', 'Abduktorenmaschine', 3, 15, 'Langsam öffnen und schließen'),
+              ex('Adduktoren', 'Adduktorenmaschine', 3, 15, 'Gleichmäßiges Tempo'),
+              ex('Einbeinstand', 'Balance-Pad', 3, '30 s', 'je Bein, Knie leicht gebeugt', false)
+            ] },
+          { short: 'Do', kind: 'sport', title: 'Fußballtraining', duration: 90, kcal: 650,
+            why: 'Nach dem Training bei Bedarf kühlen.', exercises: [], extra: bauch },
+          { short: 'Fr', kind: 'gym', title: 'Rücken, Schultern & Bauch', duration: 55, kcal: 370,
+            why: 'Breiter Rücken und stabile Mitte. 8 bis 10 Wiederholungen, Bauch zum Schluss.',
+            exercises: [
+              ex('Klimmzüge assistiert', 'Klimmzugmaschine', 4, 8, 'Langsam ablassen, explosiv hoch'),
+              ex('Schulterdrücken', 'Schulterpressmaschine', 3, 10, 'Kein Hohlkreuz'),
+              ex('Seitheben', 'Kabelzug', 3, 12, 'Leicht vorgebeugt, kontrolliert'),
+              ex('Face Pulls', 'Kabelzug mit Seil', 3, 15, 'Hände neben die Ohren'),
+              ex('Rudern sitzend', 'Rudermaschine', 3, 10, 'Schulterblätter zusammenziehen'),
+              ex('Rückenstrecker', 'Hyperextension-Bank', 3, 15, 'Langsam, oben kurz halten', false),
+              ex('Bauchcrunch', 'Crunch-Maschine', 3, 15, 'Ohne Schwung'),
+              ex('Beinheben', 'Beinheben-Station', 3, 12, 'Beine gestreckt, kein Pendeln'),
+              ex('Russian Twists', 'Medizinball', 3, 20, 'Füße angehoben, Rotation', false),
+              ex('Unterarmstütz', 'Matte', 3, '45 s', 'Po nicht durchhängen lassen', false)
+            ] },
+          { short: 'Sa', kind: 'sport', title: 'Fußball: Spiel', duration: 90, kcal: 700,
+            why: 'Spieltag. Kniebandage bei Bedarf, gut aufwärmen. Heute keine Ergänzung, Regeneration geht vor.', exercises: [] },
+          { short: 'So', kind: 'rest', title: 'Mobility', duration: 20, kcal: 60, why: 'Knie-Beweglichkeit und leichtes Dehnen.', exercises: [] }
+        ]
+      }
+    };
+    this.alts = {
+      'Kniebeugen': [['Beinpresse', 'Beinpressmaschine'], ['Goblet Squats', 'Kurzhantel'], ['Hackenschmidt', 'Hackenschmidt-Maschine']],
+      'Beinpresse': [['Kniebeugen', 'Multipresse'], ['Goblet Squats', 'Kurzhantel'], ['Hackenschmidt', 'Hackenschmidt-Maschine']],
+      'Hip Thrust': [['Glute Bridge', 'Langhantel auf der Bank'], ['Kickbacks', 'Kabelzug mit Fußschlaufe'], ['Rumänisches Kreuzheben', 'Kurzhanteln']],
+      'Rumänisches Kreuzheben': [['Beinbeuger liegend', 'Beinbeugermaschine'], ['Good Mornings', 'Langhantel'], ['Glute Ham Raise', 'GHD-Bank']],
+      'Ausfallschritte': [['Bulgarian Split Squats', 'Bank + Kurzhanteln'], ['Step-ups', 'Box + Kurzhanteln'], ['Beinpresse einbeinig', 'Beinpressmaschine']],
+      'Beinbeuger': [['Rumänisches Kreuzheben', 'Kurzhanteln'], ['Beinbeuger liegend', 'Beinbeugermaschine liegend'], ['Glute Ham Raise', 'GHD-Bank']],
+      'Beinstrecker': [['Ausfallschritte', 'Kurzhanteln'], ['Bulgarian Split Squats', 'Bank + Kurzhanteln'], ['Step-ups', 'Box']],
+      'Abduktoren': [['Seitliches Beinheben', 'Kabelzug'], ['Monster Walks', 'Miniband'], ['Clamshells', 'Miniband']],
+      'Adduktoren': [['Kabelzug-Adduktion', 'Kabelzug mit Fußschlaufe'], ['Sumo Squats', 'Kurzhantel'], ['Ball Squeeze', 'Gymnastikball']],
+      'Kickbacks': [['Glute Bridge einbeinig', 'Matte'], ['Hip Thrust einbeinig', 'Bank'], ['Donkey Kicks', 'Matte']],
+      'Latziehen': [['Klimmzüge assistiert', 'Klimmzugmaschine'], ['Latzug eng', 'Latzugmaschine, V-Griff'], ['Pullover', 'Kabelzug mit Stange']],
+      'Rudern sitzend': [['Kurzhantelrudern', 'Bank + Kurzhantel'], ['T-Bar-Rudern', 'T-Bar-Station'], ['Rudern am Kabel einarmig', 'Kabelzug']],
+      'Einarmiges Rudern': [['Rudern sitzend', 'Rudermaschine'], ['T-Bar-Rudern', 'T-Bar-Station'], ['Kurzhantelrudern beidarmig', 'Kurzhanteln']],
+      'Rückenstrecker': [['Superman', 'Matte'], ['Good Mornings', 'leichte Langhantel'], ['Bird Dog', 'Matte']],
+      'Face Pulls': [['Reverse Flys', 'Butterfly-Maschine rückwärts'], ['Band Pull-Aparts', 'Widerstandsband'], ['Seitheben vorgebeugt', 'Kurzhanteln']],
+      'Schulterdrücken': [['Kurzhantel-Schulterdrücken', 'Bank + Kurzhanteln'], ['Arnold Press', 'Kurzhanteln'], ['Landmine Press', 'Langhantel']],
+      'Seitheben': [['Kabelzug-Seitheben', 'Kabelzug'], ['Frontheben', 'Kurzhanteln'], ['Aufrechtes Rudern', 'Kabelzug']],
+      'Reverse Flys': [['Face Pulls', 'Kabelzug mit Seil'], ['Band Pull-Aparts', 'Widerstandsband'], ['Seitheben vorgebeugt', 'Kurzhanteln']],
+      'Shrugs': [['Langhantel-Shrugs', 'Langhantel'], ['Farmers Walk', 'Kurzhanteln'], ['Aufrechtes Rudern', 'Kabelzug']],
+      'Bauchcrunch': [['Kabel-Crunch', 'Kabelzug kniend'], ['Beinheben hängend', 'Klimmzugstange'], ['Dead Bug', 'Matte']],
+      'Holzhacker': [['Pallof Press', 'Kabelzug'], ['Kabel-Crunch seitlich', 'Kabelzug'], ['Medizinball-Slam', 'Medizinball']],
+      'Beinheben': [['Beinheben liegend', 'Matte'], ['Knieheben hängend', 'Klimmzugstange'], ['Reverse Crunch', 'Matte']],
+      'Brustpresse': [['Bankdrücken', 'Langhantel'], ['Kurzhantel-Bankdrücken', 'Flachbank'], ['Liegestütze', 'Körpergewicht']],
+      'Schrägbankdrücken': [['Kurzhantel-Schrägbank', 'Kurzhanteln'], ['Brustpresse', 'Brustpressmaschine'], ['Liegestütze erhöht', 'Bank']],
+      'Butterfly': [['Kabelzug-Crossover', 'Kabelzug'], ['Kurzhantel-Flys', 'Flachbank'], ['Liegestütze eng', 'Körpergewicht']],
+      'Bizepscurls': [['Kurzhantel-Curls', 'Kurzhanteln'], ['Hammer Curls', 'Kurzhanteln'], ['Kabel-Curls', 'Kabelzug']],
+      'Hammer Curls': [['Bizepscurls', 'Bizepsmaschine'], ['Kabel-Curls', 'Kabelzug'], ['Konzentrations-Curls', 'Kurzhantel']],
+      'Trizepsdrücken': [['Dips assistiert', 'Dip-Maschine'], ['French Press', 'SZ-Stange'], ['Kickbacks', 'Kurzhantel']],
+      'Dips assistiert': [['Trizepsdrücken', 'Kabelzug'], ['French Press', 'SZ-Stange'], ['Bankdips', 'Flachbank']],
+      'Klimmzüge assistiert': [['Latziehen', 'Latzugmaschine'], ['Latzug eng', 'V-Griff'], ['Negative Klimmzüge', 'Klimmzugstange']],
+      'Wadenheben': [['Wadenheben stehend', 'Multipresse'], ['Wadenheben einbeinig', 'Stufe'], ['Springseil', '3 × 1 Min']]
+    };
+    this.fallbackAlts = [['Ähnliche Übung am Kabelzug', 'gleiche Muskelgruppe'], ['Variante mit Kurzhanteln', 'freie Gewichte'], ['Körpergewichtsvariante', 'ohne Gerät']];
+    this.sessionAlts = {
+      sport: [['30 Min lockeres Laufen', 'ähnlicher Verbrauch'], ['Heimworkout 25 Min', 'ohne Geräte'], ['45 Min Radfahren', 'gelenkschonend']],
+      rest: [['Spaziergang 30 Min', 'aktive Erholung'], ['Mobility 15 Min', 'Dehnen'], ['Yoga 20 Min', 'ruhig']]
+    };
+    this.initExtraForm();
+    let savedStatus = {};
+    try { savedStatus = JSON.parse(localStorage.getItem('vitaTrainingStatus') || '{}') || {}; } catch (e) {}
+    let savedEdits = {};
+    try { savedEdits = JSON.parse(localStorage.getItem('vitaPlanEdits') || '{}') || {}; } catch (e) {}
+    let savedExEdits = {};
+    try { savedExEdits = JSON.parse(localStorage.getItem('vitaExerciseEdits') || '{}') || {}; } catch (e) {}
+    this.weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+    this.weekdayNames = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag'];
+    let activeP = 'tamara';
+    try { activeP = localStorage.getItem('vitaActivePerson') || 'tamara'; } catch (e) {}
+    this.state = { person: activeP === 'basti' ? 'cristian' : 'tami', day: (new Date().getDay()+6)%7, edits: savedEdits, planEdit: false, status: savedStatus, swaps: {}, swapOpen: null, draftOwn: '', extras: this.loadExtras(), addOpen: false, fAct: 'spazieren', fName: '', fMin: '30', fInt: 'mittel', exEdits: savedExEdits, extraStatus: {} };
+  }
+  initExtraForm() {
+    this.actCatalog = [
+      { id: 'spazieren', name: 'Spaziergang', met: 3.5 }, { id: 'schwimmen', name: 'Schwimmen', met: 7 },
+      { id: 'laufen', name: 'Laufen', met: 9 }, { id: 'rad', name: 'Radfahren', met: 6.8 },
+      { id: 'kraft', name: 'Krafttraining', met: 5 }, { id: 'yoga', name: 'Yoga', met: 3 },
+      { id: 'fussball', name: 'Fußball', met: 8 }, { id: 'eigenes', name: 'Eigenes', met: 5 }
+    ];
+    this.bodyWeight = { tami: 63, cristian: 68 };
+    this.intensities = [{ id: 'leicht', label: 'Locker', f: 0.8 }, { id: 'mittel', label: 'Mittel', f: 1 }, { id: 'intensiv', label: 'Intensiv', f: 1.25 }];
+  }
+  loadExtras() {
+    try { return JSON.parse(localStorage.getItem('vitaExtraTraining') || '{}') || {}; } catch (e) { return {}; }
+  }
+  saveExtras(obj) {
+    try { localStorage.setItem('vitaExtraTraining', JSON.stringify(obj)); } catch (e) {}
+  }
+  extrasFor(person, day) {
+    const all = this.state.extras || {};
+    return ((all[person] || {})[String(day)]) || [];
+  }
+  calcKcal(person, actId, minutes, intensityId) {
+    const a = this.actCatalog.find((x) => x.id === actId) || this.actCatalog[0];
+    const i = this.intensities.find((x) => x.id === intensityId) || this.intensities[1];
+    const min = parseFloat(minutes) || 0;
+    return Math.round((a.met * this.bodyWeight[person] * (min / 60) * i.f) / 5) * 5;
+  }
+  addExtra(person, day) {
+    const s = this.state;
+    const min = parseFloat(s.fMin) || 0;
+    if (!(min > 0)) return null;
+    const act = this.actCatalog.find((x) => x.id === s.fAct);
+    const name = s.fAct === 'eigenes' ? ((s.fName || '').trim() || 'Eigene Aktivität') : act.name;
+    const kcal = this.calcKcal(person, s.fAct, min, s.fInt);
+    const intensity = this.intensities.find((x) => x.id === s.fInt).label;
+    const all = { ...(s.extras || {}) };
+    const pp = { ...(all[person] || {}) };
+    pp[String(day)] = [...(pp[String(day)] || []), { id: Date.now(), name, minutes: min, intensity, kcal }];
+    all[person] = pp;
+    this.saveExtras(all);
+    this.setState({ extras: all, addOpen: false, fName: '', fMin: '30', fAct: 'spazieren', fInt: 'mittel' });
+    return kcal;
+  }
+  removeExtra(person, day, id) {
+    const all = { ...(this.state.extras || {}) };
+    const pp = { ...(all[person] || {}) };
+    pp[String(day)] = (pp[String(day)] || []).filter((x) => x.id !== id);
+    all[person] = pp;
+    this.saveExtras(all);
+    this.setState({ extras: all });
+  }
+  saveExEdits(obj) {
+    try { localStorage.setItem('vitaExerciseEdits', JSON.stringify(obj)); } catch (e) {}
+  }
+  getExEdit(person, dayIdx, exIdx) {
+    const ee = this.state.exEdits || {};
+    return ((ee[person] || {})[dayIdx + '-' + exIdx]) || {};
+  }
+  setExEdit(person, dayIdx, exIdx, patch) {
+    const ee = { ...(this.state.exEdits || {}) };
+    const pp = { ...(ee[person] || {}) };
+    pp[dayIdx + '-' + exIdx] = { ...(pp[dayIdx + '-' + exIdx] || {}), ...patch };
+    ee[person] = pp;
+    this.saveExEdits(ee);
+    this.setState({ exEdits: ee });
+  }
+  fmtVolume(e, edit) {
+    const kg = edit.kg !== undefined ? edit.kg : e.kg;
+    const reps = edit.reps !== undefined ? edit.reps : e.reps;
+    const sets = e.sets;
+    let vol = sets + ' Sätze × ' + reps;
+    if (kg) vol += ' · ' + kg + ' kg';
+    else if (e.hint) vol += ' · ' + e.hint;
+    return vol;
+  }
+  formVals(person, accent) {
+    const s = this.state;
+    const on = 'background:' + accent + ';color:' + '#FFFFFF' + ';border-color:' + accent + ';';
+    const off = 'background:#FFFFFF;color:#111111;';
+    const kcal = this.calcKcal(person, s.fAct, s.fMin, s.fInt);
+    return {
+      actChips: this.actCatalog.map((a) => ({ name: a.name, pressed: s.fAct === a.id ? 'true' : 'false', style: s.fAct === a.id ? on : off, pick: () => this.setState({ fAct: a.id }) })),
+      isOwnAct: s.fAct === 'eigenes',
+      fName: s.fName,
+      setFName: (e) => this.setState({ fName: e.target.value }),
+      durId: 'dauer-' + person,
+      decMin: () => this.setState({ fMin: String(Math.max(5, (parseInt(this.state.fMin, 10) || 0) - 5)) }),
+      incMin: () => this.setState({ fMin: String((parseInt(this.state.fMin, 10) || 0) + 5) }),
+      minuteChips: [15, 30, 45, 60, 90].map((m) => ({ label: m + '', pressed: String(m) === String(s.fMin) ? 'true' : 'false', style: String(m) === String(s.fMin) ? on : off, pick: () => this.setState({ fMin: String(m) }) })),
+      fMin: s.fMin,
+      setFMin: (e) => this.setState({ fMin: e.target.value }),
+      intensityChips: this.intensities.map((i) => ({ label: i.label, pressed: s.fInt === i.id ? 'true' : 'false', style: s.fInt === i.id ? on : off, pick: () => this.setState({ fInt: i.id }) })),
+      previewLine: 'Geschätzter Verbrauch. Kommt direkt auf dein Kalorienziel drauf.',
+      previewKcal: kcal > 0 ? '+ ' + kcal + ' kcal' : '0 kcal',
+      cancelExtra: () => this.setState({ addOpen: false })
+    };
+  }
+  editsFor(person, edits) {
+    const e = (edits || this.state.edits || {})[person] || {};
+    return { order: e.order || [0, 1, 2, 3, 4, 5, 6], dur: e.dur || {}, removed: e.removed || {}, added: e.added || [] };
+  }
+  effWeek(person, edits) {
+    const base = this.people[person].week;
+    const ed = this.editsFor(person, edits);
+    return ed.order.map((oi, pos) => {
+      const b0 = base[oi];
+      const b = ed.removed[oi] ? { ...b0, kind: 'rest', title: 'Frei', why: 'Du hast ' + b0.title + ' für diesen Tag entfernt. Über „Bearbeiten“ holst du die Einheit zurück.', exercises: [], kcal: 0, duration: 0, extra: null, removedTitle: b0.title } : b0;
+      const dur = ed.removed[oi] ? 0 : (ed.dur[oi] !== undefined ? ed.dur[oi] : b.duration);
+      const scale = b.duration ? dur / b.duration : 1;
+      return { ...b, short: this.weekdays[pos], origIdx: oi, origShort: b.short, duration: dur, baseDuration: b.duration,
+        kcal: Math.round(b.kcal * scale / 5) * 5, durChanged: dur !== b.duration, moved: oi !== pos, removed: !!ed.removed[oi] };
+    });
+  }
+  saveEdits(edits, status) {
+    try {
+      localStorage.setItem('vitaPlanEdits', JSON.stringify(edits));
+      const eff = {};
+      ['tami', 'cristian'].forEach((pp) => { eff[pp] = this.effWeek(pp, edits).map((w) => ({ short: w.short, type: w.title, duration: w.duration ? String(w.duration) : '', note: w.why, kcal: w.kcal })); });
+      localStorage.setItem('vitaPlanEffective', JSON.stringify(eff));
+    } catch (e) {}
+    this.setState({ edits, status: status || this.state.status });
+    this.persistStatusWith(status || this.state.status, edits);
+  }
+  setDuration(person, pos, minutes) {
+    const ed = this.editsFor(person);
+    const oi = ed.order[pos];
+    const edits = { ...this.state.edits, [person]: { ...ed, dur: { ...ed.dur, [oi]: Math.max(5, Math.min(240, minutes)) } } };
+    this.saveEdits(edits);
+  }
+  swapDays(person, a, b) {
+    const ed = this.editsFor(person);
+    const order = ed.order.slice();
+    const tmp = order[a]; order[a] = order[b]; order[b] = tmp;
+    const status = {};
+    Object.keys(this.state.status).forEach((k) => {
+      const parts = k.split('-');
+      if (parts[0] === person && (parts[1] === String(a) || parts[1] === String(b))) {
+        parts[1] = parts[1] === String(a) ? String(b) : String(a);
+        status[parts.join('-')] = this.state.status[k];
+      } else status[k] = this.state.status[k];
+    });
+    const added = ed.added.map((x) => x.pos === a ? { ...x, pos: b } : (x.pos === b ? { ...x, pos: a } : x));
+    const edits = { ...this.state.edits, [person]: { ...ed, order, added } };
+    this.saveEdits(edits, status);
+  }
+  withEd(person, patch) {
+    const ed = this.editsFor(person);
+    this.saveEdits({ ...this.state.edits, [person]: { ...ed, ...patch } });
+  }
+  toggleRemove(person, pos) {
+    const ed = this.editsFor(person);
+    const oi = ed.order[pos];
+    const removed = { ...ed.removed };
+    if (removed[oi]) delete removed[oi]; else removed[oi] = true;
+    this.saveEdits({ ...this.state.edits, [person]: { ...ed, removed } });
+  }
+  resetPlan(person) {
+    const edits = { ...this.state.edits };
+    delete edits[person];
+    this.saveEdits(edits);
+  }
+  exKcal(dayObj) {
+    const n = dayObj.exercises.length;
+    return n ? Math.round(dayObj.kcal / n / 5) * 5 : dayObj.kcal;
+  }
+  doneBurn(person, dayIdx, status, edits) {
+    const addedDone = this.editsFor(person, edits).added.filter((a) => a.pos === dayIdx && status[person + '-' + dayIdx + '-add-' + a.id] === 'done').reduce((q, a) => q + a.kcal, 0);
+    return addedDone + this.planBurn(person, dayIdx, status, edits);
+  }
+  planBurn(person, dayIdx, status, edits) {
+    const d = this.effWeek(person, edits)[dayIdx];
+    if (!d.exercises.length) return status[person + '-' + dayIdx + '-sess'] === 'done' ? d.kcal : 0;
+    const per = this.exKcal(d);
+    return d.exercises.reduce((sum, e, i) => sum + (status[person + '-' + dayIdx + '-' + i] === 'done' ? per : 0), 0);
+  }
+  persistStatus(status) { this.persistStatusWith(status, this.state.edits); }
+  persistStatusWith(status, edits) {
+    const burn = {};
+    ['tami', 'cristian'].forEach((pp) => { burn[pp] = {}; for (let i = 0; i < 7; i++) burn[pp][String(i)] = this.doneBurn(pp, i, status, edits); });
+    try {
+      localStorage.setItem('vitaTrainingStatus', JSON.stringify(status));
+      localStorage.setItem('vitaTrainingBurn', JSON.stringify(burn));
+    } catch (e) {}
+  }
+  scrollTop() {
+    const run = () => { try { const el = document.getElementById('vita-scroll-training'); if (el) el.scrollTop = 0; } catch (e) {} };
+    run(); setTimeout(run, 0); setTimeout(run, 120);
+  }
+  readNav() { try { return JSON.parse(localStorage.getItem('vitaNav') || 'null'); } catch (e) { return null; } }
+  componentDidMount() {
+    this.scrollTop();
+    const n = this.readNav();
+    this.__navTs = n ? n.ts : 0;
+    this.__navTimer = setInterval(() => {
+      const x = this.readNav();
+      if (x && x.ts !== this.__navTs) {
+        this.__navTs = x.ts;
+        if (x.target === 'Training.dc.html') this.scrollTop();
+      }
+    }, 150);
+  }
+  componentWillUnmount() { if (this.__navTimer) clearInterval(this.__navTimer); }
+  renderVals() {
+    const v = this.__navRV();
+    let ob = {};
+    try { ob = JSON.parse(localStorage.getItem('vitaOnboardingData') || '{}') || {}; } catch (e) {}
+    let ap = 'tamara';
+    try { ap = localStorage.getItem('vitaActivePerson') || 'tamara'; } catch (e) {}
+    const noPlan = ob.planWish === 'none';
+    v.hasTrainingPlan = !noPlan;
+    v.editGoal = () => { try { localStorage.setItem('vitaEdit', JSON.stringify({ step: 'Onboarding2.dc.html', back: 'Training.dc.html', ts: Date.now() })); } catch (x) {} };
+    v.noTrainingPlan = noPlan;
+    v.extraHeading = noPlan ? 'Dein Training an diesem Tag' : 'Zusätzlich an diesem Tag';
+    v.enableTrainingPlan = () => { let o = {}; try { o = JSON.parse(localStorage.getItem('vitaOnboardingData') || '{}') || {}; } catch (e) {} o.planWish = 'full'; try { localStorage.setItem('vitaOnboardingData', JSON.stringify(o)); } catch (e) {} this.forceUpdate(); };
+    v.navClick = (e) => {
+      let target = '';
+      try { target = String((e && e.currentTarget && e.currentTarget.getAttribute('href')) || '').split('?')[0]; } catch (x) {}
+      try { localStorage.setItem('vitaNav', JSON.stringify({ target: target, ts: Date.now() })); } catch (x) {}
+      if (target === 'Training.dc.html') this.scrollTop();
+    };
+    return v;
+  }
+  __navRV() {
+    const v = this.__nnRV();
+    const keys = ["setDur", "setFMin"];
+    const clean = (e) => {
+      if (e && e.target && typeof e.target.value === 'string' && /[-−]/.test(e.target.value)) {
+        e.target.value = e.target.value.replace(/[-−]/g, '');
+      }
+    };
+    const wrapObj = (o) => {
+      keys.forEach((k) => {
+        if (typeof o[k] === 'function' && !o[k].__nn) {
+          const orig = o[k];
+          const w = (e) => { clean(e); return orig(e); };
+          w.__nn = true;
+          o[k] = w;
+        }
+      });
+    };
+    wrapObj(v);
+    Object.keys(v).forEach((k) => { if (Array.isArray(v[k])) v[k].forEach((it) => { if (it && typeof it === 'object') wrapObj(it); }); });
+    v.blockMinus = (e) => { if (e && (e.key === '-' || e.key === '−' || e.key === '+' || e.key === 'e' || e.key === 'E')) e.preventDefault(); };
+    return v;
+  }
+  __nnRV() {
+    this.applyYogaStyle();
+    const __v = this.__renderVals();
+    let __ls = 'tamara';
+    try { __ls = localStorage.getItem('vitaActivePerson') || 'tamara'; } catch (e) {}
+    const __cur = __ls === 'basti' ? 'cristian' : 'tami';
+    return Object.assign(__v, {
+      personSheetOpen: !!this.state.personSheet,
+      openPersonSheet: () => this.setState({ personSheet: true }),
+      closePersonSheet: () => this.setState({ personSheet: false }),
+      sheetPerson: __cur,
+      pickPersonFn: (k) => { if (k !== __cur && typeof __v.switchPerson === 'function') __v.switchPerson(); this.setState({ personSheet: false }); }
+    });
+  }
+  applyYogaStyle() {
+    let ob = {};
+    try { ob = JSON.parse(localStorage.getItem('vitaOnboardingData') || '{}') || {}; } catch (e) {}
+    const style = ob.yogaStyle || 'flow';
+    if (this.__yogaStyle === style) return;
+    this.__yogaStyle = style;
+    const L = { sanft: 'Sanft', flow: 'Flow', power: 'Power' };
+    const perHour = { sanft: 160, flow: 260, power: 300 };
+    Object.keys(this.people).forEach((pk) => {
+      (this.people[pk].week || []).forEach((d) => {
+        if (d.title && d.title.indexOf('Yoga') === 0) {
+          d.title = 'Yoga · ' + L[style];
+          d.kcal = Math.round(perHour[style] * (d.duration || 60) / 60 / 10) * 10;
+        }
+      });
+    });
+  }
+  progFor(e, i, curKg, curReps, s) {
+    const top = parseInt(e.reps, 10) || 0;
+    if (!e.weighted || !top) return { hasRange: false, rangeText: '', progShow: false, progText: '', progApply: () => {} };
+    const low = Math.max(1, top - 2);
+    const dayObj = this.people[s.person].week[s.day] || {};
+    const legs = /Knie|Beinpresse|Hip Thrust|Kreuzheben/.test(e.name);
+    const step = legs ? 5 : 2.5;
+    const pk = s.person + '|' + s.day + '|' + i;
+    const applied = (this.state.progDone || {})[pk];
+    const show = dayObj.kind === 'gym' && i < 2 && !applied;
+    const base = parseFloat(curKg) || 0;
+    return {
+      hasRange: true,
+      rangeText: 'Wiederholungsbereich ' + low + ' bis ' + top + (applied ? ' · Gewicht erhöht, starte wieder bei ' + low : ''),
+      progShow: show,
+      progText: 'Zweimal hintereinander ' + top + ' Wdh. in allen Sätzen geschafft. Zeit für + ' + String(step).replace('.', ',') + ' kg.',
+      progApply: () => {
+        this.setExEdit(s.person, s.day, i, { kg: String(base + step), reps: String(low) });
+        this.setState({ progDone: { ...(this.state.progDone || {}), [pk]: true } });
+      }
+    };
+  }
+  __renderVals() {
+    try {
+      const stored = localStorage.getItem('vitaActivePerson');
+      const expected = stored === 'basti' ? 'cristian' : 'tami';
+      if (expected !== this.state.person) this.state.person = expected;
+    } catch (e) {}
+    const s = this.state;
+    const p = this.people[s.person];
+    const week = this.effWeek(s.person);
+    const edNow = this.editsFor(s.person);
+    const plannedToday = edNow.added.filter((x) => x.pos === s.day);
+    const d = week[s.day];
+    const key = (i) => s.person + '-' + s.day + '-' + i;
+    const doneN = d.exercises.filter((e, i) => s.status[key(i)] === 'done').length;
+    const pill = (on, kind) => on ? (kind === 'skip' ? 'background:#F5E3DA;color:#A63A1E;' : (kind === 'swap' ? 'background:#E3E8FF;color:#3B4FC4;' : 'background:' + p.accent + ';color:' + '#FFFFFF' + ';')) : 'background:#F3F1EC;color:#6F706D;border:1px solid #E6E3DC;';
+    const setStatus = (k, v) => {
+      const status = { ...this.state.status, [k]: this.state.status[k] === v ? null : v };
+      this.setState({ status });
+      this.persistStatus(status);
+    };
+    const actionsFor = (k, alts, ownPlaceholder, isSession) => ({
+      donePressed: s.status[k] === 'done' ? 'true' : 'false',
+      skipPressed: s.status[k] === 'skip' ? 'true' : 'false',
+      swapExpanded: s.swapOpen === k ? 'true' : 'false',
+      doneStyle: pill(s.status[k] === 'done', 'done'),
+      skipStyle: pill(s.status[k] === 'skip', 'skip'),
+      swapStyle: pill(s.swapOpen === k || !!s.swaps[k], 'swap'),
+      markDone: () => setStatus(k, 'done'),
+      markSkip: () => setStatus(k, 'skip'),
+      openSwap: () => this.setState({ swapOpen: this.state.swapOpen === k ? null : k, draftOwn: '' }),
+      swapOpen: s.swapOpen === k,
+      ownPlaceholder: ownPlaceholder,
+      alts: alts.map((a) => ({ name: a[0], sub: a[1], pick: () => this.setState({ swaps: { ...this.state.swaps, [k]: { name: a[0], device: a[1] } }, swapOpen: null }) })),
+      useOwn: () => {
+        const n = (this.state.draftOwn || '').trim();
+        if (!n) return;
+        this.setState({ swaps: { ...this.state.swaps, [k]: { name: n, device: 'eigene Übung' } }, swapOpen: null, draftOwn: '' });
+      }
+    });
+    const sessKey = s.person + '-' + s.day + '-sess';
+    const extras = this.extrasFor(s.person, s.day);
+    const extraKcal = extras.reduce((sum, x) => sum + x.kcal, 0);
+    const planKcal = d.kcal + this.editsFor(s.person).added.filter((x) => x.pos === s.day).reduce((q, x) => q + x.kcal, 0);
+    const doneKcal = this.doneBurn(s.person, s.day, s.status);
+    const perEx = this.exKcal(d);
+    const sessSwap = s.swaps[sessKey];
+    const kindLabels = { gym: 'Fitnessstudio', sport: 'Dein Sport', rest: 'Pause' };
+    const tabOn = 'background:' + p.accent + ';color:' + '#FFFFFF' + ';';
+    const tabOff = 'background:none;color:#6F706D;';
+    return {
+      plusOpen: !!this.state.plusOpen,
+      openPlus: () => this.setState({ plusOpen: true }),
+      closePlus: () => this.setState({ plusOpen: false, extras: this.loadExtras() }),
+      plusSaved: () => this.setState({ extrasRev: (this.state.extrasRev || 0) + 1 }),
+      plusPerson: this.state.person,
+      subtitle: p.subtitle,
+      tamiTabStyle: s.person === 'tami' ? tabOn : tabOff,
+      cristianTabStyle: s.person === 'cristian' ? tabOn : tabOff,
+      switchPerson: () => { const np = this.state.person === 'tami' ? 'cristian' : 'tami'; this.setState({ person: np, planEdit: false }); try { localStorage.setItem('vitaActivePerson', np === 'tami' ? 'tamara' : 'basti'); } catch (e) {} },
+      switchAria: 'Person wechseln, aktuell ' + (s.person === 'tami' ? 'Tami' : 'Cristian'),
+      avatarInitial: s.person === 'tami' ? 'T' : 'C',
+      avatarStyle: s.person === 'tami' ? 'background:#E3EEE6;color:#1F4D3A;' : 'background:#F5E3DA;color:#C4532D;',
+      burnedToday: this.doneBurn(s.person, 2, s.status) + this.extrasFor(s.person, 2).reduce((q, x) => q + x.kcal, 0),
+      editBtnLabel: s.planEdit ? 'Fertig' : 'Bearbeiten',
+      editBtnStyle: s.planEdit ? 'background:#1F4D3A;color:#FFFFFF;' : 'background:#FFFFFF;color:#1F4D3A;border:1px solid #E6E3DC;',
+      weekRows: week.map((w, i) => ({
+        short: w.short,
+        title: w.removed ? (w.removedTitle + ' (entfernt)') : w.title,
+        meta: w.removed ? 'Tippe den Pfeil, um sie zurückzuholen' : (w.kind === 'rest' ? 'Pause' : ((w.durChanged ? 'angepasst · ' : '') + (w.moved ? 'verschoben von ' + this.weekdayNames[w.origIdx] : (w.kind === 'gym' ? 'Fitnessstudio' : 'Dein Sport')))),
+        dayStyle: i === s.day ? 'color:' + p.accentText + ';' : 'color:#111111;',
+        titleStyle: w.removed ? 'color:#8C8C86;text-decoration:line-through;' : '',
+        hasDuration: !w.removed && !!w.baseDuration,
+        duration: w.duration,
+        kcal: w.kcal,
+        removed: w.removed,
+        notRemoved: !w.removed,
+        removeAria: w.removed ? (w.removedTitle + ' am ' + this.weekdayNames[i] + ' zurückholen') : (w.title + ' am ' + this.weekdayNames[i] + ' entfernen'),
+        removeStyle: w.removed ? 'background:#E3EEE6;color:#1F4D3A;' : 'background:#F5E3DA;color:#A63A1E;',
+        up: () => { if (i > 0) this.swapDays(s.person, i, i - 1); },
+        down: () => { if (i < 6) this.swapDays(s.person, i, i + 1); },
+        upAria: w.title + ' einen Tag früher', downAria: w.title + ' einen Tag später',
+        upStyle: i === 0 ? 'opacity:.3;pointer-events:none;' : '',
+        downStyle: i === 6 ? 'opacity:.3;pointer-events:none;' : '',
+        less: () => this.setDuration(s.person, i, (w.duration || 0) - 5),
+        more: () => this.setDuration(s.person, i, (w.duration || 0) + 5),
+        lessAria: w.title + ' 5 Minuten kürzer', moreAria: w.title + ' 5 Minuten länger',
+        toggleRemove: () => this.toggleRemove(s.person, i),
+        added: edNow.added.filter((x) => x.pos === i).map((x) => ({ name: x.name, duration: x.minutes, kcal: x.kcal, aria: x.name + ' entfernen',
+          remove: () => this.withEd(s.person, { added: this.editsFor(s.person).added.filter((y) => y.id !== x.id) }) }))
+      })),
+      addPlanOpen: !!s.ap,
+      addPlanClosed: !s.ap,
+      openAddPlan: () => this.setState({ ap: { pos: s.day, act: 'laufen', name: '', min: 30 } }),
+      closeAddPlan: () => this.setState({ ap: null }),
+      apDays: this.weekdays.map((w, i) => ({ short: w, pressed: s.ap && s.ap.pos === i ? 'true' : 'false',
+        style: s.ap && s.ap.pos === i ? 'background:' + p.accent + ';color:' + '#FFFFFF' + ';' : 'background:#F3F1EC;color:#6F706D;border:1px solid #E6E3DC;',
+        pick: () => this.setState({ ap: { ...this.state.ap, pos: i } }) })),
+      apActs: this.actCatalog.map((a) => ({ name: a.name, pressed: s.ap && s.ap.act === a.id ? 'true' : 'false',
+        style: s.ap && s.ap.act === a.id ? 'background:' + p.accent + ';color:' + '#FFFFFF' + ';border-color:' + p.accent + ';' : 'background:#FFFFFF;color:#111111;',
+        pick: () => this.setState({ ap: { ...this.state.ap, act: a.id } }) })),
+      apIsOwn: !!s.ap && s.ap.act === 'eigenes',
+      apName: s.ap ? s.ap.name : '',
+      setApName: (e) => this.setState({ ap: { ...this.state.ap, name: e.target.value } }),
+      apMin: s.ap ? s.ap.min : 30,
+      apKcal: s.ap ? this.calcKcal(s.person, s.ap.act, s.ap.min, 'mittel') : 0,
+      apLess: () => this.setState({ ap: { ...this.state.ap, min: Math.max(5, this.state.ap.min - 5) } }),
+      apMore: () => this.setState({ ap: { ...this.state.ap, min: this.state.ap.min + 5 } }),
+      saveAddPlan: () => {
+        const ap = this.state.ap;
+        const act = this.actCatalog.find((x) => x.id === ap.act);
+        const name = ap.act === 'eigenes' ? ((ap.name || '').trim() || 'Eigene Einheit') : act.name;
+        const item = { id: Date.now(), pos: ap.pos, act: ap.act, name, minutes: ap.min, kcal: this.calcKcal(s.person, ap.act, ap.min, 'mittel') };
+        this.withEd(s.person, { added: [...this.editsFor(s.person).added, item] });
+        this.setState({ ap: null });
+      },
+      hasPlanned: plannedToday.length > 0,
+      planned: plannedToday.map((x) => {
+        const k = s.person + '-' + s.day + '-add-' + x.id;
+        const on = s.status[k] === 'done';
+        return { name: x.name, meta: x.minutes + ' Min · ' + (on ? '+ ' : 'ca. ') + x.kcal + ' kcal', pressed: on ? 'true' : 'false',
+          textStyle: on ? 'color:' + p.accentText + ';' : '',
+          style: on ? 'background:' + p.accent + ';color:' + '#FFFFFF' + ';' : 'background:#F3F1EC;color:#6F706D;border:1px solid #E6E3DC;',
+          toggle: () => setStatus(k, 'done') };
+      }),
+      pickCristian: () => { this.setState({ person: 'cristian', planEdit: false }); try { localStorage.setItem('vitaActivePerson', 'basti'); } catch (e) {} },
+      days: week.map((w, i) => ({
+        short: w.short,
+        aria: w.short + ': ' + w.title,
+        style: i === s.day ? ('background:' + p.accent + ';color:' + '#FFFFFF' + ';font-weight:600;') : 'background:none;color:#6F706D;',
+        dot: w.kind === 'rest' ? 'background:transparent;' : (i === s.day ? 'background:#FFFFFF;' : 'background:' + p.accent + ';'),
+        pick: () => this.setState({ day: i })
+      })),
+      kindLabel: kindLabels[d.kind] + (s.day === 2 ? ' · heute' : ''),
+      title: sessSwap ? sessSwap.name : d.title,
+      durationLabel: d.duration ? d.duration + ' Min' : 'frei',
+      planEdit: s.planEdit,
+      planEditExpanded: s.planEdit ? 'true' : 'false',
+      togglePlanEdit: () => this.setState({ planEdit: !this.state.planEdit }),
+      hasDuration: d.kind !== 'rest' || !!d.baseDuration,
+      editMinutes: d.duration || 0,
+      editKcalLine: 'ca. ' + d.kcal + ' kcal' + (d.baseDuration ? (' · Plan: ' + d.baseDuration + ' Min') : ''),
+      durLess: () => this.setDuration(s.person, s.day, (d.duration || 0) - 5),
+      durMore: () => this.setDuration(s.person, s.day, (d.duration || 0) + 5),
+      setDur: (e) => { const v = parseInt(e.target.value, 10); if (v > 0) this.setDuration(s.person, s.day, v); },
+      swapTargets: week.map((w, i) => ({ i, w })).filter((x) => x.i !== s.day).map((x) => ({
+        short: x.w.short,
+        sub: x.w.kind === 'rest' ? 'Pause' : (x.w.title.length > 12 ? x.w.title.slice(0, 11) + '…' : x.w.title),
+        aria: 'Mit ' + this.weekdayNames[x.i] + ' tauschen (' + x.w.title + ')',
+        pick: () => this.swapDays(s.person, s.day, x.i)
+      })),
+      swapHint: 'Tippe einen Tag an, um ' + this.weekdayNames[s.day] + ' mit ihm zu tauschen.',
+      isModified: d.durChanged || d.moved,
+      modifiedLine: [d.durChanged ? ('Dauer angepasst: ' + d.duration + ' statt ' + d.baseDuration + ' Min') : '', d.moved ? ('Verschoben von ' + this.weekdayNames[d.origIdx]) : ''].filter(Boolean).join(' · '),
+      hasEdits: week.some((w) => w.durChanged || w.moved),
+      resetPlan: () => this.resetPlan(s.person),
+      accentChip: 'background:' + p.accentBg + ';color:' + p.accentText + ';',
+      why: d.why,
+      hasBurn: planKcal + extraKcal > 0,
+      burnLine: 'Erledigt: ' + (doneKcal + extraKcal) + ' von ca. ' + (planKcal + extraKcal) + ' kcal',
+      extraTotal: extraKcal > 0 ? ('+ ' + extraKcal + ' kcal') : '',
+      extraList: extras.map((x) => ({ name: x.name, meta: x.minutes + ' Min · ' + x.intensity, kcal: '+ ' + x.kcal + ' kcal', aria: x.name + ' entfernen', remove: () => this.removeExtra(s.person, s.day, x.id) })),
+      noExtras: extras.length === 0 && !s.addOpen,
+      addOpen: s.addOpen,
+      addClosed: !s.addOpen,
+      openAdd: () => this.setState({ addOpen: true }),
+      saveExtra: () => this.addExtra(s.person, s.day),
+      ...this.formVals(s.person, p.accent),
+      hasExercises: d.exercises.length > 0,
+      exerciseHeading: 'Deine Übungen',
+      doneCount: doneN + ' von ' + d.exercises.length + ' erledigt',
+      exercises: d.exercises.map((e, i) => {
+        const k = key(i);
+        const sw = s.swaps[k];
+        const st = s.status[k];
+        const edit = this.getExEdit(s.person, s.day, i);
+        const hasKg = e.weighted || !!(e.kg || edit.kg);
+        const curKg = edit.kg !== undefined ? edit.kg : (e.kg || '');
+        const curReps = edit.reps !== undefined ? edit.reps : e.reps;
+        return {
+          name: sw ? sw.name : e.name,
+          device: sw ? sw.device : e.device,
+          emoji: this.exEmoji(sw ? sw.name : e.name),
+          volume: this.fmtVolume(e, edit),
+          hasKg: hasKg,
+          kgVal: curKg || '–',
+          repsVal: curReps,
+          setsVal: e.sets,
+          lessKg: () => { const v = parseFloat(curKg) || 0; this.setExEdit(s.person, s.day, i, { kg: String(Math.max(0, v - 2.5)) }); },
+          moreKg: () => { const v = parseFloat(curKg) || 0; this.setExEdit(s.person, s.day, i, { kg: String(v + 2.5) }); },
+          lessReps: () => { const v = parseInt(curReps, 10) || 0; if (v > 1) this.setExEdit(s.person, s.day, i, { reps: String(v - 1) }); },
+          moreReps: () => { const v = parseInt(curReps, 10) || 0; this.setExEdit(s.person, s.day, i, { reps: String(v + 1) }); },
+          ...this.progFor(e, i, curKg, curReps, s),
+          kcalLabel: st === 'done' ? ('+ ' + perEx + ' kcal') : ('ca. ' + perEx + ' kcal'),
+          kcalStyle: st === 'done' ? ('background:' + p.accentBg + ';color:' + p.accentText + ';') : (st === 'skip' ? 'background:#F3F1EC;color:#8C8C86;text-decoration:line-through;' : 'background:#F3F1EC;color:#6F706D;'),
+          swapTag: sw ? 'getauscht' : '',
+          swapTagStyle: sw ? '' : 'display:none;',
+          textStyle: st === 'skip' ? 'color:#8C8C86;text-decoration:line-through;' : (st === 'done' ? 'color:' + p.accentText + ';' : ''),
+          ...actionsFor(k, this.alts[e.name] || this.fallbackAlts, 'z.B. Kniebeugen ohne Gewicht', false)
+        };
+      }),
+      hasSession: d.exercises.length === 0,
+      session: d.exercises.length === 0 ? [{
+        swapped: !!sessSwap,
+        swapName: sessSwap ? sessSwap.name : '',
+        ...actionsFor(sessKey, this.sessionAlts[d.kind === 'rest' ? 'rest' : 'sport'], 'z.B. 40 Min Schwimmen', true)
+      }] : [],
+      sessionSkipped: d.exercises.length === 0 && s.status[sessKey] === 'skip',
+      draftOwn: s.draftOwn,
+      setDraftOwn: (e) => this.setState({ draftOwn: e.target.value }),
+      closeSwap: () => this.setState({ swapOpen: null }),
+      hasExtra: !!d.extra,
+      extraTitle: d.extra ? d.extra.title : '',
+      extraWhy: d.extra ? d.extra.why : '',
+      extraExercises: d.extra ? d.extra.exercises.map((x, xi) => {
+        const xk = s.person + '-' + s.day + '-extra-' + xi;
+        const xst = s.extraStatus[xk];
+        const isDone = xst === 'done';
+        const isDismissed = xst === 'dismiss';
+        return {
+          name: x.name, volume: x.volume,
+          visible: !isDismissed,
+          isDone: isDone,
+          checkStyle: isDone ? 'background:#1F4D3A;border:2px solid #1F4D3A;' : 'background:#FFFFFF;border:2px solid #C9C6BE;',
+          textStyle: isDone ? 'text-decoration:line-through;color:#8C8C86;' : '',
+          rowStyle: isDone ? 'opacity:.7;' : '',
+          toggleDone: () => { const es = { ...this.state.extraStatus, [xk]: this.state.extraStatus[xk] === 'done' ? null : 'done' }; this.setState({ extraStatus: es }); },
+          dismiss: () => { const es = { ...this.state.extraStatus, [xk]: 'dismiss' }; this.setState({ extraStatus: es }); }
+        };
+      }) : [],
+      extraDoneCount: d.extra ? d.extra.exercises.filter((x, xi) => s.extraStatus[s.person + '-' + s.day + '-extra-' + xi] === 'done').length > 0 : false,
+      extraDoneLabel: d.extra ? (() => { const total = d.extra.exercises.filter((x, xi) => s.extraStatus[s.person + '-' + s.day + '-extra-' + xi] !== 'dismiss').length; const done = d.extra.exercises.filter((x, xi) => s.extraStatus[s.person + '-' + s.day + '-extra-' + xi] === 'done').length; return done + ' von ' + total + ' erledigt'; })() : '',
+      isRest: d.kind === 'rest'
+    };
+  }
+}
+</script>
+</body>
+</html>

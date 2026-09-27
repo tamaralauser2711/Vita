@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Essensplan</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  body{margin:0;background:#F3F1EC;font-family:'Inter',sans-serif;color:#111111}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Geist:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+</helmet>
+<div style="position:relative;width:390px;height:844px;box-sizing:border-box;background:#F3F1EC;display:flex;flex-direction:column;overflow:hidden;">
+  <div id="vita-scroll-essensplan" style="flex:1 1 auto;overflow-y:auto;padding:32px 20px 32px;display:flex;flex-direction:column;gap:32px;">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;">
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        <h1 style="margin:0;font-family:'DM Serif Display',Georgia,serif;font-size:32px;font-weight:400;letter-spacing:-0.01em;">Essensplan</h1>
+        <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Für Tami &amp; Cristian · gemeinsame Basis, individuell angepasste Portionen</p>
+      </div>
+      <button type="button" onClick="{{openPersonSheet}}" aria-label="{{switchAria}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:40px;height:40px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-family:'Geist',sans-serif;font-size:15px;font-weight:700;{{avatarStyle}}">{{avatarInitial}}</button>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;margin-top:-16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <span style="display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-size:12px;color:#1F4D3A;background:#E3EEE6;padding:6px 12px;border-radius:999px;">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>
+          Neuer Plan jeden Sonntag
+        </span>
+        <button type="button" onClick="{{togglePrefs}}" aria-expanded="{{prefsExpanded}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;background:#FFFFFF;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg>
+          Vorlieben
+        </button>
+      </div>
+      <sc-if value="{{prefsOpen}}" hint-placeholder-val="{{false}}">
+        <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px;">
+          <span style="font-family:'DM Serif Display',Georgia,serif;font-size:18px;font-weight:400;letter-spacing:-0.01em;">Deine Vorlieben</span>
+          <sc-for list="{{prefRows}}" as="r" hint-placeholder-count="4">
+            <div style="display:flex;justify-content:space-between;gap:16px;padding-top:8px;border-top:1px solid #EDEAE3;">
+              <span style="font-family:'Inter',sans-serif;font-size:13px;color:#6F706D;flex:0 0 auto;">{{r.k}}</span>
+              <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;text-align:right;line-height:1.45;">{{r.v}}</span>
+            </div>
+          </sc-for>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;line-height:1.45;padding-top:8px;border-top:1px solid #EDEAE3;">Änderungen gelten ab dem nächsten Plan am Sonntag.</span>
+          <sc-if value="{{replanned}}" hint-placeholder-val="{{false}}">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;">Die restliche Woche wird mit deinen Vorlieben neu geplant.</span>
+          </sc-if>
+          <div style="display:flex;gap:8px;">
+            <a href="Onboarding4.dc.html" onClick="{{editPrefs}}" style="flex:1;text-align:center;text-decoration:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#FFFFFF;background:#1F4D3A;padding:12px;border-radius:999px;">Bearbeiten</a>
+            <button type="button" onClick="{{replan}}" style="all:unset;box-sizing:border-box;cursor:pointer;flex:1;text-align:center;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#1F4D3A;background:#E3EEE6;padding:12px;border-radius:999px;">Restliche Woche neu planen</button>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="display:flex;gap:8px;">
+      <button type="button" onClick="{{pickDay0}}" style="flex:1;text-align:center;padding:8px 0;border-radius:16px;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;{{day0Style}}">Mo</button>
+      <button type="button" onClick="{{pickDay1}}" style="flex:1;text-align:center;padding:8px 0;border-radius:16px;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;{{day1Style}}">Di</button>
+      <button type="button" onClick="{{pickDay2}}" style="flex:1;text-align:center;padding:8px 0;border-radius:16px;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;{{day2Style}}">Mi</button>
+      <button type="button" onClick="{{pickDay3}}" style="flex:1;text-align:center;padding:8px 0;border-radius:16px;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;{{day3Style}}">Do</button>
+      <button type="button" onClick="{{pickDay4}}" style="flex:1;text-align:center;padding:8px 0;border-radius:16px;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;{{day4Style}}">Fr</button>
+      <button type="button" onClick="{{pickDay5}}" style="flex:1;text-align:center;padding:8px 0;border-radius:16px;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;{{day5Style}}">Sa</button>
+      <button type="button" onClick="{{pickDay6}}" style="flex:1;text-align:center;padding:8px 0;border-radius:16px;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;{{day6Style}}">So</button>
+    </div>
+
+    <sc-if value="{{noFoodPlan}}" hint-placeholder-val="{{false}}">
+      <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px;">
+        <span style="width:48px;height:48px;border-radius:16px;background:#E3EEE6;color:#1F4D3A;display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3v8M4.5 3v5a2.5 2.5 0 0 0 5 0V3M7 11v10"></path><path d="M17 21V3c-2 1-3.5 3.5-3.5 7h3.5"></path></svg>
+        </span>
+        <span style="font-family:'DM Serif Display',Georgia,serif;font-size:22px;font-weight:400;letter-spacing:-0.01em;line-height:1.2;">Du isst ohne Ernährungsplan</span>
+        <span style="font-family:'Inter',sans-serif;font-size:13px;line-height:1.5;color:#6F706D;">Du trägst selbst ein, was du isst, dein Kalorienziel bleibt. Wenn ihr zusammen esst, kannst du das Gericht aus {{otherName}}s Plan ansehen und mit einem Tipp eintragen.</span>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button type="button" onClick="{{enableFoodPlan}}" style="all:unset;box-sizing:border-box;cursor:pointer;text-align:center;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;color:#FFFFFF;background:#1F4D3A;padding:14px;border-radius:999px;">Ernährungsplan aktivieren</button>
+          <button type="button" onClick="{{viewOtherPlan}}" style="all:unset;box-sizing:border-box;cursor:pointer;text-align:center;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;color:#1F4D3A;background:#E3EEE6;padding:14px;border-radius:999px;">Plan von {{otherName}} ansehen</button>
+          <a href="Mahlzeiten.dc.html" style="text-align:center;text-decoration:none;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;color:#1F4D3A;padding:12px;">Essen eintragen</a>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{hasFoodPlan}}" hint-placeholder-val="{{true}}">
+    <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:8px;">
+      <div role="img" aria-label="{{breakfastName}}" style="height:112px;border-radius:16px;background:#F1EADF;display:flex;align-items:center;justify-content:center;font-size:56px;line-height:1;margin-bottom:8px;">{{breakfastEmoji}}</div>
+      <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;">{{breakfastLabel}}</span>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <button type="button" onClick="{{open_breakfast}}" style="all:unset;cursor:pointer;text-align:left;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;{{breakfastNameStyle}}">{{breakfastName}}</button>
+        <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;white-space:nowrap;">{{breakfastKcal}}</span>
+      </div>
+      <span style="align-self:flex-start;font-family:'Inter',sans-serif;font-size:12px;color:#1F4D3A;background:#E3EEE6;padding:4px 12px;border-radius:999px;">{{breakfastTag}}</span>
+      <sc-for list="{{breakfastExtras}}" as="xl" hint-placeholder-count="1">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;border-radius:10px;padding:12px 12px;{{xl.bg}}">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.4;">{{xl.text}}</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;white-space:nowrap;{{xl.color}}">{{xl.kcal}}</span>
+        </div>
+      </sc-for>
+      <sc-for list="{{breakfastAct}}" as="m" hint-placeholder-count="1">
+        <div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid #EDEAE3;padding-top:10px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.4;color:#111111;">{{m.macroLine}}</span>
+            <sc-if value="{{m.hasRecipe}}" hint-placeholder-val="{{true}}">
+              <button type="button" onClick="{{m.openRecipe}}" style="all:unset;box-sizing:border-box;cursor:pointer;flex:0 0 auto;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;background:#E3EEE6;color:#1F4D3A;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"></path><path d="M9 9h6M9 13h6"></path></svg>Rezept</button>
+            </sc-if>
+          </div>
+          <span style="display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;"><span style="width:8px;height:8px;border-radius:50%;{{m.otherDot}}"></span>{{m.otherLine}}</span>
+          <sc-if value="{{m.swapped}}" hint-placeholder-val="{{false}}">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;color:#3B4FC4;">Getauscht. Ursprünglich: {{m.original}}</span>
+          </sc-if>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" onClick="{{m.markDone}}" aria-pressed="{{m.donePressed}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{m.doneStyle}}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>Gegessen</button>
+            <button type="button" onClick="{{m.markSkip}}" aria-pressed="{{m.skipPressed}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{m.skipStyle}}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>Nicht gegessen</button>
+            <button type="button" onClick="{{m.openSwap}}" aria-expanded="{{m.swapExpanded}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{m.swapStyle}}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13l-3-3M20 16H7l3 3"></path></svg>Tauschen</button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;border-top:1px solid #EDEAE3;padding-top:12px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button type="button" onClick="{{m.rateUp}}" aria-pressed="{{m.upPressed}}" aria-label="Hat geschmeckt" style="all:unset;box-sizing:border-box;cursor:pointer;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;{{m.upStyle}}"><svg viewBox="0 0 24 24" width="18" height="18" fill="{{m.upFill}}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"></path></svg></button>
+            <button type="button" onClick="{{m.rateDown}}" aria-pressed="{{m.downPressed}}" aria-label="Hat nicht geschmeckt" style="all:unset;box-sizing:border-box;cursor:pointer;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;{{m.downStyle}}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3v11M21 5v7a2 2 0 0 1-2 2h-2l-4 7a2.5 2.5 0 0 1-2.4-3.1L11.5 14H6a2 2 0 0 1-2-2.3l1.2-7A2 2 0 0 1 7.2 3H17"></path></svg></button>
+            <span style="flex:1;font-family:'Inter',sans-serif;font-size:13px;line-height:1.4;color:#6F706D;">{{m.rateNote}}</span>
+          </div>
+          <sc-if value="{{m.canAway}}" hint-placeholder-val="{{true}}">
+            <button type="button" onClick="{{m.toggleAway}}" aria-pressed="{{m.awayPressed}}" style="all:unset;box-sizing:border-box;cursor:pointer;align-self:flex-start;display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;{{m.awayStyle}}"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Ich esse auswärts</button>
+          </sc-if>
+          </div>
+          <sc-if value="{{m.away}}" hint-placeholder-val="{{false}}">
+            <div style="display:flex;flex-direction:column;gap:8px;background:#F3F1EC;border-radius:16px;padding:12px 16px;">
+              <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#111111;">{{m.awayText}}</span>
+              <a href="Mahlzeiten.dc.html" onClick="{{m.editMeal}}" style="align-self:flex-start;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;padding:4px 0;">Was du gegessen hast, eintragen</a>
+            </div>
+          </sc-if>
+          <sc-if value="{{m.countedToday}}" hint-placeholder-val="{{false}}">
+            <div style="display:flex;align-items:center;gap:8px;background:#E3EEE6;border-radius:16px;padding:8px 10px 8px 12px;">
+              <span style="flex:1;display:flex;flex-direction:column;gap:1px;font-family:'Inter',sans-serif;font-size:12px;line-height:1.35;color:#1F4D3A;"><span>Als gegessen gezählt</span><span style="font-size:12px;">{{m.countedMacro}}</span></span>
+              <input type="number" min="0" aria-label="{{m.countedLabel}}" value="{{m.countedKcal}}" onInput="{{m.setCountedKcal}}" onKeyDown="{{blockMinus}}" style="width:64px;box-sizing:border-box;padding:8px 8px;border-radius:10px;border:1px solid #C9C6BE;background:#FFFFFF;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;text-align:right;">
+              <span style="font-family:'Inter',sans-serif;font-size:12px;color:#1F4D3A;">{{m.countedUnit}}</span>
+              <a href="Mahlzeiten.dc.html" onClick="{{m.editMeal}}" style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;text-decoration:underline;padding:8px 2px;">Bearbeiten</a>
+            </div>
+          </sc-if>
+          <sc-if value="{{m.countedLater}}" hint-placeholder-val="{{false}}">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Wird an diesem Tag automatisch in deine Bilanz übernommen.</span>
+          </sc-if>
+          <sc-if value="{{m.skipped}}" hint-placeholder-val="{{false}}">
+            <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#6F706D;">Alles gut. Wenn du etwas anderes gegessen hast, tausch es einfach, dann stimmt deine Tagesbilanz.</p>
+          </sc-if>
+          <sc-if value="{{m.swapOpen}}" hint-placeholder-val="{{false}}">
+            <div style="background:#F3F1EC;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;">
+              <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;">Passt auch in euren Plan</span>
+              <sc-for list="{{m.alts}}" as="a" hint-placeholder-count="3">
+                <button type="button" onClick="{{a.pick}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;background:#FFFFFF;border:1px solid #E6E3DC;border-radius:10px;padding:12px 12px;">
+                  <span style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">{{a.name}}</span><span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{a.sub}}</span></span>
+                  <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;">Wählen</span>
+                </button>
+              </sc-for>
+              <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;margin-top:4px;">Oder etwas Eigenes</span>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <input type="text" aria-label="Eigenes Gericht" placeholder="Gericht, z.B. Döner" value="{{draftOwn}}" onInput="{{setDraftOwn}}" style="flex:1;min-width:0;box-sizing:border-box;padding:12px 12px;border-radius:10px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+                <input type="number" min="0" aria-label="Kalorien" placeholder="kcal" value="{{draftKcal}}" onInput="{{setDraftKcal}}" onKeyDown="{{blockMinus}}" style="width:64px;box-sizing:border-box;padding:12px 8px;border-radius:10px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <button type="button" onClick="{{closeSwap}}" style="all:unset;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;padding:6px 0;">Abbrechen</button>
+                <button type="button" onClick="{{m.useOwn}}" style="all:unset;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#FFFFFF;background:#1F4D3A;padding:12px 16px;border-radius:999px;">Übernehmen</button>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px;">
+      <div role="img" aria-label="{{lunchName}}" style="height:112px;border-radius:16px;background:#E3EEE6;display:flex;align-items:center;justify-content:center;font-size:56px;line-height:1;margin-bottom:8px;">{{lunchEmoji}}</div>
+      <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;">{{lunchLabel}}</span>
+      <button type="button" onClick="{{open_lunch}}" style="all:unset;cursor:pointer;text-align:left;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;{{lunchNameStyle}}">{{lunchName}}</button>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:2px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;background:#F3F1EC;border-radius:10px;padding:12px 12px;">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;">Tami · {{lunchTamiDesc}}</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;white-space:nowrap;">{{lunchTamiKcal}}</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:#F3F1EC;border-radius:10px;padding:12px 12px;">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;">Cristian · {{lunchCristianDesc}}</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;white-space:nowrap;">{{lunchCristianKcal}}</span>
+        </div>
+      </div>
+      <sc-for list="{{lunchAct}}" as="m" hint-placeholder-count="1">
+        <div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid #EDEAE3;padding-top:10px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.4;color:#111111;">{{m.macroLine}}</span>
+            <sc-if value="{{m.hasRecipe}}" hint-placeholder-val="{{true}}">
+              <button type="button" onClick="{{m.openRecipe}}" style="all:unset;box-sizing:border-box;cursor:pointer;flex:0 0 auto;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;background:#E3EEE6;color:#1F4D3A;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"></path><path d="M9 9h6M9 13h6"></path></svg>Rezept</button>
+            </sc-if>
+          </div>
+          <span style="display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;"><span style="width:8px;height:8px;border-radius:50%;{{m.otherDot}}"></span>{{m.otherLine}}</span>
+          <sc-if value="{{m.swapped}}" hint-placeholder-val="{{false}}">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;color:#3B4FC4;">Getauscht. Ursprünglich: {{m.original}}</span>
+          </sc-if>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" onClick="{{m.markDone}}" aria-pressed="{{m.donePressed}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{m.doneStyle}}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>Gegessen</button>
+            <button type="button" onClick="{{m.markSkip}}" aria-pressed="{{m.skipPressed}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{m.skipStyle}}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>Nicht gegessen</button>
+            <button type="button" onClick="{{m.openSwap}}" aria-expanded="{{m.swapExpanded}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{m.swapStyle}}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13l-3-3M20 16H7l3 3"></path></svg>Tauschen</button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;border-top:1px solid #EDEAE3;padding-top:12px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button type="button" onClick="{{m.rateUp}}" aria-pressed="{{m.upPressed}}" aria-label="Hat geschmeckt" style="all:unset;box-sizing:border-box;cursor:pointer;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;{{m.upStyle}}"><svg viewBox="0 0 24 24" width="18" height="18" fill="{{m.upFill}}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"></path></svg></button>
+            <button type="button" onClick="{{m.rateDown}}" aria-pressed="{{m.downPressed}}" aria-label="Hat nicht geschmeckt" style="all:unset;box-sizing:border-box;cursor:pointer;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;{{m.downStyle}}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3v11M21 5v7a2 2 0 0 1-2 2h-2l-4 7a2.5 2.5 0 0 1-2.4-3.1L11.5 14H6a2 2 0 0 1-2-2.3l1.2-7A2 2 0 0 1 7.2 3H17"></path></svg></button>
+            <span style="flex:1;font-family:'Inter',sans-serif;font-size:13px;line-height:1.4;color:#6F706D;">{{m.rateNote}}</span>
+          </div>
+          <sc-if value="{{m.canAway}}" hint-placeholder-val="{{true}}">
+            <button type="button" onClick="{{m.toggleAway}}" aria-pressed="{{m.awayPressed}}" style="all:unset;box-sizing:border-box;cursor:pointer;align-self:flex-start;display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;{{m.awayStyle}}"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Ich esse auswärts</button>
+          </sc-if>
+          </div>
+          <sc-if value="{{m.away}}" hint-placeholder-val="{{false}}">
+            <div style="display:flex;flex-direction:column;gap:8px;background:#F3F1EC;border-radius:16px;padding:12px 16px;">
+              <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#111111;">{{m.awayText}}</span>
+              <a href="Mahlzeiten.dc.html" onClick="{{m.editMeal}}" style="align-self:flex-start;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;padding:4px 0;">Was du gegessen hast, eintragen</a>
+            </div>
+          </sc-if>
+          <sc-if value="{{m.countedToday}}" hint-placeholder-val="{{false}}">
+            <div style="display:flex;align-items:center;gap:8px;background:#E3EEE6;border-radius:16px;padding:8px 10px 8px 12px;">
+              <span style="flex:1;display:flex;flex-direction:column;gap:1px;font-family:'Inter',sans-serif;font-size:12px;line-height:1.35;color:#1F4D3A;"><span>Als gegessen gezählt</span><span style="font-size:12px;">{{m.countedMacro}}</span></span>
+              <input type="number" min="0" aria-label="{{m.countedLabel}}" value="{{m.countedKcal}}" onInput="{{m.setCountedKcal}}" onKeyDown="{{blockMinus}}" style="width:64px;box-sizing:border-box;padding:8px 8px;border-radius:10px;border:1px solid #C9C6BE;background:#FFFFFF;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;text-align:right;">
+              <span style="font-family:'Inter',sans-serif;font-size:12px;color:#1F4D3A;">{{m.countedUnit}}</span>
+              <a href="Mahlzeiten.dc.html" onClick="{{m.editMeal}}" style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;text-decoration:underline;padding:8px 2px;">Bearbeiten</a>
+            </div>
+          </sc-if>
+          <sc-if value="{{m.countedLater}}" hint-placeholder-val="{{false}}">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Wird an diesem Tag automatisch in deine Bilanz übernommen.</span>
+          </sc-if>
+          <sc-if value="{{m.skipped}}" hint-placeholder-val="{{false}}">
+            <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#6F706D;">Alles gut. Wenn du etwas anderes gegessen hast, tausch es einfach, dann stimmt deine Tagesbilanz.</p>
+          </sc-if>
+          <sc-if value="{{m.swapOpen}}" hint-placeholder-val="{{false}}">
+            <div style="background:#F3F1EC;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;">
+              <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;">Passt auch in euren Plan</span>
+              <sc-for list="{{m.alts}}" as="a" hint-placeholder-count="3">
+                <button type="button" onClick="{{a.pick}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;background:#FFFFFF;border:1px solid #E6E3DC;border-radius:10px;padding:12px 12px;">
+                  <span style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">{{a.name}}</span><span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{a.sub}}</span></span>
+                  <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;">Wählen</span>
+                </button>
+              </sc-for>
+              <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;margin-top:4px;">Oder etwas Eigenes</span>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <input type="text" aria-label="Eigenes Gericht" placeholder="Gericht, z.B. Döner" value="{{draftOwn}}" onInput="{{setDraftOwn}}" style="flex:1;min-width:0;box-sizing:border-box;padding:12px 12px;border-radius:10px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+                <input type="number" min="0" aria-label="Kalorien" placeholder="kcal" value="{{draftKcal}}" onInput="{{setDraftKcal}}" onKeyDown="{{blockMinus}}" style="width:64px;box-sizing:border-box;padding:12px 8px;border-radius:10px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <button type="button" onClick="{{closeSwap}}" style="all:unset;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;padding:6px 0;">Abbrechen</button>
+                <button type="button" onClick="{{m.useOwn}}" style="all:unset;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#FFFFFF;background:#1F4D3A;padding:12px 16px;border-radius:999px;">Übernehmen</button>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:8px;">
+      <div role="img" aria-label="{{dinnerName}}" style="height:112px;border-radius:16px;background:#EDEAE3;display:flex;align-items:center;justify-content:center;font-size:56px;line-height:1;margin-bottom:8px;">{{dinnerEmoji}}</div>
+      <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;">{{dinnerLabel}}</span>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <button type="button" onClick="{{open_dinner}}" style="all:unset;cursor:pointer;text-align:left;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;{{dinnerNameStyle}}">{{dinnerName}}</button>
+        <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;white-space:nowrap;">{{dinnerKcal}}</span>
+      </div>
+      <span style="align-self:flex-start;font-family:'Inter',sans-serif;font-size:12px;color:#1F4D3A;background:#E3EEE6;padding:4px 12px;border-radius:999px;">{{dinnerTag}}</span>
+      <sc-for list="{{dinnerExtras}}" as="xl" hint-placeholder-count="1">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;border-radius:10px;padding:12px 12px;{{xl.bg}}">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.4;">{{xl.text}}</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;white-space:nowrap;{{xl.color}}">{{xl.kcal}}</span>
+        </div>
+      </sc-for>
+      <sc-for list="{{dinnerAct}}" as="m" hint-placeholder-count="1">
+        <div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid #EDEAE3;padding-top:10px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.4;color:#111111;">{{m.macroLine}}</span>
+            <sc-if value="{{m.hasRecipe}}" hint-placeholder-val="{{true}}">
+              <button type="button" onClick="{{m.openRecipe}}" style="all:unset;box-sizing:border-box;cursor:pointer;flex:0 0 auto;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;background:#E3EEE6;color:#1F4D3A;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"></path><path d="M9 9h6M9 13h6"></path></svg>Rezept</button>
+            </sc-if>
+          </div>
+          <span style="display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;"><span style="width:8px;height:8px;border-radius:50%;{{m.otherDot}}"></span>{{m.otherLine}}</span>
+          <sc-if value="{{m.swapped}}" hint-placeholder-val="{{false}}">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;color:#3B4FC4;">Getauscht. Ursprünglich: {{m.original}}</span>
+          </sc-if>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" onClick="{{m.markDone}}" aria-pressed="{{m.donePressed}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{m.doneStyle}}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>Gegessen</button>
+            <button type="button" onClick="{{m.markSkip}}" aria-pressed="{{m.skipPressed}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{m.skipStyle}}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>Nicht gegessen</button>
+            <button type="button" onClick="{{m.openSwap}}" aria-expanded="{{m.swapExpanded}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{m.swapStyle}}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13l-3-3M20 16H7l3 3"></path></svg>Tauschen</button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;border-top:1px solid #EDEAE3;padding-top:12px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button type="button" onClick="{{m.rateUp}}" aria-pressed="{{m.upPressed}}" aria-label="Hat geschmeckt" style="all:unset;box-sizing:border-box;cursor:pointer;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;{{m.upStyle}}"><svg viewBox="0 0 24 24" width="18" height="18" fill="{{m.upFill}}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"></path></svg></button>
+            <button type="button" onClick="{{m.rateDown}}" aria-pressed="{{m.downPressed}}" aria-label="Hat nicht geschmeckt" style="all:unset;box-sizing:border-box;cursor:pointer;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;{{m.downStyle}}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3v11M21 5v7a2 2 0 0 1-2 2h-2l-4 7a2.5 2.5 0 0 1-2.4-3.1L11.5 14H6a2 2 0 0 1-2-2.3l1.2-7A2 2 0 0 1 7.2 3H17"></path></svg></button>
+            <span style="flex:1;font-family:'Inter',sans-serif;font-size:13px;line-height:1.4;color:#6F706D;">{{m.rateNote}}</span>
+          </div>
+          <sc-if value="{{m.canAway}}" hint-placeholder-val="{{true}}">
+            <button type="button" onClick="{{m.toggleAway}}" aria-pressed="{{m.awayPressed}}" style="all:unset;box-sizing:border-box;cursor:pointer;align-self:flex-start;display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;{{m.awayStyle}}"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Ich esse auswärts</button>
+          </sc-if>
+          </div>
+          <sc-if value="{{m.away}}" hint-placeholder-val="{{false}}">
+            <div style="display:flex;flex-direction:column;gap:8px;background:#F3F1EC;border-radius:16px;padding:12px 16px;">
+              <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#111111;">{{m.awayText}}</span>
+              <a href="Mahlzeiten.dc.html" onClick="{{m.editMeal}}" style="align-self:flex-start;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;padding:4px 0;">Was du gegessen hast, eintragen</a>
+            </div>
+          </sc-if>
+          <sc-if value="{{m.countedToday}}" hint-placeholder-val="{{false}}">
+            <div style="display:flex;align-items:center;gap:8px;background:#E3EEE6;border-radius:16px;padding:8px 10px 8px 12px;">
+              <span style="flex:1;display:flex;flex-direction:column;gap:1px;font-family:'Inter',sans-serif;font-size:12px;line-height:1.35;color:#1F4D3A;"><span>Als gegessen gezählt</span><span style="font-size:12px;">{{m.countedMacro}}</span></span>
+              <input type="number" min="0" aria-label="{{m.countedLabel}}" value="{{m.countedKcal}}" onInput="{{m.setCountedKcal}}" onKeyDown="{{blockMinus}}" style="width:64px;box-sizing:border-box;padding:8px 8px;border-radius:10px;border:1px solid #C9C6BE;background:#FFFFFF;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;text-align:right;">
+              <span style="font-family:'Inter',sans-serif;font-size:12px;color:#1F4D3A;">{{m.countedUnit}}</span>
+              <a href="Mahlzeiten.dc.html" onClick="{{m.editMeal}}" style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;text-decoration:underline;padding:8px 2px;">Bearbeiten</a>
+            </div>
+          </sc-if>
+          <sc-if value="{{m.countedLater}}" hint-placeholder-val="{{false}}">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Wird an diesem Tag automatisch in deine Bilanz übernommen.</span>
+          </sc-if>
+          <sc-if value="{{m.skipped}}" hint-placeholder-val="{{false}}">
+            <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#6F706D;">Alles gut. Wenn du etwas anderes gegessen hast, tausch es einfach, dann stimmt deine Tagesbilanz.</p>
+          </sc-if>
+          <sc-if value="{{m.swapOpen}}" hint-placeholder-val="{{false}}">
+            <div style="background:#F3F1EC;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;">
+              <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;">Passt auch in euren Plan</span>
+              <sc-for list="{{m.alts}}" as="a" hint-placeholder-count="3">
+                <button type="button" onClick="{{a.pick}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;background:#FFFFFF;border:1px solid #E6E3DC;border-radius:10px;padding:12px 12px;">
+                  <span style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">{{a.name}}</span><span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{a.sub}}</span></span>
+                  <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;">Wählen</span>
+                </button>
+              </sc-for>
+              <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;margin-top:4px;">Oder etwas Eigenes</span>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <input type="text" aria-label="Eigenes Gericht" placeholder="Gericht, z.B. Döner" value="{{draftOwn}}" onInput="{{setDraftOwn}}" style="flex:1;min-width:0;box-sizing:border-box;padding:12px 12px;border-radius:10px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+                <input type="number" min="0" aria-label="Kalorien" placeholder="kcal" value="{{draftKcal}}" onInput="{{setDraftKcal}}" onKeyDown="{{blockMinus}}" style="width:64px;box-sizing:border-box;padding:12px 8px;border-radius:10px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <button type="button" onClick="{{closeSwap}}" style="all:unset;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;padding:6px 0;">Abbrechen</button>
+                <button type="button" onClick="{{m.useOwn}}" style="all:unset;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#FFFFFF;background:#1F4D3A;padding:12px 16px;border-radius:999px;">Übernehmen</button>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:8px;">
+      <div role="img" aria-label="{{snackName}}" style="height:112px;border-radius:16px;background:#F5EDE0;display:flex;align-items:center;justify-content:center;font-size:56px;line-height:1;margin-bottom:8px;">{{snackEmoji}}</div>
+      <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;">{{snackForLine}}</span>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <button type="button" onClick="{{open_snack}}" style="all:unset;cursor:pointer;text-align:left;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;{{snackNameStyle}}">{{snackName}}</button>
+        <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;white-space:nowrap;">{{snackKcal}}</span>
+      </div>
+      <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{snackOtherLine}}</span>
+      <sc-for list="{{snackAct}}" as="m" hint-placeholder-count="1">
+        <div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid #EDEAE3;padding-top:10px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.4;color:#111111;">{{m.macroLine}}</span>
+            <sc-if value="{{m.hasRecipe}}" hint-placeholder-val="{{true}}">
+              <button type="button" onClick="{{m.openRecipe}}" style="all:unset;box-sizing:border-box;cursor:pointer;flex:0 0 auto;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;background:#E3EEE6;color:#1F4D3A;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"></path><path d="M9 9h6M9 13h6"></path></svg>Rezept</button>
+            </sc-if>
+          </div>
+          <span style="display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;"><span style="width:8px;height:8px;border-radius:50%;{{m.otherDot}}"></span>{{m.otherLine}}</span>
+          <sc-if value="{{m.swapped}}" hint-placeholder-val="{{false}}">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;color:#3B4FC4;">Getauscht. Ursprünglich: {{m.original}}</span>
+          </sc-if>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" onClick="{{m.markDone}}" aria-pressed="{{m.donePressed}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{m.doneStyle}}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>Gegessen</button>
+            <button type="button" onClick="{{m.markSkip}}" aria-pressed="{{m.skipPressed}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{m.skipStyle}}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>Nicht gegessen</button>
+            <button type="button" onClick="{{m.openSwap}}" aria-expanded="{{m.swapExpanded}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:8px 12px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{m.swapStyle}}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13l-3-3M20 16H7l3 3"></path></svg>Tauschen</button>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;border-top:1px solid #EDEAE3;padding-top:12px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button type="button" onClick="{{m.rateUp}}" aria-pressed="{{m.upPressed}}" aria-label="Hat geschmeckt" style="all:unset;box-sizing:border-box;cursor:pointer;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;{{m.upStyle}}"><svg viewBox="0 0 24 24" width="18" height="18" fill="{{m.upFill}}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"></path></svg></button>
+            <button type="button" onClick="{{m.rateDown}}" aria-pressed="{{m.downPressed}}" aria-label="Hat nicht geschmeckt" style="all:unset;box-sizing:border-box;cursor:pointer;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;{{m.downStyle}}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3v11M21 5v7a2 2 0 0 1-2 2h-2l-4 7a2.5 2.5 0 0 1-2.4-3.1L11.5 14H6a2 2 0 0 1-2-2.3l1.2-7A2 2 0 0 1 7.2 3H17"></path></svg></button>
+            <span style="flex:1;font-family:'Inter',sans-serif;font-size:13px;line-height:1.4;color:#6F706D;">{{m.rateNote}}</span>
+          </div>
+          <sc-if value="{{m.canAway}}" hint-placeholder-val="{{true}}">
+            <button type="button" onClick="{{m.toggleAway}}" aria-pressed="{{m.awayPressed}}" style="all:unset;box-sizing:border-box;cursor:pointer;align-self:flex-start;display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;{{m.awayStyle}}"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>Ich esse auswärts</button>
+          </sc-if>
+          </div>
+          <sc-if value="{{m.away}}" hint-placeholder-val="{{false}}">
+            <div style="display:flex;flex-direction:column;gap:8px;background:#F3F1EC;border-radius:16px;padding:12px 16px;">
+              <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#111111;">{{m.awayText}}</span>
+              <a href="Mahlzeiten.dc.html" onClick="{{m.editMeal}}" style="align-self:flex-start;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;padding:4px 0;">Was du gegessen hast, eintragen</a>
+            </div>
+          </sc-if>
+          <sc-if value="{{m.countedToday}}" hint-placeholder-val="{{false}}">
+            <div style="display:flex;align-items:center;gap:8px;background:#E3EEE6;border-radius:16px;padding:8px 10px 8px 12px;">
+              <span style="flex:1;display:flex;flex-direction:column;gap:1px;font-family:'Inter',sans-serif;font-size:12px;line-height:1.35;color:#1F4D3A;"><span>Als gegessen gezählt</span><span style="font-size:12px;">{{m.countedMacro}}</span></span>
+              <input type="number" min="0" aria-label="{{m.countedLabel}}" value="{{m.countedKcal}}" onInput="{{m.setCountedKcal}}" onKeyDown="{{blockMinus}}" style="width:64px;box-sizing:border-box;padding:8px 8px;border-radius:10px;border:1px solid #C9C6BE;background:#FFFFFF;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;text-align:right;">
+              <span style="font-family:'Inter',sans-serif;font-size:12px;color:#1F4D3A;">{{m.countedUnit}}</span>
+              <a href="Mahlzeiten.dc.html" onClick="{{m.editMeal}}" style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;text-decoration:underline;padding:8px 2px;">Bearbeiten</a>
+            </div>
+          </sc-if>
+          <sc-if value="{{m.countedLater}}" hint-placeholder-val="{{false}}">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Wird an diesem Tag automatisch in deine Bilanz übernommen.</span>
+          </sc-if>
+          <sc-if value="{{m.skipped}}" hint-placeholder-val="{{false}}">
+            <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#6F706D;">Alles gut. Wenn du etwas anderes gegessen hast, tausch es einfach, dann stimmt deine Tagesbilanz.</p>
+          </sc-if>
+          <sc-if value="{{m.swapOpen}}" hint-placeholder-val="{{false}}">
+            <div style="background:#F3F1EC;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;">
+              <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;">Passt auch in euren Plan</span>
+              <sc-for list="{{m.alts}}" as="a" hint-placeholder-count="3">
+                <button type="button" onClick="{{a.pick}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;background:#FFFFFF;border:1px solid #E6E3DC;border-radius:10px;padding:12px 12px;">
+                  <span style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">{{a.name}}</span><span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{a.sub}}</span></span>
+                  <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;">Wählen</span>
+                </button>
+              </sc-for>
+              <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;margin-top:4px;">Oder etwas Eigenes</span>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <input type="text" aria-label="Eigenes Gericht" placeholder="Gericht, z.B. Döner" value="{{draftOwn}}" onInput="{{setDraftOwn}}" style="flex:1;min-width:0;box-sizing:border-box;padding:12px 12px;border-radius:10px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+                <input type="number" min="0" aria-label="Kalorien" placeholder="kcal" value="{{draftKcal}}" onInput="{{setDraftKcal}}" onKeyDown="{{blockMinus}}" style="width:64px;box-sizing:border-box;padding:12px 8px;border-radius:10px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <button type="button" onClick="{{closeSwap}}" style="all:unset;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;padding:6px 0;">Abbrechen</button>
+                <button type="button" onClick="{{m.useOwn}}" style="all:unset;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#FFFFFF;background:#1F4D3A;padding:12px 16px;border-radius:999px;">Übernehmen</button>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+
+    <a href="Einkaufsliste.dc.html" style="display:flex;align-items:center;justify-content:space-between;gap:16px;text-decoration:none;background:#FFFFFF;border:1.5px solid #1F4D3A;border-radius:16px;padding:16px 16px;color:#111111;">
+      <span style="display:flex;flex-direction:column;gap:2px;">
+        <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Zutaten für diese Woche einkaufen</span>
+        <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Vorschläge landen in deiner Einkaufsliste</span>
+      </span>
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1F4D3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+    </a>
+    </sc-if>
+
+  </div>
+
+  <nav style="flex:0 0 auto;display:flex;border-top:1px solid #E6E3DC;background:#FFFFFF;padding:10px 8px 16px;">
+    <a onClick="{{navClick}}" href="Dashboard.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#6F706D;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="21" height="21"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10v9a1 1 0 0 0 1 1H10v-5h4v5h3.5a1 1 0 0 0 1-1v-9"></path></svg>
+      <span>Startseite</span>
+    </a>
+    <a onClick="{{navClick}}" href="Essensplan.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#1F4D3A;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="21" height="21"><rect x="3.5" y="5" width="17" height="15" rx="2"></rect><path d="M3.5 9.5h17"></path><path d="M8 3v4M16 3v4"></path></svg>
+      <span>Essensplan</span>
+    </a>
+    <button type="button" onClick="{{openPlus}}" aria-label="Essen oder Training eintragen" aria-haspopup="dialog" style="all:unset;box-sizing:border-box;cursor:pointer;flex:0 0 64px;display:flex;align-items:flex-start;justify-content:center;">
+      <span style="width:54px;height:54px;margin-top:-26px;border-radius:50%;background:#1F4D3A;border:4px solid #F3F1EC;box-shadow:0 6px 16px rgba(31,77,58,.25);display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+      </span>
+    </button>
+    <a onClick="{{navClick}}" href="Training.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#6F706D;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="21" height="21"><path d="M6.5 7v10M3.5 9.5v5M17.5 7v10M20.5 9.5v5M6.5 12h11"></path></svg>
+      <span>Training</span>
+    </a>
+    <a onClick="{{navClick}}" href="Einkaufsliste.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#6F706D;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="21" height="21"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L20.5 8H6"></path><circle cx="9.5" cy="20" r="1.3"></circle><circle cx="17" cy="20" r="1.3"></circle></svg>
+      <span>Einkaufsliste</span>
+    </a>
+  </nav>
+  <sc-if value="{{recipeOpen}}" hint-placeholder-val="{{false}}">
+    <dc-import name="Rezept" dish="{{recipeDish}}" grams="{{recipeGrams}}" person="{{person}}" note="{{recipeNote}}" extras="{{recipeExtras}}" action-label="{{recipeAction}}" close-fn="{{closeRecipe}}" add-fn="{{recipeAdd}}" hint-size="390px,844px"></dc-import>
+  </sc-if>
+  <sc-if value="{{plusOpen}}" hint-placeholder-val="{{false}}">
+    <dc-import name="Hinzufuegen" person="{{plusPerson}}" close-fn="{{closePlus}}" saved-fn="{{plusSaved}}" hint-size="390px,844px"></dc-import>
+  </sc-if>
+  <sc-if value="{{personSheetOpen}}" hint-placeholder-val="{{false}}">
+    <dc-import name="PersonSheet" person="{{sheetPerson}}" pick-fn="{{pickPersonFn}}" close-fn="{{closePersonSheet}}" hint-size="390px,844px"></dc-import>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.week = [
+      { short: 'Mo',
+        bx: { who: 'Cristian', text: '+ 2 Spiegeleier & Toast', kcal: '+ 260 kcal' },
+        dx: { who: 'Tami', text: 'weniger Kartoffeln, mehr Brokkoli', kcal: '− 110 kcal' },
+        breakfast: { key: 'porridge_banane', name: 'Porridge mit Banane & Erdnussbutter', kcal: '396 kcal', tag: 'vegetarisch' },
+        lunch: { key: 'pute_reis', name: 'Putengeschnetzeltes mit Paprika & Reis',
+          tami: { desc: 'kleinere Portion + extra Salat', f: 1, kcal: '511 kcal' },
+          cristian: { desc: 'große Portion + zusätzl. Reis', f: 1.625, kcal: '830 kcal' } },
+        dinner: { key: 'lachs_kartoffeln', name: 'Lachs mit Ofenkartoffeln & Brokkoli', kcal: '408 kcal', tag: 'high-protein' },
+        snackCristian: { key: 'nussmix_shake', desc: 'Nussmix, Banane & Proteinshake', kcal: '538 kcal' },
+        snackTami: { key: 'joghurt_beeren', desc: 'Naturjoghurt mit Beeren', kcal: '130 kcal' }
+      },
+      { short: 'Di',
+        bx: { who: 'Cristian', text: '+ Toast mit Käse', kcal: '+ 200 kcal' },
+        dx: { who: 'Cristian', text: '+ zweiter Wrap', kcal: '+ 350 kcal' },
+        breakfast: { key: 'ruehrei_avocado', name: 'Rührei mit Vollkorntoast & Avocado', kcal: '390 kcal', tag: 'high-protein' },
+        lunch: { key: 'linsen_curry', name: 'Linsen-Curry mit Basmatireis',
+          tami: { desc: 'normale Portion', f: 1, kcal: '480 kcal' },
+          cristian: { desc: 'große Portion + Naan-Brot', f: 1.64, kcal: '787 kcal' } },
+        dinner: { key: 'haehnchen_wrap', name: 'Hähnchen-Wrap mit buntem Salat', kcal: '328 kcal', tag: 'ausgewogen' },
+        snackCristian: { key: 'brot_pb_milch', desc: 'Vollkornbrot mit Erdnussbutter & Milch', kcal: '436 kcal' },
+        snackTami: { key: 'apfel_mandeln', desc: 'Apfel & Mandeln', kcal: '168 kcal' }
+      },
+      { short: 'Mi',
+        bx: { who: 'Cristian', text: '+ Erdnussbutter & Banane', kcal: '+ 250 kcal' },
+        dx: { who: 'Cristian', text: '+ Vollkornnudeln als Beilage', kcal: '+ 300 kcal' },
+        breakfast: { key: 'skyr_bowl', name: 'Skyr-Bowl mit Beeren & Haferflocken', kcal: '329 kcal', tag: 'vegetarisch' },
+        lunch: { key: 'haehnchen_bowl', name: 'Hähnchen-Bowl mit Ofengemüse',
+          tami: { desc: '+ Reis, moderate Portion', f: 1, kcal: '512 kcal' },
+          cristian: { desc: '+ extra Reis & Halloumi', f: 1.5, kcal: '768 kcal' } },
+        dinner: { key: 'ofengemuese_feta', name: 'Ofengemüse mit Feta', kcal: '366 kcal', tag: 'vegetarisch' },
+        snackCristian: { key: 'quark_shake', desc: 'Magerquark mit Honig & Haferflocken + Shake', kcal: '529 kcal' },
+        snackTami: { key: 'studentenfutter', desc: 'Studentenfutter, kleine Handvoll', kcal: '144 kcal' }
+      },
+      { short: 'Do',
+        bx: { who: 'Cristian', text: '+ extra Pancake mit Quark', kcal: '+ 180 kcal' },
+        dx: { who: 'Cristian', text: '+ Basmatireis als Beilage', kcal: '+ 250 kcal' },
+        breakfast: { key: 'pancakes', name: 'Vollkorn-Pancakes mit Quark & Beeren', kcal: '363 kcal', tag: 'high-protein' },
+        lunch: { key: 'rind_gemuesenudeln', name: 'Rindergeschnetzeltes mit Gemüsenudeln',
+          tami: { desc: 'normale Portion, extra Gemüse', f: 1, kcal: '364 kcal' },
+          cristian: { desc: 'große Portion + Vollkornnudeln', f: 1.63, kcal: '593 kcal' } },
+        dinner: { key: 'suesskartoffel_bowl', name: 'Süßkartoffel-Bowl mit Kichererbsen', kcal: '408 kcal', tag: 'vegan' },
+        snackCristian: { key: 'sandwich_pute', desc: 'Vollkornsandwich mit Putenbrust & Käse', kcal: '376 kcal' },
+        snackTami: { key: 'reiswaffeln_fk', desc: 'Reiswaffeln mit Frischkäse', kcal: '143 kcal' }
+      },
+      { short: 'Fr',
+        bx: { who: 'Cristian', text: '+ Nüsse & Honig', kcal: '+ 180 kcal' },
+        dx: { who: 'Cristian', text: '+ Spiegelei & Brot', kcal: '+ 280 kcal' },
+        breakfast: { key: 'overnight_oats', name: 'Overnight Oats mit Banane', kcal: '369 kcal', tag: 'vegetarisch' },
+        lunch: { key: 'pasta_thunfisch', name: 'Pasta mit Tomaten-Thunfisch-Sauce',
+          tami: { desc: 'normale Portion', f: 1, kcal: '495 kcal' },
+          cristian: { desc: 'große Portion, extra Kohlenhydrate vor dem Fußball', f: 1.7, kcal: '842 kcal' } },
+        dinner: { key: 'omelett_brot', name: 'Gemüse-Omelett mit Vollkornbrot', kcal: '349 kcal', tag: 'vegetarisch' },
+        snackCristian: { key: 'bananen_smoothie', desc: 'Bananen-Smoothie mit Haferflocken', kcal: '403 kcal' },
+        snackTami: { key: 'joghurt_zimt', desc: 'Naturjoghurt mit Zimt', kcal: '94 kcal' }
+      },
+      { short: 'Sa',
+        bx: { who: 'Cristian', text: '+ zweites Brötchen mit Ei', kcal: '+ 220 kcal' },
+        dx: { who: 'Tami', text: 'dünner Boden, extra Gemüse', kcal: '− 100 kcal' },
+        breakfast: { key: 'broetchen_ruehrei', name: 'Vollkornbrötchen mit Rührei & Tomate', kcal: '380 kcal', tag: 'ausgewogen' },
+        lunch: { key: 'steak_kartoffeln', name: 'Gegrilltes Steak mit Ofenkartoffeln & Salat',
+          tami: { desc: 'kleinere Portion Steak + extra Salat', f: 1, kcal: '490 kcal' },
+          cristian: { desc: 'größere Portion Steak + extra Kartoffeln', f: 1.63, kcal: '799 kcal' } },
+        dinner: { key: 'pizza_gemuese', name: 'Selbstgemachte Pizza mit viel Gemüse', kcal: '418 kcal', tag: 'gemeinsam kochen' },
+        snackCristian: { key: 'protein_shake', desc: 'Proteinshake mit Milch & Haferflocken', kcal: '403 kcal' },
+        snackTami: { key: 'schoko_espresso', desc: 'Dunkle Schokolade & Espresso', kcal: '111 kcal' }
+      },
+      { short: 'So',
+        bx: { who: 'Cristian', text: '+ Spiegelei', kcal: '+ 90 kcal' },
+        dx: { who: 'Cristian', text: '+ Nudeln als Beilage', kcal: '+ 300 kcal' },
+        breakfast: { key: 'french_toast', name: 'French Toast mit Beeren', kcal: '364 kcal', tag: 'ausgewogen' },
+        lunch: { key: 'eintopf', name: 'Gemüse-Eintopf mit Hähnchen',
+          tami: { desc: 'normale Portion', f: 1, kcal: '328 kcal' },
+          cristian: { desc: 'große Portion + Brot', f: 1.66, kcal: '544 kcal' } },
+        dinner: { key: 'buddha_bowl', name: 'Meal-Prep: Buddha Bowl für die Woche', kcal: '448 kcal', tag: 'vegetarisch' },
+        snackCristian: { key: 'nussmix_milch', desc: 'Trockenfrüchte-Nussmix & Milch', kcal: '406 kcal' },
+        snackTami: { key: 'gemuese_hummus', desc: 'Karotten- & Gurkensticks mit Hummus', kcal: '173 kcal' }
+      }
+    ];
+    this.mealAlts = {
+      snack: [['Apfel & Mandeln', '168 kcal · leicht', 'apfel_mandeln'], ['Naturjoghurt mit Beeren', '130 kcal · proteinreich', 'joghurt_beeren'], ['Proteinshake mit Milch & Haferflocken', '403 kcal · für Muskelaufbau', 'protein_shake']],
+      breakfast: [['Porridge mit Beeren & Nüssen', '383 kcal · vegetarisch', 'porridge_beeren'], ['Rührei mit Vollkorntoast', '372 kcal · high-protein', 'ruehrei_toast'], ['Skyr mit Obst & Granola', '310 kcal · schnell', 'skyr_granola']],
+      lunch: [['Hähnchen mit Reis & Gemüse', '497 kcal · high-protein', 'haehnchen_reis'], ['Linsen-Bolognese mit Vollkornnudeln', '552 kcal · vegetarisch', 'linsen_bolognese'], ['Lachs-Bowl mit Quinoa', '500 kcal · Omega-3', 'lachs_quinoa']],
+      dinner: [['Gemüse-Omelett mit Vollkornbrot', '349 kcal · vegetarisch', 'omelett_brot'], ['Tomatensuppe mit Hähnchen', '338 kcal · leicht', 'tomatensuppe'], ['Wrap mit Pute & Salat', '321 kcal · schnell', 'wrap_pute']]
+    };
+    let active = 'tamara';
+    try { active = localStorage.getItem('vitaActivePerson') || 'tamara'; } catch (e) {}
+    this.db = {"porridge_banane": {"name": "Porridge mit Banane & Erdnussbutter", "meal": "breakfast", "min": 10, "g": 321, "kcal": 396, "p": 16, "c": 53, "f": 12, "ing": [["Haferflocken", 50], ["Milch 1,5 %", 200], ["Banane", 60], ["Erdnussbutter", 10], ["Zimt", 0]], "steps": ["Haferflocken mit Milch in einem Topf aufkochen.", "Bei kleiner Hitze 3 bis 4 Minuten unter Rühren quellen lassen.", "Banane in Scheiben schneiden, mit Erdnussbutter und Zimt auf das Porridge geben."]}, "ruehrei_avocado": {"name": "Rührei mit Vollkorntoast & Avocado", "meal": "breakfast", "min": 10, "g": 281, "kcal": 390, "p": 21, "c": 25, "f": 21, "ing": [["Eier", 120], ["Vollkorntoast", 50], ["Avocado", 50], ["Tomaten", 60], ["Gewürze", 0]], "steps": ["Eier verquirlen, mit Salz und Pfeffer würzen.", "In einer beschichteten Pfanne bei mittlerer Hitze stocken lassen, dabei rühren.", "Toast rösten, mit zerdrückter Avocado bestreichen, Rührei und Tomate dazu."]}, "skyr_bowl": {"name": "Skyr-Bowl mit Beeren & Haferflocken", "meal": "breakfast", "min": 5, "g": 385, "kcal": 329, "p": 32, "c": 41, "f": 3, "ing": [["Skyr", 250], ["Beeren (TK)", 100], ["Haferflocken", 30], ["Honig", 5]], "steps": ["Beeren kurz antauen lassen.", "Skyr in eine Schale geben, Beeren und Haferflocken darauf verteilen.", "Mit etwas Honig beträufeln."]}, "pancakes": {"name": "Vollkorn-Pancakes mit Quark & Beeren", "meal": "breakfast", "min": 20, "g": 360, "kcal": 363, "p": 28, "c": 39, "f": 9, "ing": [["Vollkornmehl", 40], ["Eier", 60], ["Milch 1,5 %", 80], ["Magerquark", 100], ["Beeren (TK)", 80]], "steps": ["Mehl, Ei und Milch zu einem glatten Teig verrühren, 5 Minuten ruhen lassen.", "In einer beschichteten Pfanne kleine Pancakes von beiden Seiten goldbraun backen.", "Mit Magerquark und Beeren servieren."]}, "overnight_oats": {"name": "Overnight Oats mit Banane", "meal": "breakfast", "min": 5, "g": 361, "kcal": 369, "p": 16, "c": 58, "f": 7, "ing": [["Haferflocken", 50], ["Milch 1,5 %", 150], ["Naturjoghurt 1,5 %", 80], ["Banane", 80], ["Zimt", 0]], "steps": ["Haferflocken, Milch und Joghurt in einem Glas verrühren.", "Über Nacht in den Kühlschrank stellen.", "Morgens mit Bananenscheiben und Zimt toppen."]}, "broetchen_ruehrei": {"name": "Vollkornbrötchen mit Rührei & Tomate", "meal": "breakfast", "min": 10, "g": 281, "kcal": 380, "p": 23, "c": 37, "f": 15, "ing": [["Vollkornbrötchen", 80], ["Eier", 120], ["Tomaten", 80], ["Gewürze", 0]], "steps": ["Eier verquirlen und würzen.", "In der Pfanne bei mittlerer Hitze cremig stocken lassen.", "Brötchen aufschneiden, mit Rührei und Tomatenscheiben belegen."]}, "french_toast": {"name": "French Toast mit Beeren", "meal": "breakfast", "min": 15, "g": 284, "kcal": 364, "p": 17, "c": 49, "f": 10, "ing": [["Vollkorntoast", 75], ["Eier", 60], ["Milch 1,5 %", 60], ["Beeren (TK)", 80], ["Honig", 8], ["Zimt", 0]], "steps": ["Ei, Milch und Zimt verquirlen.", "Toastscheiben darin wenden und in einer beschichteten Pfanne von beiden Seiten goldbraun braten.", "Mit warmen Beeren und etwas Honig servieren."]}, "porridge_beeren": {"name": "Porridge mit Beeren & Nüssen", "meal": "breakfast", "min": 10, "g": 340, "kcal": 383, "p": 15, "c": 47, "f": 13, "ing": [["Haferflocken", 50], ["Milch 1,5 %", 200], ["Beeren (TK)", 80], ["Walnüsse", 10]], "steps": ["Haferflocken mit Milch aufkochen und 3 bis 4 Minuten quellen lassen.", "Beeren unterheben, kurz mit erwärmen.", "Mit gehackten Walnüssen toppen."]}, "ruehrei_toast": {"name": "Rührei mit Vollkorntoast", "meal": "breakfast", "min": 10, "g": 256, "kcal": 372, "p": 22, "c": 35, "f": 15, "ing": [["Eier", 120], ["Vollkorntoast", 75], ["Tomaten", 60], ["Gewürze", 0]], "steps": ["Eier verquirlen und würzen.", "In der Pfanne bei mittlerer Hitze stocken lassen.", "Mit geröstetem Toast und Tomate servieren."]}, "skyr_granola": {"name": "Skyr mit Obst & Granola", "meal": "breakfast", "min": 5, "g": 330, "kcal": 310, "p": 25, "c": 39, "f": 5, "ing": [["Skyr", 200], ["Apfel", 100], ["Granola", 30]], "steps": ["Apfel in Würfel schneiden.", "Skyr in eine Schale geben.", "Apfel und Granola darüber verteilen."]}, "pute_reis": {"name": "Putengeschnetzeltes mit Paprika & Reis", "meal": "lunch", "min": 25, "g": 420, "kcal": 511, "p": 43, "c": 58, "f": 11, "ing": [["Putenbrust", 150], ["Paprika", 150], ["Zwiebel", 50], ["Basmatireis (roh)", 60], ["Olivenöl", 8], ["Gewürze", 0]], "steps": ["Reis nach Packungsanleitung kochen.", "Pute in Streifen schneiden und in Öl scharf anbraten, herausnehmen.", "Zwiebel und Paprika in der Pfanne 5 Minuten braten, Pute zurückgeben, würzen.", "Mit Reis anrichten."]}, "linsen_curry": {"name": "Linsen-Curry mit Basmatireis", "meal": "lunch", "min": 30, "g": 403, "kcal": 480, "p": 22, "c": 73, "f": 9, "ing": [["Rote Linsen (roh)", 60], ["Kokosmilch light", 100], ["Passierte Tomaten", 100], ["Zwiebel", 50], ["Spinat", 50], ["Basmatireis (roh)", 40], ["Gewürze", 0]], "steps": ["Zwiebel würfeln und mit Currypulver in einem Topf anschwitzen.", "Linsen, passierte Tomaten, Kokosmilch und 150 ml Wasser dazu, 15 Minuten köcheln lassen.", "Spinat unterrühren, abschmecken.", "Mit Basmatireis servieren."]}, "haehnchen_bowl": {"name": "Hähnchen-Bowl mit Ofengemüse", "meal": "lunch", "min": 35, "g": 500, "kcal": 512, "p": 42, "c": 59, "f": 11, "ing": [["Hähnchenbrust", 150], ["Zucchini", 100], ["Paprika", 100], ["Süßkartoffel", 100], ["Basmatireis (roh)", 40], ["Olivenöl", 8], ["Gewürze", 0]], "steps": ["Ofen auf 200 °C vorheizen. Gemüse und Süßkartoffel würfeln, mit Öl und Gewürzen mischen.", "25 Minuten auf dem Blech rösten.", "Reis kochen, Hähnchen würzen und in der Pfanne 6 bis 8 Minuten braten.", "Alles in einer Schale anrichten."]}, "rind_gemuesenudeln": {"name": "Rindergeschnetzeltes mit Gemüsenudeln", "meal": "lunch", "min": 25, "g": 560, "kcal": 364, "p": 38, "c": 14, "f": 17, "ing": [["Rindergeschnetzeltes", 150], ["Zucchini", 200], ["Karotten", 100], ["Champignons", 100], ["Olivenöl", 8], ["Gewürze", 0]], "steps": ["Zucchini und Karotten mit einem Spiralschneider zu Nudeln drehen.", "Rind scharf anbraten, herausnehmen.", "Champignons braten, Gemüsenudeln 2 bis 3 Minuten mitgaren.", "Rind zurückgeben und abschmecken."]}, "pasta_thunfisch": {"name": "Pasta mit Tomaten-Thunfisch-Sauce", "meal": "lunch", "min": 20, "g": 377, "kcal": 495, "p": 38, "c": 63, "f": 8, "ing": [["Vollkornnudeln (roh)", 80], ["Thunfisch (in Wasser)", 100], ["Passierte Tomaten", 150], ["Zwiebel", 40], ["Olivenöl", 5], ["Gewürze", 0]], "steps": ["Nudeln nach Packungsanleitung kochen.", "Zwiebel in Öl anschwitzen, passierte Tomaten dazu und 5 Minuten köcheln.", "Thunfisch abtropfen, unterheben und würzen.", "Mit den Nudeln mischen."]}, "steak_kartoffeln": {"name": "Gegrilltes Steak mit Ofenkartoffeln & Salat", "meal": "lunch", "min": 40, "g": 522, "kcal": 490, "p": 39, "c": 36, "f": 21, "ing": [["Rindersteak", 150], ["Kartoffeln", 200], ["Blattsalat", 80], ["Tomaten", 80], ["Olivenöl", 10], ["Gewürze", 0]], "steps": ["Kartoffeln vierteln, mit der Hälfte des Öls mischen und 30 Minuten bei 200 °C backen.", "Steak Raumtemperatur annehmen lassen, pro Seite 3 bis 4 Minuten grillen, 5 Minuten ruhen lassen.", "Salat mit Tomaten und restlichem Öl anmachen."]}, "eintopf": {"name": "Gemüse-Eintopf mit Hähnchen", "meal": "lunch", "min": 40, "g": 872, "kcal": 328, "p": 34, "c": 38, "f": 3, "ing": [["Hähnchenbrust", 120], ["Kartoffeln", 150], ["Karotten", 100], ["Knollensellerie", 60], ["Zwiebel", 40], ["Gemüsebrühe", 400], ["Gewürze", 0]], "steps": ["Gemüse und Kartoffeln würfeln, Zwiebel anschwitzen.", "Mit Brühe aufgießen und 20 Minuten köcheln lassen.", "Hähnchen in Würfeln dazugeben, 10 Minuten gar ziehen lassen, abschmecken."]}, "haehnchen_reis": {"name": "Hähnchen mit Reis & Gemüse", "meal": "lunch", "min": 25, "g": 370, "kcal": 497, "p": 43, "c": 53, "f": 11, "ing": [["Hähnchenbrust", 150], ["Basmatireis (roh)", 60], ["Brokkoli", 150], ["Olivenöl", 8], ["Gewürze", 0]], "steps": ["Reis kochen.", "Hähnchen würzen und in Öl braten.", "Brokkoli 5 Minuten dämpfen, alles anrichten."]}, "linsen_bolognese": {"name": "Linsen-Bolognese mit Vollkornnudeln", "meal": "lunch", "min": 30, "g": 427, "kcal": 552, "p": 25, "c": 87, "f": 8, "ing": [["Linsen (braun, roh)", 50], ["Vollkornnudeln (roh)", 70], ["Passierte Tomaten", 200], ["Karotten", 60], ["Zwiebel", 40], ["Olivenöl", 5], ["Gewürze", 0]], "steps": ["Zwiebel und Karotten fein würfeln und in Öl anschwitzen.", "Linsen, Tomaten und 200 ml Wasser dazu, 25 Minuten köcheln.", "Nudeln kochen und mit der Sauce servieren."]}, "lachs_quinoa": {"name": "Lachs-Bowl mit Quinoa", "meal": "lunch", "min": 25, "g": 331, "kcal": 500, "p": 33, "c": 35, "f": 25, "ing": [["Lachsfilet", 120], ["Quinoa (roh)", 50], ["Avocado", 40], ["Gurke", 80], ["Blattsalat", 40], ["Gewürze", 0]], "steps": ["Quinoa nach Packungsanleitung kochen.", "Lachs würzen und pro Seite 3 bis 4 Minuten braten.", "Gurke und Avocado schneiden, alles in einer Schale anrichten."]}, "lachs_kartoffeln": {"name": "Lachs mit Ofenkartoffeln & Brokkoli", "meal": "dinner", "min": 35, "g": 407, "kcal": 408, "p": 27, "c": 30, "f": 19, "ing": [["Lachsfilet", 100], ["Kartoffeln", 150], ["Brokkoli", 150], ["Olivenöl", 5], ["Gewürze", 0]], "steps": ["Kartoffeln vierteln, mit Öl mischen und 30 Minuten bei 200 °C backen.", "Lachs nach 15 Minuten mit aufs Blech legen.", "Brokkoli 5 Minuten dämpfen und dazu servieren."]}, "haehnchen_wrap": {"name": "Hähnchen-Wrap mit buntem Salat", "meal": "dinner", "min": 20, "g": 311, "kcal": 328, "p": 31, "c": 35, "f": 6, "ing": [["Hähnchenbrust", 100], ["Vollkorn-Wrap", 60], ["Blattsalat", 50], ["Paprika", 60], ["Naturjoghurt 1,5 %", 40], ["Gewürze", 0]], "steps": ["Hähnchen in Streifen schneiden, würzen und braten.", "Wrap kurz in der Pfanne erwärmen.", "Mit Joghurt bestreichen, Salat, Paprika und Hähnchen darauf, einrollen."]}, "ofengemuese_feta": {"name": "Ofengemüse mit Feta", "meal": "dinner", "min": 35, "g": 522, "kcal": 366, "p": 16, "c": 21, "f": 24, "ing": [["Zucchini", 150], ["Paprika", 150], ["Aubergine", 100], ["Zwiebel", 50], ["Feta", 60], ["Olivenöl", 10], ["Gewürze", 0]], "steps": ["Ofen auf 200 °C vorheizen, Gemüse grob würfeln.", "Mit Öl und Kräutern mischen, 20 Minuten rösten.", "Feta darüberbröseln und weitere 10 Minuten backen."]}, "suesskartoffel_bowl": {"name": "Süßkartoffel-Bowl mit Kichererbsen", "meal": "dinner", "min": 35, "g": 367, "kcal": 408, "p": 13, "c": 59, "f": 13, "ing": [["Süßkartoffel", 200], ["Kichererbsen (abgetropft)", 100], ["Spinat", 50], ["Tahini", 10], ["Olivenöl", 5], ["Gewürze", 0]], "steps": ["Süßkartoffel würfeln, mit Öl mischen und 25 Minuten bei 200 °C rösten.", "Kichererbsen die letzten 10 Minuten mit aufs Blech geben.", "Mit Spinat anrichten und Tahini darüber geben."]}, "omelett_brot": {"name": "Gemüse-Omelett mit Vollkornbrot", "meal": "dinner", "min": 15, "g": 323, "kcal": 349, "p": 22, "c": 25, "f": 16, "ing": [["Eier", 120], ["Paprika", 60], ["Spinat", 40], ["Champignons", 50], ["Vollkornbrot", 50], ["Olivenöl", 3]], "steps": ["Gemüse klein schneiden und in wenig Öl anbraten.", "Verquirlte Eier darüber gießen und bei kleiner Hitze stocken lassen.", "Mit Vollkornbrot servieren."]}, "pizza_gemuese": {"name": "Selbstgemachte Pizza mit viel Gemüse", "meal": "dinner", "min": 45, "g": 353, "kcal": 418, "p": 22, "c": 59, "f": 10, "ing": [["Weizenmehl", 70], ["Passierte Tomaten", 60], ["Mozzarella light", 60], ["Paprika", 60], ["Champignons", 50], ["Zucchini", 50], ["Olivenöl", 3]], "steps": ["Mehl mit 45 ml Wasser, Hefe, Salz und Öl verkneten, 30 Minuten gehen lassen.", "Dünn ausrollen, mit Tomaten bestreichen und mit Gemüse und Mozzarella belegen.", "Bei 250 °C 10 bis 12 Minuten backen."]}, "buddha_bowl": {"name": "Meal-Prep: Buddha Bowl", "meal": "dinner", "min": 35, "g": 330, "kcal": 448, "p": 17, "c": 72, "f": 11, "ing": [["Quinoa (roh)", 50], ["Kichererbsen (abgetropft)", 80], ["Süßkartoffel", 100], ["Karotten", 60], ["Blattsalat", 30], ["Tahini", 10]], "steps": ["Quinoa kochen, Süßkartoffel würfeln und 25 Minuten rösten.", "Karotten raspeln, Kichererbsen abspülen.", "In Boxen anrichten, Tahini-Dressing separat."]}, "tomatensuppe": {"name": "Tomatensuppe mit Hähnchen", "meal": "dinner", "min": 25, "g": 635, "kcal": 338, "p": 31, "c": 32, "f": 8, "ing": [["Passierte Tomaten", 300], ["Hähnchenbrust", 100], ["Zwiebel", 50], ["Gemüsebrühe", 150], ["Olivenöl", 5], ["Vollkornbrot", 30]], "steps": ["Zwiebel in Öl anschwitzen, Tomaten und Brühe dazu und 10 Minuten köcheln.", "Hähnchen würfeln, braten und in die Suppe geben.", "Abschmecken und mit Brot servieren."]}, "wrap_pute": {"name": "Wrap mit Pute & Salat", "meal": "dinner", "min": 15, "g": 310, "kcal": 321, "p": 32, "c": 34, "f": 6, "ing": [["Putenbrust", 100], ["Vollkorn-Wrap", 60], ["Blattsalat", 50], ["Tomaten", 60], ["Naturjoghurt 1,5 %", 40]], "steps": ["Pute in Streifen braten und würzen.", "Wrap mit Joghurt bestreichen.", "Mit Salat, Tomate und Pute belegen und einrollen."]}, "studentenfutter": {"name": "Studentenfutter, kleine Handvoll", "meal": "snack", "min": 1, "g": 30, "kcal": 144, "p": 4, "c": 12, "f": 9, "ing": [["Studentenfutter", 30]], "steps": ["Abwiegen und genießen."]}, "quark_shake": {"name": "Magerquark mit Honig & Haferflocken + Shake", "meal": "snack", "min": 5, "g": 525, "kcal": 529, "p": 60, "c": 52, "f": 8, "ing": [["Magerquark", 200], ["Honig", 15], ["Haferflocken", 30], ["Proteinpulver", 30], ["Milch 1,5 %", 250]], "steps": ["Quark mit Honig und Haferflocken verrühren.", "Proteinpulver mit Milch shaken."]}, "apfel_mandeln": {"name": "Apfel & Mandeln", "meal": "snack", "min": 1, "g": 165, "kcal": 168, "p": 4, "c": 19, "f": 8, "ing": [["Apfel", 150], ["Mandeln", 15]], "steps": ["Apfel in Spalten schneiden, mit Mandeln essen."]}, "joghurt_beeren": {"name": "Naturjoghurt mit Beeren", "meal": "snack", "min": 2, "g": 280, "kcal": 130, "p": 9, "c": 17, "f": 3, "ing": [["Naturjoghurt 1,5 %", 200], ["Beeren (TK)", 80]], "steps": ["Beeren antauen lassen und unter den Joghurt heben."]}, "nussmix_shake": {"name": "Nussmix, Banane & Proteinshake", "meal": "snack", "min": 5, "g": 440, "kcal": 538, "p": 38, "c": 55, "f": 18, "ing": [["Studentenfutter", 40], ["Banane", 120], ["Proteinpulver", 30], ["Milch 1,5 %", 250]], "steps": ["Proteinpulver mit Milch shaken.", "Dazu Banane und Nussmix essen."]}, "brot_pb_milch": {"name": "Vollkornbrot mit Erdnussbutter & Milch", "meal": "snack", "min": 3, "g": 360, "kcal": 436, "p": 20, "c": 51, "f": 15, "ing": [["Vollkornbrot", 90], ["Erdnussbutter", 20], ["Milch 1,5 %", 250]], "steps": ["Brot mit Erdnussbutter bestreichen.", "Mit einem Glas Milch genießen."]}, "sandwich_pute": {"name": "Vollkornsandwich mit Putenbrust & Käse", "meal": "snack", "min": 5, "g": 220, "kcal": 376, "p": 29, "c": 37, "f": 10, "ing": [["Vollkornbrot", 90], ["Putenbrust", 60], ["Gouda", 30], ["Tomaten", 40]], "steps": ["Brot mit Putenbrust, Käse und Tomate belegen.", "Zuklappen, fertig."]}, "reiswaffeln_fk": {"name": "Reiswaffeln mit Frischkäse", "meal": "snack", "min": 2, "g": 100, "kcal": 143, "p": 7, "c": 18, "f": 4, "ing": [["Reiswaffeln", 20], ["Frischkäse light", 40], ["Gurke", 40]], "steps": ["Reiswaffeln mit Frischkäse bestreichen.", "Mit Gurkenscheiben belegen."]}, "bananen_smoothie": {"name": "Bananen-Smoothie mit Haferflocken", "meal": "snack", "min": 5, "g": 460, "kcal": 403, "p": 17, "c": 63, "f": 8, "ing": [["Banane", 120], ["Haferflocken", 40], ["Milch 1,5 %", 300]], "steps": ["Alles in den Mixer geben.", "30 Sekunden cremig mixen. Ideal 1 bis 2 Stunden vor dem Training."]}, "joghurt_zimt": {"name": "Naturjoghurt mit Zimt", "meal": "snack", "min": 1, "g": 201, "kcal": 94, "p": 8, "c": 10, "f": 3, "ing": [["Naturjoghurt 1,5 %", 200], ["Zimt", 0]], "steps": ["Joghurt in eine Schale geben und mit Zimt bestreuen."]}, "protein_shake": {"name": "Proteinshake mit Milch & Haferflocken", "meal": "snack", "min": 3, "g": 370, "kcal": 403, "p": 39, "c": 40, "f": 9, "ing": [["Proteinpulver", 30], ["Milch 1,5 %", 300], ["Haferflocken", 40]], "steps": ["Alles in einen Shaker geben.", "Kräftig schütteln oder kurz mixen."]}, "schoko_espresso": {"name": "Dunkle Schokolade & Espresso", "meal": "snack", "min": 2, "g": 50, "kcal": 111, "p": 2, "c": 7, "f": 8, "ing": [["Zartbitterschokolade", 20], ["Espresso", 30]], "steps": ["Espresso zubereiten.", "Zwei Stück dunkle Schokolade dazu genießen."]}, "nussmix_milch": {"name": "Trockenfrüchte-Nussmix & Milch", "meal": "snack", "min": 1, "g": 310, "kcal": 406, "p": 16, "c": 36, "f": 22, "ing": [["Studentenfutter", 60], ["Milch 1,5 %", 250]], "steps": ["Nussmix abwiegen, mit einem Glas Milch genießen."]}, "gemuese_hummus": {"name": "Karotten- & Gurkensticks mit Hummus", "meal": "snack", "min": 5, "g": 250, "kcal": 173, "p": 6, "c": 16, "f": 9, "ing": [["Karotten", 100], ["Gurke", 100], ["Hummus", 50]], "steps": ["Karotten und Gurke in Sticks schneiden.", "Mit Hummus zum Dippen servieren."]}};
+    this.extras = {"0": {"breakfast": [{"who": "Cristian", "type": "+", "name": "Eier", "g": 120, "note": "", "kcal": 174, "p": 15, "c": 1, "f": 12}, {"who": "Cristian", "type": "+", "name": "Vollkorntoast", "g": 50, "note": "", "kcal": 125, "p": 4, "c": 22, "f": 2}], "lunch": [{"who": "Tami", "type": "+", "name": "Blattsalat", "g": 80, "note": "", "kcal": 12, "p": 1, "c": 2, "f": 0}, {"who": "Tami", "type": "-", "name": "Basmatireis (roh)", "g": -20, "note": "", "kcal": -70, "p": -2, "c": -16, "f": 0}, {"who": "Cristian", "type": "+", "name": "Basmatireis (roh)", "g": 50, "note": "", "kcal": 175, "p": 4, "c": 39, "f": 0}, {"who": "Cristian", "type": "+", "name": "Putenbrust", "g": 80, "note": "", "kcal": 88, "p": 19, "c": 0, "f": 1}], "dinner": [{"who": "Tami", "type": "-", "name": "Kartoffeln", "g": -75, "note": "", "kcal": -56, "p": -2, "c": -12, "f": 0}, {"who": "Tami", "type": "+", "name": "Brokkoli", "g": 100, "note": "", "kcal": 34, "p": 3, "c": 4, "f": 0}]}, "1": {"breakfast": [{"who": "Cristian", "type": "+", "name": "Vollkorntoast", "g": 50, "note": "", "kcal": 125, "p": 4, "c": 22, "f": 2}, {"who": "Cristian", "type": "+", "name": "Gouda", "g": 30, "note": "", "kcal": 105, "p": 8, "c": 0, "f": 8}], "lunch": [{"who": "Cristian", "type": "+", "name": "Naan-Brot", "g": 90, "note": "", "kcal": 261, "p": 8, "c": 45, "f": 5}, {"who": "Cristian", "type": "+", "name": "Basmatireis (roh)", "g": 30, "note": "", "kcal": 105, "p": 2, "c": 23, "f": 0}], "dinner": [{"who": "Cristian", "type": "+", "name": "Vollkorn-Wrap", "g": 60, "note": "", "kcal": 174, "p": 5, "c": 29, "f": 4}, {"who": "Cristian", "type": "+", "name": "Hähnchenbrust", "g": 80, "note": "", "kcal": 88, "p": 18, "c": 0, "f": 1}]}, "2": {"breakfast": [{"who": "Cristian", "type": "+", "name": "Erdnussbutter", "g": 20, "note": "", "kcal": 120, "p": 5, "c": 3, "f": 10}, {"who": "Cristian", "type": "+", "name": "Banane", "g": 120, "note": "", "kcal": 114, "p": 1, "c": 25, "f": 0}], "lunch": [{"who": "Cristian", "type": "+", "name": "Basmatireis (roh)", "g": 40, "note": "", "kcal": 140, "p": 3, "c": 31, "f": 0}, {"who": "Cristian", "type": "+", "name": "Halloumi", "g": 60, "note": "", "kcal": 192, "p": 13, "c": 1, "f": 15}], "dinner": [{"who": "Tami", "type": "alt", "name": "Vollkornnudeln (roh)", "g": 50, "note": "als Beilage", "kcal": 175, "p": 6, "c": 32, "f": 1}, {"who": "Cristian", "type": "alt", "name": "Basmatireis (roh)", "g": 90, "note": "als Beilage", "kcal": 315, "p": 7, "c": 70, "f": 1}]}, "3": {"breakfast": [{"who": "Cristian", "type": "+", "name": "Magerquark", "g": 100, "note": "", "kcal": 70, "p": 12, "c": 4, "f": 0}, {"who": "Cristian", "type": "+", "name": "Vollkornmehl", "g": 20, "note": "", "kcal": 66, "p": 2, "c": 12, "f": 0}], "lunch": [{"who": "Tami", "type": "+", "name": "Zucchini", "g": 100, "note": "", "kcal": 20, "p": 2, "c": 3, "f": 0}, {"who": "Cristian", "type": "alt", "name": "Vollkornnudeln (roh)", "g": 100, "note": "statt Gemüsenudeln", "kcal": 350, "p": 13, "c": 65, "f": 2}], "dinner": [{"who": "Cristian", "type": "+", "name": "Basmatireis (roh)", "g": 70, "note": "", "kcal": 245, "p": 5, "c": 55, "f": 0}]}, "4": {"breakfast": [{"who": "Cristian", "type": "+", "name": "Walnüsse", "g": 20, "note": "", "kcal": 136, "p": 3, "c": 1, "f": 13}, {"who": "Cristian", "type": "+", "name": "Honig", "g": 10, "note": "", "kcal": 31, "p": 0, "c": 8, "f": 0}], "lunch": [{"who": "Cristian", "type": "+", "name": "Vollkornnudeln (roh)", "g": 60, "note": "", "kcal": 210, "p": 8, "c": 39, "f": 2}, {"who": "Cristian", "type": "+", "name": "Thunfisch (in Wasser)", "g": 50, "note": "", "kcal": 55, "p": 12, "c": 0, "f": 0}], "dinner": [{"who": "Cristian", "type": "+", "name": "Eier", "g": 60, "note": "", "kcal": 87, "p": 8, "c": 0, "f": 6}, {"who": "Cristian", "type": "+", "name": "Vollkornbrot", "g": 50, "note": "", "kcal": 110, "p": 4, "c": 20, "f": 1}]}, "5": {"breakfast": [{"who": "Cristian", "type": "+", "name": "Vollkornbrötchen", "g": 80, "note": "", "kcal": 192, "p": 7, "c": 34, "f": 2}, {"who": "Cristian", "type": "+", "name": "Eier", "g": 60, "note": "", "kcal": 87, "p": 8, "c": 0, "f": 6}], "lunch": [{"who": "Tami", "type": "-", "name": "Rindersteak", "g": -30, "note": "", "kcal": -45, "p": -7, "c": 0, "f": -2}, {"who": "Tami", "type": "+", "name": "Blattsalat", "g": 60, "note": "", "kcal": 9, "p": 1, "c": 1, "f": 0}, {"who": "Cristian", "type": "+", "name": "Rindersteak", "g": 80, "note": "", "kcal": 120, "p": 18, "c": 0, "f": 6}, {"who": "Cristian", "type": "+", "name": "Kartoffeln", "g": 150, "note": "", "kcal": 112, "p": 3, "c": 24, "f": 0}], "dinner": [{"who": "Tami", "type": "-", "name": "Weizenmehl", "g": -20, "note": "", "kcal": -68, "p": -2, "c": -14, "f": 0}, {"who": "Tami", "type": "+", "name": "Paprika", "g": 60, "note": "", "kcal": 18, "p": 1, "c": 3, "f": 0}]}, "6": {"breakfast": [{"who": "Cristian", "type": "+", "name": "Eier", "g": 60, "note": "", "kcal": 87, "p": 8, "c": 0, "f": 6}], "lunch": [{"who": "Cristian", "type": "+", "name": "Vollkornbrot", "g": 80, "note": "", "kcal": 176, "p": 6, "c": 32, "f": 1}, {"who": "Cristian", "type": "+", "name": "Hähnchenbrust", "g": 60, "note": "", "kcal": 66, "p": 14, "c": 0, "f": 1}], "dinner": [{"who": "Cristian", "type": "+", "name": "Vollkornnudeln (roh)", "g": 80, "note": "", "kcal": 280, "p": 10, "c": 52, "f": 2}]}};
+    this.names = { tami: 'Tami', cristian: 'Cristian' };
+    this.mealNames = { breakfast: 'Frühstück', lunch: 'Mittag', dinner: 'Abend', snack: 'Snack' };
+    this.todayIndex = (new Date().getDay()+6)%7;
+    this.state = { person: active === 'basti' ? 'cristian' : 'tami', selectedDay: (new Date().getDay()+6)%7, status: {}, swaps: {}, swapOpen: null, draftOwn: '', draftKcal: '' };
+  }
+  dishEmoji(name) {
+    const n = String(name || '').toLowerCase();
+    const map = [['pancake', '🥞'], ['french toast', '🍞'], ['omelett', '🍳'], ['rührei', '🍳'], ['porridge', '🥣'], ['oats', '🥣'], ['skyr', '🥣'], ['joghurt', '🥣'], ['quark', '🥣'], ['steak', '🥩'], ['lachs', '🐟'], ['thunfisch', '🍝'], ['pasta', '🍝'], ['nudel', '🍝'], ['pizza', '🍕'], ['wrap', '🌯'], ['curry', '🍛'], ['eintopf', '🍲'], ['geschnetzeltes', '🍲'], ['süßkartoffel', '🍠'], ['bowl', '🥗'], ['salat', '🥗'], ['ofengemüse', '🥦'], ['apfel', '🍎'], ['studentenfutter', '🥜'], ['nuss', '🥜'], ['reiswaffel', '🍘'], ['smoothie', '🥤'], ['shake', '🥤'], ['sandwich', '🥪'], ['brot', '🥪'], ['banane', '🍌'], ['meal-prep', '🍱']];
+    const hit = map.find((m) => n.indexOf(m[0]) !== -1);
+    return hit ? hit[1] : '🍽️';
+  }
+  dayStyle(active) {
+    return active
+      ? 'background:#1F4D3A;color:#FFFFFF;font-weight:600;'
+      : 'background:none;color:#6F706D;';
+  }
+  mealAct(meal, originalName) {
+    const s = this.state;
+    const k = s.person + '-' + s.selectedDay + '-' + meal;
+    const st = s.status[k];
+    const other = s.person === 'tami' ? 'cristian' : 'tami';
+    const ok = other + '-' + s.selectedDay + '-' + meal;
+    const ost = s.status[ok];
+    const osw = s.swaps[ok];
+    const otherLine = this.names[other] + ': ' + (ost === 'done' ? 'gegessen' : (ost === 'skip' ? 'nicht gegessen' : 'noch offen')) + (osw ? (', getauscht gegen ' + osw.name) : '');
+    const otherDot = ost === 'done' ? 'background:#1F4D3A;' : (ost === 'skip' ? 'background:#C4532D;' : 'background:#D3D0C8;');
+    const pill = (on, kind) => on ? (kind === 'skip' ? 'background:#F5E3DA;color:#A63A1E;' : (kind === 'swap' ? 'background:#E3E8FF;color:#3B4FC4;' : 'background:#1F4D3A;color:#FFFFFF;')) : 'background:#F3F1EC;color:#6F706D;border:1px solid #E6E3DC;';
+    const setStatus = (v) => {
+      const nv = this.state.status[k] === v ? null : v;
+      this.setState({ status: { ...this.state.status, [k]: nv } });
+      if (this.state.selectedDay === this.todayIndex) this.syncLog(meal, nv === 'done');
+    };
+    const logItem = this.logItem(meal);
+    const isToday = s.selectedDay === this.todayIndex;
+    const planned = this.plannedFor(meal);
+    return [{
+      swapped: !!s.swaps[k],
+      countedToday: st === 'done' && isToday && !!logItem,
+      countedLater: st === 'done' && !isToday,
+      countedKcal: logItem ? String(logItem.key ? logItem.grams : logItem.kcal) : '',
+      countedUnit: logItem && logItem.key ? 'g' : 'kcal',
+      countedMacro: logItem ? (logItem.key ? (logItem.kcal + ' kcal · P ' + logItem.p + ' · K ' + logItem.c + ' · F ' + logItem.f) : '') : '',
+      countedLabel: (logItem && logItem.key ? 'Gramm ' : 'kcal ') + this.mealNames[meal] + ' für ' + this.names[s.person],
+      setCountedKcal: (e) => this.updateLogGrams(meal, e.target.value),
+      macroLine: this.macroLine(planned),
+      hasRecipe: !!planned.key,
+      openRecipe: () => this.openRecipe(meal),
+      editMeal: () => { try { localStorage.setItem('vitaSelectedMeal', meal); } catch (e) {} },
+      otherLine: otherLine,
+      otherDot: otherDot,
+      original: originalName,
+      skipped: st === 'skip',
+      donePressed: st === 'done' ? 'true' : 'false',
+      skipPressed: st === 'skip' ? 'true' : 'false',
+      swapExpanded: s.swapOpen === k ? 'true' : 'false',
+      doneStyle: pill(st === 'done', 'done'),
+      skipStyle: pill(st === 'skip', 'skip'),
+      swapStyle: pill(s.swapOpen === k || !!s.swaps[k], 'swap'),
+      markDone: () => setStatus('done'),
+      markSkip: () => setStatus('skip'),
+      openSwap: () => this.setState({ swapOpen: this.state.swapOpen === k ? null : k, draftOwn: '', draftKcal: '' }),
+      swapOpen: s.swapOpen === k,
+      alts: this.mealAlts[meal].map((a) => ({ name: a[0], sub: a[1], pick: () => { this.setState({ swaps: { ...this.state.swaps, [k]: { name: a[0], kcal: a[1].split(' · ')[0], key: a[2] } }, swapOpen: null, status: { ...this.state.status, [k]: null } }); if (this.state.selectedDay === this.todayIndex) this.syncLog(meal, false); } })),
+      useOwn: () => {
+        const n = (this.state.draftOwn || '').trim();
+        if (!n) return;
+        const kc = parseInt(this.state.draftKcal, 10);
+        this.setState({ swaps: { ...this.state.swaps, [k]: { name: n, kcal: kc > 0 ? kc + ' kcal' : 'kcal offen' } }, swapOpen: null, draftOwn: '', draftKcal: '', status: { ...this.state.status, [k]: null } });
+      }
+    }];
+  }
+  logKey() { return this.state.person === 'tami' ? 'tamara' : 'basti'; }
+  loadLogs() { try { return JSON.parse(localStorage.getItem('vitaMealLogs') || '{}') || {}; } catch (e) { return {}; } }
+  saveLogs(l) { try { localStorage.setItem('vitaMealLogs', JSON.stringify(l)); } catch (e) {} this.setState({ logsRev: (this.state.logsRev || 0) + 1 }); }
+  deltaOf(txt) { const n = parseInt(String(txt).replace(/[^0-9]/g, ''), 10) || 0; return /−|-/.test(txt) ? -n : n; }
+  fromDb(key, grams, name) {
+    const r = this.db[key];
+    const f = grams / r.g;
+    return { key, name: name || r.name, grams: Math.round(grams), kcal: Math.round(r.kcal * f), p: Math.round(r.p * f), c: Math.round(r.c * f), f: Math.round(r.f * f) };
+  }
+  extrasFor(meal) {
+    if (this.swapFor(meal) || meal === 'snack') return [];
+    return ((this.extras[String(this.state.selectedDay)] || {})[meal]) || [];
+  }
+  plannedFor(meal, person) {
+    const pers = person || this.state.person;
+    const d = this.week[this.state.selectedDay];
+    const who = this.names[pers];
+    const sw = person ? null : this.swapFor(meal);
+    const zero = { g: 0, kcal: 0, p: 0, c: 0, f: 0 };
+    if (sw && sw.key) { const g = this.db[sw.key].g * (pers === 'cristian' ? 1.5 : 1); return { ...this.fromDb(sw.key, g), baseG: Math.round(g), ex: zero, note: '' }; }
+    if (sw) { const kc = parseInt(sw.kcal, 10) || 0; return { key: null, name: sw.name, grams: 0, baseG: 0, ex: zero, kcal: kc, p: Math.round(kc * 0.2 / 4), c: Math.round(kc * 0.5 / 4), f: Math.round(kc * 0.3 / 9), note: '' }; }
+    if (meal === 'snack') {
+      const sk = (pers === 'tami' ? d.snackTami : d.snackCristian).key;
+      return { ...this.fromDb(sk, this.db[sk].g), baseG: this.db[sk].g, ex: zero, note: '' };
+    }
+    const key = meal === 'lunch' ? d.lunch.key : (meal === 'breakfast' ? d.breakfast.key : d.dinner.key);
+    const base = this.fromDb(key, this.db[key].g);
+    const all = ((this.extras[String(this.state.selectedDay)] || {})[meal]) || [];
+    const own = all.filter((x) => x.who === who).reduce((a, x) => ({ g: a.g + x.g, kcal: a.kcal + x.kcal, p: a.p + x.p, c: a.c + x.c, f: a.f + x.f }), zero);
+    return { ...base, grams: base.grams + own.g, baseG: base.grams, ex: own, kcal: base.kcal + own.kcal, p: base.p + own.p, c: base.c + own.c, f: base.f + own.f, note: '' };
+  }
+  extraLines(meal) {
+    return this.extrasFor(meal).length ? ['Tami', 'Cristian'].filter((w) => this.extrasFor(meal).some((x) => x.who === w)).map((w) => {
+      const items = this.extrasFor(meal).filter((x) => x.who === w);
+      const k = items.reduce((q, x) => q + x.kcal, 0);
+      return {
+        text: (items.some((x) => x.type === 'alt') ? w + ' · ' : 'Extra für ' + w + ' · ') + items.map((x) => (x.type === '-' ? 'weniger ' : (x.type === '+' ? '+ ' : '')) + x.name.replace(/ \(roh\)/, '') + ' ' + Math.abs(x.g) + ' g' + (x.note ? ' ' + x.note : '')).join(', '),
+        kcal: (k >= 0 ? '+ ' : '− ') + Math.abs(k) + ' kcal',
+        bg: w === 'Cristian' ? 'background:#F5E3DA;' : 'background:#E3EEE6;',
+        color: w === 'Cristian' ? 'color:#8A4A34;' : 'color:#1F4D3A;'
+      };
+    }) : [];
+  }
+  macroLine(p) {
+    return (p.grams ? p.grams + ' g · ' : '') + p.kcal + ' kcal · ' + p.p + ' g Protein · ' + p.c + ' g Kohlenh. · ' + p.f + ' g Fett';
+  }
+  householdExtras(meal) { return this.extrasFor(meal); }
+  openRecipe(meal) {
+    const p = this.plannedFor(meal);
+    if (!p.key) return;
+    this.setState({ recipe: { meal, key: p.key, grams: p.baseG || p.grams, note: p.note, extras: this.householdExtras(meal) } });
+  }
+  logItem(meal) {
+    const l = this.loadLogs();
+    const m = ((l[this.logKey()] || {})[meal]) || {};
+    return (m.items || []).find((x) => x.id === 'plan-' + meal) || null;
+  }
+  writeItems(meal, items) {
+    const l = this.loadLogs();
+    const pk = this.logKey();
+    const pl = { ...(l[pk] || {}) };
+    pl[meal] = { logged: items.length > 0, name: items.map((x) => x.name).join(', '), kcal: items.reduce((s, x) => s + x.kcal, 0), items };
+    l[pk] = pl;
+    this.saveLogs(l);
+  }
+  currentItems(meal) {
+    const l = this.loadLogs();
+    const m = ((l[this.logKey()] || {})[meal]) || {};
+    return m.items ? m.items : (m.logged ? [{ id: 'old', name: m.name, amount: '', kcal: Number(m.kcal) || 0, src: 'frei' }] : []);
+  }
+  syncLog(meal, done, custom) {
+    const rest = this.currentItems(meal).filter((x) => x.id !== 'plan-' + meal);
+    if (!done) { this.writeItems(meal, rest); return; }
+    const p = custom || this.plannedFor(meal);
+    this.writeItems(meal, [...rest, { id: 'plan-' + meal, key: p.key, name: p.name, grams: p.grams, baseG: p.baseG, ex: p.ex, amount: p.grams ? p.grams + ' g' : '1 Portion', kcal: p.kcal, p: p.p, c: p.c, f: p.f, src: 'plan' }]);
+  }
+  updateLogGrams(meal, val) {
+    const g = Math.max(0, parseInt(val, 10) || 0);
+    this.writeItems(meal, this.currentItems(meal).map((x) => {
+      if (x.id !== 'plan-' + meal) return x;
+      if (x.key && this.db[x.key]) {
+        const e = x.ex || { g: 0, kcal: 0, p: 0, c: 0, f: 0 };
+        const n = this.fromDb(x.key, Math.max(0, g - e.g), x.name);
+        return { ...x, grams: g, baseG: n.grams, amount: g + ' g', kcal: n.kcal + e.kcal, p: n.p + e.p, c: n.c + e.c, f: n.f + e.f };
+      }
+      return { ...x, kcal: g };
+    }));
+  }
+  swapFor(meal) { return this.state.swaps[this.state.person + '-' + this.state.selectedDay + '-' + meal]; }
+  nameStyle(meal) {
+    const st = this.state.status[this.state.person + '-' + this.state.selectedDay + '-' + meal];
+    return st === 'skip' ? 'color:#8C8C86;text-decoration:line-through;' : (st === 'done' ? 'color:#1F4D3A;' : '');
+  }
+  scrollTop() {
+    const run = () => { try { const el = document.getElementById('vita-scroll-essensplan'); if (el) el.scrollTop = 0; } catch (e) {} };
+    run(); setTimeout(run, 0); setTimeout(run, 120);
+  }
+  readNav() { try { return JSON.parse(localStorage.getItem('vitaNav') || 'null'); } catch (e) { return null; } }
+  componentDidMount() {
+    this.scrollTop();
+    const n = this.readNav();
+    this.__navTs = n ? n.ts : 0;
+    this.__navTimer = setInterval(() => {
+      const x = this.readNav();
+      if (x && x.ts !== this.__navTs) {
+        this.__navTs = x.ts;
+        if (x.target === 'Essensplan.dc.html') this.scrollTop();
+      }
+    }, 150);
+  }
+  componentWillUnmount() { if (this.__navTimer) clearInterval(this.__navTimer); }
+  renderVals() {
+    const v = this.__navRV();
+    v.navClick = (e) => {
+      let target = '';
+      try { target = String((e && e.currentTarget && e.currentTarget.getAttribute('href')) || '').split('?')[0]; } catch (x) {}
+      try { localStorage.setItem('vitaNav', JSON.stringify({ target: target, ts: Date.now() })); } catch (x) {}
+      if (target === 'Essensplan.dc.html') this.scrollTop();
+    };
+    return v;
+  }
+  __navRV() {
+    const v = this.__nnRV();
+    const keys = ["setDraftKcal", "setCountedKcal"];
+    const clean = (e) => {
+      if (e && e.target && typeof e.target.value === 'string' && /[-−]/.test(e.target.value)) {
+        e.target.value = e.target.value.replace(/[-−]/g, '');
+      }
+    };
+    const wrapObj = (o) => {
+      keys.forEach((k) => {
+        if (typeof o[k] === 'function' && !o[k].__nn) {
+          const orig = o[k];
+          const w = (e) => { clean(e); return orig(e); };
+          w.__nn = true;
+          o[k] = w;
+        }
+      });
+    };
+    wrapObj(v);
+    Object.keys(v).forEach((k) => { if (Array.isArray(v[k])) v[k].forEach((it) => { if (it && typeof it === 'object') wrapObj(it); }); });
+    v.blockMinus = (e) => { if (e && (e.key === '-' || e.key === '−' || e.key === '+' || e.key === 'e' || e.key === 'E')) e.preventDefault(); };
+    return v;
+  }
+  __nnRV() {
+    const __v = this.__renderVals();
+    let __ls = 'tamara';
+    try { __ls = localStorage.getItem('vitaActivePerson') || 'tamara'; } catch (e) {}
+    const __cur = __ls === 'basti' ? 'cristian' : 'tami';
+    return Object.assign(__v, {
+      personSheetOpen: !!this.state.personSheet,
+      openPersonSheet: () => this.setState({ personSheet: true }),
+      closePersonSheet: () => this.setState({ personSheet: false }),
+      sheetPerson: __cur,
+      pickPersonFn: (k) => { if (k !== __cur && typeof __v.switchPerson === 'function') __v.switchPerson(); this.setState({ personSheet: false }); }
+    }, this.extraVals(__v));
+  }
+  lsGet(k, fb) { try { return JSON.parse(localStorage.getItem(k) || 'null') || fb; } catch (e) { return fb; } }
+  lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  extraVals(v) {
+    const person = this.state.person === 'cristian' ? 'cristian' : 'tami';
+    const other = person === 'tami' ? 'Cristian' : 'Tami';
+    const dayIdx = this.state.selectedDay || 0;
+    const wd = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'][dayIdx];
+    const ob = this.lsGet('vitaOnboardingData', {});
+    const sm = ob.sharedMeals || { fruehstueck: ['Sa', 'So'], mittag: ['Sa', 'So'], abend: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'] };
+    const ratings = this.lsGet('vitaRatings', {});
+    const myR = ratings[person] || {};
+    const away = this.lsGet('vitaAway', {});
+    const mealMap = { breakfast: ['fruehstueck', 'Frühstück', v.breakfastName], lunch: ['mittag', 'Mittag', v.lunchName], dinner: ['abend', 'Abend', v.dinnerName], snack: [null, 'Snack', v.snackName] };
+    const out = {};
+    const shared = (mk) => (sm[mealMap[mk][0]] || []).indexOf(wd) >= 0;
+    ['breakfast', 'lunch', 'dinner'].forEach((mk) => {
+      out[mk + 'Label'] = mealMap[mk][1] + (shared(mk) ? ' · gemeinsam' : ' · heute jeder für sich');
+    });
+    ['breakfast', 'lunch', 'dinner', 'snack'].forEach((mk) => {
+      const list = v[mk + 'Act'] || [];
+      const dish = mealMap[mk][2] || mk;
+      const r = myR[dish] || null;
+      const awayKey = person + '|' + dayIdx + '|' + mk;
+      const isAway = !!away[awayKey];
+      const setRate = (val) => {
+        const all = this.lsGet('vitaRatings', {});
+        const mine = { ...(all[person] || {}) };
+        if (mine[dish] === val) delete mine[dish]; else mine[dish] = val;
+        all[person] = mine; this.lsSet('vitaRatings', all); this.setState({ rRev: (this.state.rRev || 0) + 1 });
+      };
+      out[mk + 'Act'] = list.map((m) => ({
+        ...m,
+        upPressed: r === 'up' ? 'true' : 'false',
+        downPressed: r === 'down' ? 'true' : 'false',
+        upStyle: r === 'up' ? 'background:#F5E3DA;color:#C4532D;' : 'background:#F3F1EC;color:#6F706D;',
+        upFill: r === 'up' ? 'currentColor' : 'none',
+        downStyle: r === 'down' ? 'background:#111111;color:#FFFFFF;' : 'background:#F3F1EC;color:#6F706D;',
+        rateNote: r === 'up' ? 'Gemerkt, kommt öfter.' : (r === 'down' ? (mk !== 'snack' && shared(mk) ? 'Kommt für dich nicht mehr, auch nicht als gemeinsames Gericht.' : 'Kommt für dich nicht mehr in den Plan.') : 'Hat es geschmeckt?'),
+        rateUp: () => setRate('up'),
+        rateDown: () => setRate('down'),
+        canAway: mk !== 'snack',
+        away: isAway,
+        awayPressed: isAway ? 'true' : 'false',
+        awayStyle: isAway ? 'background:#1F4D3A;color:#FFFFFF;' : 'background:#FFFFFF;color:#1F4D3A;border:1px solid #E6E3DC;',
+        awayText: 'Du isst hier auswärts. Deine Zutaten fallen aus den Einkaufsvorschlägen' + (shared(mk) ? ', für ' + other + ' bleibt das Gericht im Plan.' : '.'),
+        toggleAway: () => {
+          const a = this.lsGet('vitaAway', {});
+          if (a[awayKey]) delete a[awayKey]; else a[awayKey] = true;
+          this.lsSet('vitaAway', a); this.setState({ aRev: (this.state.aRev || 0) + 1 });
+        }
+      }));
+    });
+    const dl = ['allergies', 'dislikes'];
+    const cookL = { einfach: 'Einfach', mittel: 'Mittel', aufwendig: 'Aufwendig' };
+    const tamiPlan = ob.foodPlan !== false;
+    const hasPlan = person === 'tami' ? tamiPlan : true;
+    out.hasFoodPlan = hasPlan;
+    out.noFoodPlan = !hasPlan;
+    out.otherName = other;
+    out.enableFoodPlan = () => { const o = this.lsGet('vitaOnboardingData', {}); o.foodPlan = true; this.lsSet('vitaOnboardingData', o); this.setState({ fpRev: (this.state.fpRev || 0) + 1 }); };
+    out.viewOtherPlan = () => { if (typeof v.switchPerson === 'function') v.switchPerson(); };
+    out.editPrefs = () => { try { localStorage.setItem('vitaEdit', JSON.stringify({ step: 'Onboarding4.dc.html', back: 'Essensplan.dc.html', ts: Date.now() })); } catch (x) {} };
+    out.prefsOpen = !!this.state.prefsOpen;
+    out.prefsExpanded = this.state.prefsOpen ? 'true' : 'false';
+    out.togglePrefs = () => this.setState({ prefsOpen: !this.state.prefsOpen });
+    out.replanned = !!this.state.replanned;
+    out.replan = () => this.setState({ replanned: true });
+    out.prefRows = [
+      { k: 'Allergien', v: (ob.allergies || []).length ? ob.allergies.join(', ') : 'keine' },
+      { k: 'Mag ich nicht', v: (ob.dislikes || ['Pilze']).join(', ') || 'nichts' },
+      { k: 'Kochzeit', v: (ob.cookTimeWeek || '30') + ' Min, am Wochenende ' + (ob.cookTimeWeekend === '60' || !ob.cookTimeWeekend ? '60+' : ob.cookTimeWeekend) + ' Min' },
+      { k: 'Kochniveau', v: cookL[ob.cookLevel || 'mittel'] },
+      { k: 'Budget', v: (ob.budget || '90') + ' € pro Woche' },
+      { k: 'Favoriten', v: Object.keys(myR).filter((k) => myR[k] === 'up').join(', ') || 'noch keine' }
+    ];
+    return out;
+  }
+  __renderVals() {
+    try {
+      const stored = localStorage.getItem('vitaActivePerson') || 'tamara';
+      const expected = stored === 'basti' ? 'cristian' : 'tami';
+      if (expected !== this.state.person) this.state.person = expected;
+    } catch (e) {}
+    const d = this.week[this.state.selectedDay];
+    const bS = this.swapFor('breakfast'), lS = this.swapFor('lunch'), dS = this.swapFor('dinner'), sS = this.swapFor('snack');
+    return {
+      plusOpen: !!this.state.plusOpen,
+      openPlus: () => this.setState({ plusOpen: true }),
+      closePlus: () => this.setState({ plusOpen: false }),
+      plusSaved: () => this.setState({ extrasRev: (this.state.extrasRev || 0) + 1 }),
+      plusPerson: this.state.person,
+      day0Style: this.dayStyle(this.state.selectedDay === 0),
+      day1Style: this.dayStyle(this.state.selectedDay === 1),
+      day2Style: this.dayStyle(this.state.selectedDay === 2),
+      day3Style: this.dayStyle(this.state.selectedDay === 3),
+      day4Style: this.dayStyle(this.state.selectedDay === 4),
+      day5Style: this.dayStyle(this.state.selectedDay === 5),
+      day6Style: this.dayStyle(this.state.selectedDay === 6),
+      pickDay0: () => this.setState({ selectedDay: 0 }),
+      pickDay1: () => this.setState({ selectedDay: 1 }),
+      pickDay2: () => this.setState({ selectedDay: 2 }),
+      pickDay3: () => this.setState({ selectedDay: 3 }),
+      pickDay4: () => this.setState({ selectedDay: 4 }),
+      pickDay5: () => this.setState({ selectedDay: 5 }),
+      pickDay6: () => this.setState({ selectedDay: 6 }),
+      breakfastName: bS ? bS.name : d.breakfast.name,
+      breakfastEmoji: this.dishEmoji(bS ? bS.name : d.breakfast.name),
+      breakfastKcal: bS ? bS.kcal : d.breakfast.kcal,
+      breakfastNameStyle: this.nameStyle('breakfast'),
+      breakfastAct: this.mealAct('breakfast', d.breakfast.name),
+      lunchNameStyle: this.nameStyle('lunch'),
+      lunchAct: this.mealAct('lunch', d.lunch.name),
+      dinnerNameStyle: this.nameStyle('dinner'),
+      dinnerAct: this.mealAct('dinner', d.dinner.name),
+      draftOwn: this.state.draftOwn,
+      draftKcal: this.state.draftKcal,
+      setDraftOwn: (e) => this.setState({ draftOwn: e.target.value }),
+      setDraftKcal: (e) => this.setState({ draftKcal: e.target.value }),
+      closeSwap: () => this.setState({ swapOpen: null }),
+      open_breakfast: () => this.openRecipe('breakfast'),
+      open_lunch: () => this.openRecipe('lunch'),
+      open_dinner: () => this.openRecipe('dinner'),
+      open_snack: () => this.openRecipe('snack'),
+      snackName: sS ? sS.name : (this.state.person === 'tami' ? d.snackTami.desc : d.snackCristian.desc),
+      snackEmoji: this.dishEmoji(sS ? sS.name : (this.state.person === 'tami' ? d.snackTami.desc : d.snackCristian.desc)),
+      snackKcal: sS ? sS.kcal : (this.state.person === 'tami' ? d.snackTami.kcal : d.snackCristian.kcal),
+      snackNameStyle: this.nameStyle('snack'),
+      snackAct: this.mealAct('snack', this.state.person === 'tami' ? d.snackTami.desc : d.snackCristian.desc),
+      snackForLine: 'Snack · für ' + this.names[this.state.person],
+      snackOtherLine: (this.state.person === 'tami' ? 'Cristian: ' + d.snackCristian.desc + ' · ' + d.snackCristian.kcal : 'Tami: ' + d.snackTami.desc + ' · ' + d.snackTami.kcal),
+      avatarInitial: this.state.person === 'tami' ? 'T' : 'C',
+      avatarStyle: this.state.person === 'tami' ? 'background:#E3EEE6;color:#1F4D3A;' : 'background:#F5E3DA;color:#C4532D;',
+      switchPerson: () => { const np = this.state.person === 'tami' ? 'cristian' : 'tami'; this.setState({ person: np, swapOpen: null }); try { localStorage.setItem('vitaActivePerson', np === 'tami' ? 'tamara' : 'basti'); } catch (e) {} },
+      switchAria: 'Person wechseln, aktuell ' + this.names[this.state.person],
+      person: this.state.person,
+      recipeOpen: !!this.state.recipe,
+      recipeDish: this.state.recipe ? this.state.recipe.key : '',
+      recipeGrams: this.state.recipe ? this.state.recipe.grams : 0,
+      recipeNote: this.state.recipe ? this.state.recipe.note : '',
+      recipeExtras: this.state.recipe ? (this.state.recipe.extras || []) : [],
+      recipeAction: this.state.selectedDay === this.todayIndex ? 'Als gegessen eintragen' : 'Als gegessen markieren',
+      closeRecipe: () => this.setState({ recipe: null }),
+      recipeAdd: (v) => {
+        const meal = this.state.recipe.meal;
+        const k = this.state.person + '-' + this.state.selectedDay + '-' + meal;
+        this.setState({ status: { ...this.state.status, [k]: 'done' } });
+        if (this.state.selectedDay === this.todayIndex) this.syncLog(meal, true, v);
+      },
+      tamiTabStyle: this.state.person === 'tami' ? 'background:#1F4D3A;color:#FFFFFF;' : 'background:none;color:#6F706D;',
+      cristianTabStyle: this.state.person === 'cristian' ? 'background:#C4532D;color:#FFFFFF;' : 'background:none;color:#6F706D;',
+      tamiPressed: this.state.person === 'tami' ? 'true' : 'false',
+      cristianPressed: this.state.person === 'cristian' ? 'true' : 'false',
+      pickTami: () => { this.setState({ person: 'tami', swapOpen: null }); try { localStorage.setItem('vitaActivePerson', 'tamara'); } catch (e) {} },
+      pickCristian: () => { this.setState({ person: 'cristian', swapOpen: null }); try { localStorage.setItem('vitaActivePerson', 'basti'); } catch (e) {} },
+      breakfastTag: d.breakfast.tag,
+      lunchName: lS ? (lS.name + ' · ' + lS.kcal) : d.lunch.name,
+      lunchEmoji: this.dishEmoji(lS ? lS.name : d.lunch.name),
+      lunchTamiDesc: d.lunch.tami.desc,
+      lunchTamiKcal: this.plannedFor('lunch', 'tami').kcal + ' kcal',
+      lunchCristianDesc: d.lunch.cristian.desc,
+      lunchCristianKcal: this.plannedFor('lunch', 'cristian').kcal + ' kcal',
+      dinnerName: dS ? dS.name : d.dinner.name,
+      dinnerEmoji: this.dishEmoji(dS ? dS.name : d.dinner.name),
+      dinnerKcal: dS ? dS.kcal : d.dinner.kcal,
+      dinnerTag: d.dinner.tag,
+      breakfastExtras: this.extraLines('breakfast'),
+      dinnerExtras: this.extraLines('dinner'),
+      breakfastExtraWho: d.bx.who, breakfastExtraText: d.bx.text, breakfastExtraKcal: d.bx.kcal,
+      breakfastExtraBg: d.bx.who === 'Cristian' ? 'background:#F5E3DA;' : 'background:#E3EEE6;',
+      breakfastExtraColor: d.bx.who === 'Cristian' ? 'color:#8A4A34;' : 'color:#1F4D3A;',
+      dinnerExtraWho: d.dx.who, dinnerExtraText: d.dx.text, dinnerExtraKcal: d.dx.kcal,
+      dinnerExtraBg: d.dx.who === 'Cristian' ? 'background:#F5E3DA;' : 'background:#E3EEE6;',
+      dinnerExtraColor: d.dx.who === 'Cristian' ? 'color:#8A4A34;' : 'color:#1F4D3A;',
+      snackCristianDesc: d.snackCristian.desc,
+      snackCristianKcal: d.snackCristian.kcal,
+      snackTamiDesc: d.snackTami.desc,
+      snackTamiKcal: d.snackTami.kcal
+    };
+  }
+}
+</script>
+</body>
+</html>

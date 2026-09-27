@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Rezept &amp; Nährwerte</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  body{margin:0;font-family:'Inter',sans-serif;color:#111111}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Geist:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+</helmet>
+<div role="dialog" aria-modal="true" aria-label="{{title}}" style="position:absolute;top:0;left:0;width:390px;height:844px;z-index:60;display:flex;flex-direction:column;justify-content:flex-end;font-family:'Inter',sans-serif;color:#111111;">
+  <button type="button" onClick="{{close}}" aria-label="Schließen" style="all:unset;position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(17,17,17,.45);cursor:pointer;"></button>
+  <div style="position:relative;height:790px;background:#F3F1EC;border-radius:24px 24px 0 0;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 -8px 30px rgba(0,0,0,.15);">
+    <div style="display:flex;justify-content:center;padding:10px 0 0;"><span style="width:40px;height:5px;border-radius:999px;background:#D3D0C8;"></span></div>
+    <div style="flex:1 1 auto;overflow-y:auto;padding:16px 20px 32px;display:flex;flex-direction:column;gap:24px;">
+
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{metaLine}}</span>
+          <h2 style="margin:0;font-family:'DM Serif Display',Georgia,serif;font-size:19px;font-weight:400;letter-spacing:-0.01em;line-height:1.25;">{{title}}</h2>
+        </div>
+        <button type="button" onClick="{{close}}" aria-label="Schließen" style="all:unset;box-sizing:border-box;cursor:pointer;width:44px;height:44px;margin:-6px -10px 0 0;display:flex;align-items:center;justify-content:center;color:#6F706D;flex:0 0 auto;">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+        </button>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button type="button" onClick="{{rateUp}}" aria-pressed="{{upPressed}}" aria-label="Hat geschmeckt" style="all:unset;box-sizing:border-box;cursor:pointer;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;{{upStyle}}"><svg viewBox="0 0 24 24" width="18" height="18" fill="{{upFill}}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"></path></svg></button>
+        <button type="button" onClick="{{rateDown}}" aria-pressed="{{downPressed}}" aria-label="Hat nicht geschmeckt" style="all:unset;box-sizing:border-box;cursor:pointer;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;{{downStyle}}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3v11M21 5v7a2 2 0 0 1-2 2h-2l-4 7a2.5 2.5 0 0 1-2.4-3.1L11.5 14H6a2 2 0 0 1-2-2.3l1.2-7A2 2 0 0 1 7.2 3H17"></path></svg></button>
+        <span style="flex:1;font-family:'Inter',sans-serif;font-size:12px;line-height:1.4;color:#6F706D;">{{rateNote}}</span>
+      </div>
+
+      <sc-if value="{{hasNote}}" hint-placeholder-val="{{false}}">
+        <span style="align-self:flex-start;font-family:'Inter',sans-serif;font-size:12px;padding:8px 12px;border-radius:10px;background:#F5E3DA;color:#8A4A34;">{{note}}</span>
+      </sc-if>
+
+      <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <label for="rezept-gramm" style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;">Deine Menge (Grundrezept)</label>
+          <button type="button" onClick="{{resetGrams}}" style="all:unset;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:4px 0;{{resetStyle}}">Laut Plan: {{planGrams}} g</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button type="button" onClick="{{less}}" aria-label="10 Gramm weniger" style="all:unset;box-sizing:border-box;flex:0 0 auto;cursor:pointer;width:44px;height:44px;border-radius:50%;border:1px solid #E6E3DC;background:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:20px;">−</button>
+          <div style="flex:1;display:flex;align-items:baseline;justify-content:center;gap:8px;background:#F3F1EC;border:1px solid #E6E3DC;border-radius:16px;padding:8px 12px;">
+            <input id="rezept-gramm" type="number" min="1" inputmode="numeric" value="{{grams}}" onInput="{{setGrams}}" onKeyDown="{{blockMinus}}" style="width:80px;border:none;background:transparent;text-align:right;font-family:'Geist',sans-serif;font-size:24px;font-weight:700;color:#111111;padding:0;">
+            <span style="font-family:'Inter',sans-serif;font-size:13px;color:#6F706D;">Gramm</span>
+          </div>
+          <button type="button" onClick="{{more}}" aria-label="10 Gramm mehr" style="all:unset;box-sizing:border-box;flex:0 0 auto;cursor:pointer;width:44px;height:44px;border-radius:50%;border:1px solid #1F4D3A;color:#1F4D3A;background:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:20px;">+</button>
+        </div>
+        <sc-if value="{{hasOwnExtras}}" hint-placeholder-val="{{false}}">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;color:#111111;">{{ownExtrasLine}}</span>
+        </sc-if>
+        <div style="display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:8px;border-top:1px solid #EDEAE3;padding-top:12px;">
+          <div style="display:flex;flex-direction:column;gap:2px;">
+            <span style="font-family:'Geist',sans-serif;font-size:18px;font-weight:700;">{{kcal}}</span>
+            <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">kcal</span>
+          </div>
+          <sc-for list="{{macros}}" as="mc" hint-placeholder-count="3">
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <span style="font-family:'Geist',sans-serif;font-size:16px;font-weight:700;">{{mc.value}} g</span>
+              <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{mc.label}}</span>
+              <div style="height:4px;border-radius:999px;background:#EDEAE3;overflow:hidden;"><div style="height:100%;border-radius:999px;{{mc.bar}}"></div></div>
+            </div>
+          </sc-for>
+        </div>
+        <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{per100}}</span>
+      </div>
+
+      <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:4px;">
+        <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;margin-bottom:4px;">Zutaten</span>
+        <sc-for list="{{ingredients}}" as="ig" hint-placeholder-count="5">
+          <div style="display:flex;align-items:center;gap:12px;padding:6px 0;border-top:1px solid #EDEAE3;">
+            <span aria-hidden="true" style="width:28px;height:28px;border-radius:50%;background:#F3F1EC;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:15px;line-height:1;">{{ig.emoji}}</span>
+            <span style="flex:1;min-width:0;font-family:'Inter',sans-serif;font-size:13px;">{{ig.name}}</span>
+            <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;white-space:nowrap;">{{ig.amount}}</span>
+          </div>
+        </sc-for>
+        <sc-for list="{{extraGroups}}" as="eg" hint-placeholder-count="1">
+          <div style="display:flex;flex-direction:column;gap:4px;margin-top:8px;border-radius:16px;padding:8px 12px;{{eg.bg}}">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Geist',sans-serif;font-size:12px;font-weight:700;{{eg.avatar}}">{{eg.initial}}</span>
+              <span style="flex:1;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{eg.titleColor}}">{{eg.title}}</span>
+              <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{eg.titleColor}}">{{eg.sum}}</span>
+            </div>
+            <sc-for list="{{eg.items}}" as="ei" hint-placeholder-count="2">
+              <div style="display:flex;align-items:center;gap:8px;padding:4px 0 4px 30px;">
+                <span aria-hidden="true" style="width:24px;height:24px;border-radius:50%;background:#FFFFFF;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:13px;line-height:1;">{{ei.emoji}}</span>
+                <span style="flex:1;min-width:0;font-family:'Inter',sans-serif;font-size:13px;">{{ei.name}}<span style="font-size:12px;color:#6F706D;">{{ei.note}}</span></span>
+                <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;white-space:nowrap;">{{ei.amount}}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px;">
+        <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;">Zubereitung</span>
+        <sc-for list="{{steps}}" as="st" hint-placeholder-count="3">
+          <div style="display:flex;gap:12px;align-items:flex-start;">
+            <span style="width:24px;height:24px;border-radius:50%;background:#E3EEE6;color:#1F4D3A;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-family:'Geist',sans-serif;font-size:12px;font-weight:700;">{{st.n}}</span>
+            <span style="font-family:'Inter',sans-serif;font-size:13px;line-height:1.5;padding-top:2px;">{{st.text}}</span>
+          </div>
+        </sc-for>
+      </div>
+
+    </div>
+    <div style="flex:0 0 auto;padding:12px 20px 22px;background:#F3F1EC;border-top:1px solid #E6E3DC;">
+      <button type="button" onClick="{{confirm}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:block;text-align:center;padding:15px;border-radius:999px;background:#1F4D3A;color:#FFFFFF;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;">{{actionText}}</button>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"dish":{"editor":"text","default":"skyr_bowl"},"grams":{"editor":"int","default":385},"person":{"editor":"enum","options":["tami","cristian"],"default":"tami"},"note":{"editor":null},"extras":{"editor":null},"actionLabel":{"editor":null},"closeFn":{"editor":null},"addFn":{"editor":null},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  ingEmoji(name) {
+    const n = String(name || '').toLowerCase() + ' ';
+    const map = [['erdnussbutter', '🥜'], ['proteinpulver', '🥤'], ['kokosmilch', '🥥'], ['süßkartoffel', '🍠'], ['kartoffel', '🥔'], ['passierte tomaten', '🥫'], ['tomate', '🍅'], ['apfel', '🍎'], ['aubergine', '🍆'], ['avocado', '🥑'], ['banane', '🍌'], ['basmatireis', '🍚'], ['reiswaffel', '🍘'], ['reis', '🍚'], ['quinoa', '🍚'], ['beeren', '🫐'], ['blattsalat', '🥬'], ['spinat', '🥬'], ['brokkoli', '🥦'], ['champignon', '🍄'], ['eier', '🥚'], ['ei ', '🥚'], ['espresso', '☕'], ['feta', '🧀'], ['frischkäse', '🧀'], ['gouda', '🧀'], ['mozzarella', '🧀'], ['brühe', '🍲'], ['gewürz', '🧂'], ['zimt', '🧂'], ['granola', '🥣'], ['haferflocken', '🥣'], ['gurke', '🥒'], ['zucchini', '🥒'], ['honig', '🍯'], ['hummus', '🫘'], ['kichererbsen', '🫘'], ['linsen', '🫘'], ['hähnchen', '🍗'], ['pute', '🍗'], ['karotte', '🥕'], ['sellerie', '🥬'], ['lachs', '🐟'], ['thunfisch', '🐟'], ['quark', '🥛'], ['skyr', '🥛'], ['joghurt', '🥛'], ['milch', '🥛'], ['mandel', '🌰'], ['walnüss', '🌰'], ['studentenfutter', '🥜'], ['olivenöl', '🫒'], ['tahini', '🫙'], ['paprika', '🫑'], ['rind', '🥩'], ['steak', '🥩'], ['wrap', '🌯'], ['nudel', '🍝'], ['brötchen', '🥯'], ['toast', '🍞'], ['brot', '🍞'], ['mehl', '🌾'], ['schokolade', '🍫'], ['zwiebel', '🧅']];
+    const hit = map.find((m) => n.indexOf(m[0]) !== -1);
+    return hit ? hit[1] : '🥄';
+  }
+  constructor(props) {
+    super(props);
+    this.db = {"porridge_banane": {"name": "Porridge mit Banane & Erdnussbutter", "meal": "breakfast", "min": 10, "g": 321, "kcal": 396, "p": 16, "c": 53, "f": 12, "ing": [["Haferflocken", 50], ["Milch 1,5 %", 200], ["Banane", 60], ["Erdnussbutter", 10], ["Zimt", 0]], "steps": ["Haferflocken mit Milch in einem Topf aufkochen.", "Bei kleiner Hitze 3 bis 4 Minuten unter Rühren quellen lassen.", "Banane in Scheiben schneiden, mit Erdnussbutter und Zimt auf das Porridge geben."]}, "ruehrei_avocado": {"name": "Rührei mit Vollkorntoast & Avocado", "meal": "breakfast", "min": 10, "g": 281, "kcal": 390, "p": 21, "c": 25, "f": 21, "ing": [["Eier", 120], ["Vollkorntoast", 50], ["Avocado", 50], ["Tomaten", 60], ["Gewürze", 0]], "steps": ["Eier verquirlen, mit Salz und Pfeffer würzen.", "In einer beschichteten Pfanne bei mittlerer Hitze stocken lassen, dabei rühren.", "Toast rösten, mit zerdrückter Avocado bestreichen, Rührei und Tomate dazu."]}, "skyr_bowl": {"name": "Skyr-Bowl mit Beeren & Haferflocken", "meal": "breakfast", "min": 5, "g": 385, "kcal": 329, "p": 32, "c": 41, "f": 3, "ing": [["Skyr", 250], ["Beeren (TK)", 100], ["Haferflocken", 30], ["Honig", 5]], "steps": ["Beeren kurz antauen lassen.", "Skyr in eine Schale geben, Beeren und Haferflocken darauf verteilen.", "Mit etwas Honig beträufeln."]}, "pancakes": {"name": "Vollkorn-Pancakes mit Quark & Beeren", "meal": "breakfast", "min": 20, "g": 360, "kcal": 363, "p": 28, "c": 39, "f": 9, "ing": [["Vollkornmehl", 40], ["Eier", 60], ["Milch 1,5 %", 80], ["Magerquark", 100], ["Beeren (TK)", 80]], "steps": ["Mehl, Ei und Milch zu einem glatten Teig verrühren, 5 Minuten ruhen lassen.", "In einer beschichteten Pfanne kleine Pancakes von beiden Seiten goldbraun backen.", "Mit Magerquark und Beeren servieren."]}, "overnight_oats": {"name": "Overnight Oats mit Banane", "meal": "breakfast", "min": 5, "g": 361, "kcal": 369, "p": 16, "c": 58, "f": 7, "ing": [["Haferflocken", 50], ["Milch 1,5 %", 150], ["Naturjoghurt 1,5 %", 80], ["Banane", 80], ["Zimt", 0]], "steps": ["Haferflocken, Milch und Joghurt in einem Glas verrühren.", "Über Nacht in den Kühlschrank stellen.", "Morgens mit Bananenscheiben und Zimt toppen."]}, "broetchen_ruehrei": {"name": "Vollkornbrötchen mit Rührei & Tomate", "meal": "breakfast", "min": 10, "g": 281, "kcal": 380, "p": 23, "c": 37, "f": 15, "ing": [["Vollkornbrötchen", 80], ["Eier", 120], ["Tomaten", 80], ["Gewürze", 0]], "steps": ["Eier verquirlen und würzen.", "In der Pfanne bei mittlerer Hitze cremig stocken lassen.", "Brötchen aufschneiden, mit Rührei und Tomatenscheiben belegen."]}, "french_toast": {"name": "French Toast mit Beeren", "meal": "breakfast", "min": 15, "g": 284, "kcal": 364, "p": 17, "c": 49, "f": 10, "ing": [["Vollkorntoast", 75], ["Eier", 60], ["Milch 1,5 %", 60], ["Beeren (TK)", 80], ["Honig", 8], ["Zimt", 0]], "steps": ["Ei, Milch und Zimt verquirlen.", "Toastscheiben darin wenden und in einer beschichteten Pfanne von beiden Seiten goldbraun braten.", "Mit warmen Beeren und etwas Honig servieren."]}, "porridge_beeren": {"name": "Porridge mit Beeren & Nüssen", "meal": "breakfast", "min": 10, "g": 340, "kcal": 383, "p": 15, "c": 47, "f": 13, "ing": [["Haferflocken", 50], ["Milch 1,5 %", 200], ["Beeren (TK)", 80], ["Walnüsse", 10]], "steps": ["Haferflocken mit Milch aufkochen und 3 bis 4 Minuten quellen lassen.", "Beeren unterheben, kurz mit erwärmen.", "Mit gehackten Walnüssen toppen."]}, "ruehrei_toast": {"name": "Rührei mit Vollkorntoast", "meal": "breakfast", "min": 10, "g": 256, "kcal": 372, "p": 22, "c": 35, "f": 15, "ing": [["Eier", 120], ["Vollkorntoast", 75], ["Tomaten", 60], ["Gewürze", 0]], "steps": ["Eier verquirlen und würzen.", "In der Pfanne bei mittlerer Hitze stocken lassen.", "Mit geröstetem Toast und Tomate servieren."]}, "skyr_granola": {"name": "Skyr mit Obst & Granola", "meal": "breakfast", "min": 5, "g": 330, "kcal": 310, "p": 25, "c": 39, "f": 5, "ing": [["Skyr", 200], ["Apfel", 100], ["Granola", 30]], "steps": ["Apfel in Würfel schneiden.", "Skyr in eine Schale geben.", "Apfel und Granola darüber verteilen."]}, "pute_reis": {"name": "Putengeschnetzeltes mit Paprika & Reis", "meal": "lunch", "min": 25, "g": 420, "kcal": 511, "p": 43, "c": 58, "f": 11, "ing": [["Putenbrust", 150], ["Paprika", 150], ["Zwiebel", 50], ["Basmatireis (roh)", 60], ["Olivenöl", 8], ["Gewürze", 0]], "steps": ["Reis nach Packungsanleitung kochen.", "Pute in Streifen schneiden und in Öl scharf anbraten, herausnehmen.", "Zwiebel und Paprika in der Pfanne 5 Minuten braten, Pute zurückgeben, würzen.", "Mit Reis anrichten."]}, "linsen_curry": {"name": "Linsen-Curry mit Basmatireis", "meal": "lunch", "min": 30, "g": 403, "kcal": 480, "p": 22, "c": 73, "f": 9, "ing": [["Rote Linsen (roh)", 60], ["Kokosmilch light", 100], ["Passierte Tomaten", 100], ["Zwiebel", 50], ["Spinat", 50], ["Basmatireis (roh)", 40], ["Gewürze", 0]], "steps": ["Zwiebel würfeln und mit Currypulver in einem Topf anschwitzen.", "Linsen, passierte Tomaten, Kokosmilch und 150 ml Wasser dazu, 15 Minuten köcheln lassen.", "Spinat unterrühren, abschmecken.", "Mit Basmatireis servieren."]}, "haehnchen_bowl": {"name": "Hähnchen-Bowl mit Ofengemüse", "meal": "lunch", "min": 35, "g": 500, "kcal": 512, "p": 42, "c": 59, "f": 11, "ing": [["Hähnchenbrust", 150], ["Zucchini", 100], ["Paprika", 100], ["Süßkartoffel", 100], ["Basmatireis (roh)", 40], ["Olivenöl", 8], ["Gewürze", 0]], "steps": ["Ofen auf 200 °C vorheizen. Gemüse und Süßkartoffel würfeln, mit Öl und Gewürzen mischen.", "25 Minuten auf dem Blech rösten.", "Reis kochen, Hähnchen würzen und in der Pfanne 6 bis 8 Minuten braten.", "Alles in einer Schale anrichten."]}, "rind_gemuesenudeln": {"name": "Rindergeschnetzeltes mit Gemüsenudeln", "meal": "lunch", "min": 25, "g": 560, "kcal": 364, "p": 38, "c": 14, "f": 17, "ing": [["Rindergeschnetzeltes", 150], ["Zucchini", 200], ["Karotten", 100], ["Champignons", 100], ["Olivenöl", 8], ["Gewürze", 0]], "steps": ["Zucchini und Karotten mit einem Spiralschneider zu Nudeln drehen.", "Rind scharf anbraten, herausnehmen.", "Champignons braten, Gemüsenudeln 2 bis 3 Minuten mitgaren.", "Rind zurückgeben und abschmecken."]}, "pasta_thunfisch": {"name": "Pasta mit Tomaten-Thunfisch-Sauce", "meal": "lunch", "min": 20, "g": 377, "kcal": 495, "p": 38, "c": 63, "f": 8, "ing": [["Vollkornnudeln (roh)", 80], ["Thunfisch (in Wasser)", 100], ["Passierte Tomaten", 150], ["Zwiebel", 40], ["Olivenöl", 5], ["Gewürze", 0]], "steps": ["Nudeln nach Packungsanleitung kochen.", "Zwiebel in Öl anschwitzen, passierte Tomaten dazu und 5 Minuten köcheln.", "Thunfisch abtropfen, unterheben und würzen.", "Mit den Nudeln mischen."]}, "steak_kartoffeln": {"name": "Gegrilltes Steak mit Ofenkartoffeln & Salat", "meal": "lunch", "min": 40, "g": 522, "kcal": 490, "p": 39, "c": 36, "f": 21, "ing": [["Rindersteak", 150], ["Kartoffeln", 200], ["Blattsalat", 80], ["Tomaten", 80], ["Olivenöl", 10], ["Gewürze", 0]], "steps": ["Kartoffeln vierteln, mit der Hälfte des Öls mischen und 30 Minuten bei 200 °C backen.", "Steak Raumtemperatur annehmen lassen, pro Seite 3 bis 4 Minuten grillen, 5 Minuten ruhen lassen.", "Salat mit Tomaten und restlichem Öl anmachen."]}, "eintopf": {"name": "Gemüse-Eintopf mit Hähnchen", "meal": "lunch", "min": 40, "g": 872, "kcal": 328, "p": 34, "c": 38, "f": 3, "ing": [["Hähnchenbrust", 120], ["Kartoffeln", 150], ["Karotten", 100], ["Knollensellerie", 60], ["Zwiebel", 40], ["Gemüsebrühe", 400], ["Gewürze", 0]], "steps": ["Gemüse und Kartoffeln würfeln, Zwiebel anschwitzen.", "Mit Brühe aufgießen und 20 Minuten köcheln lassen.", "Hähnchen in Würfeln dazugeben, 10 Minuten gar ziehen lassen, abschmecken."]}, "haehnchen_reis": {"name": "Hähnchen mit Reis & Gemüse", "meal": "lunch", "min": 25, "g": 370, "kcal": 497, "p": 43, "c": 53, "f": 11, "ing": [["Hähnchenbrust", 150], ["Basmatireis (roh)", 60], ["Brokkoli", 150], ["Olivenöl", 8], ["Gewürze", 0]], "steps": ["Reis kochen.", "Hähnchen würzen und in Öl braten.", "Brokkoli 5 Minuten dämpfen, alles anrichten."]}, "linsen_bolognese": {"name": "Linsen-Bolognese mit Vollkornnudeln", "meal": "lunch", "min": 30, "g": 427, "kcal": 552, "p": 25, "c": 87, "f": 8, "ing": [["Linsen (braun, roh)", 50], ["Vollkornnudeln (roh)", 70], ["Passierte Tomaten", 200], ["Karotten", 60], ["Zwiebel", 40], ["Olivenöl", 5], ["Gewürze", 0]], "steps": ["Zwiebel und Karotten fein würfeln und in Öl anschwitzen.", "Linsen, Tomaten und 200 ml Wasser dazu, 25 Minuten köcheln.", "Nudeln kochen und mit der Sauce servieren."]}, "lachs_quinoa": {"name": "Lachs-Bowl mit Quinoa", "meal": "lunch", "min": 25, "g": 331, "kcal": 500, "p": 33, "c": 35, "f": 25, "ing": [["Lachsfilet", 120], ["Quinoa (roh)", 50], ["Avocado", 40], ["Gurke", 80], ["Blattsalat", 40], ["Gewürze", 0]], "steps": ["Quinoa nach Packungsanleitung kochen.", "Lachs würzen und pro Seite 3 bis 4 Minuten braten.", "Gurke und Avocado schneiden, alles in einer Schale anrichten."]}, "lachs_kartoffeln": {"name": "Lachs mit Ofenkartoffeln & Brokkoli", "meal": "dinner", "min": 35, "g": 407, "kcal": 408, "p": 27, "c": 30, "f": 19, "ing": [["Lachsfilet", 100], ["Kartoffeln", 150], ["Brokkoli", 150], ["Olivenöl", 5], ["Gewürze", 0]], "steps": ["Kartoffeln vierteln, mit Öl mischen und 30 Minuten bei 200 °C backen.", "Lachs nach 15 Minuten mit aufs Blech legen.", "Brokkoli 5 Minuten dämpfen und dazu servieren."]}, "haehnchen_wrap": {"name": "Hähnchen-Wrap mit buntem Salat", "meal": "dinner", "min": 20, "g": 311, "kcal": 328, "p": 31, "c": 35, "f": 6, "ing": [["Hähnchenbrust", 100], ["Vollkorn-Wrap", 60], ["Blattsalat", 50], ["Paprika", 60], ["Naturjoghurt 1,5 %", 40], ["Gewürze", 0]], "steps": ["Hähnchen in Streifen schneiden, würzen und braten.", "Wrap kurz in der Pfanne erwärmen.", "Mit Joghurt bestreichen, Salat, Paprika und Hähnchen darauf, einrollen."]}, "ofengemuese_feta": {"name": "Ofengemüse mit Feta", "meal": "dinner", "min": 35, "g": 522, "kcal": 366, "p": 16, "c": 21, "f": 24, "ing": [["Zucchini", 150], ["Paprika", 150], ["Aubergine", 100], ["Zwiebel", 50], ["Feta", 60], ["Olivenöl", 10], ["Gewürze", 0]], "steps": ["Ofen auf 200 °C vorheizen, Gemüse grob würfeln.", "Mit Öl und Kräutern mischen, 20 Minuten rösten.", "Feta darüberbröseln und weitere 10 Minuten backen."]}, "suesskartoffel_bowl": {"name": "Süßkartoffel-Bowl mit Kichererbsen", "meal": "dinner", "min": 35, "g": 367, "kcal": 408, "p": 13, "c": 59, "f": 13, "ing": [["Süßkartoffel", 200], ["Kichererbsen (abgetropft)", 100], ["Spinat", 50], ["Tahini", 10], ["Olivenöl", 5], ["Gewürze", 0]], "steps": ["Süßkartoffel würfeln, mit Öl mischen und 25 Minuten bei 200 °C rösten.", "Kichererbsen die letzten 10 Minuten mit aufs Blech geben.", "Mit Spinat anrichten und Tahini darüber geben."]}, "omelett_brot": {"name": "Gemüse-Omelett mit Vollkornbrot", "meal": "dinner", "min": 15, "g": 323, "kcal": 349, "p": 22, "c": 25, "f": 16, "ing": [["Eier", 120], ["Paprika", 60], ["Spinat", 40], ["Champignons", 50], ["Vollkornbrot", 50], ["Olivenöl", 3]], "steps": ["Gemüse klein schneiden und in wenig Öl anbraten.", "Verquirlte Eier darüber gießen und bei kleiner Hitze stocken lassen.", "Mit Vollkornbrot servieren."]}, "pizza_gemuese": {"name": "Selbstgemachte Pizza mit viel Gemüse", "meal": "dinner", "min": 45, "g": 353, "kcal": 418, "p": 22, "c": 59, "f": 10, "ing": [["Weizenmehl", 70], ["Passierte Tomaten", 60], ["Mozzarella light", 60], ["Paprika", 60], ["Champignons", 50], ["Zucchini", 50], ["Olivenöl", 3]], "steps": ["Mehl mit 45 ml Wasser, Hefe, Salz und Öl verkneten, 30 Minuten gehen lassen.", "Dünn ausrollen, mit Tomaten bestreichen und mit Gemüse und Mozzarella belegen.", "Bei 250 °C 10 bis 12 Minuten backen."]}, "buddha_bowl": {"name": "Meal-Prep: Buddha Bowl", "meal": "dinner", "min": 35, "g": 330, "kcal": 448, "p": 17, "c": 72, "f": 11, "ing": [["Quinoa (roh)", 50], ["Kichererbsen (abgetropft)", 80], ["Süßkartoffel", 100], ["Karotten", 60], ["Blattsalat", 30], ["Tahini", 10]], "steps": ["Quinoa kochen, Süßkartoffel würfeln und 25 Minuten rösten.", "Karotten raspeln, Kichererbsen abspülen.", "In Boxen anrichten, Tahini-Dressing separat."]}, "tomatensuppe": {"name": "Tomatensuppe mit Hähnchen", "meal": "dinner", "min": 25, "g": 635, "kcal": 338, "p": 31, "c": 32, "f": 8, "ing": [["Passierte Tomaten", 300], ["Hähnchenbrust", 100], ["Zwiebel", 50], ["Gemüsebrühe", 150], ["Olivenöl", 5], ["Vollkornbrot", 30]], "steps": ["Zwiebel in Öl anschwitzen, Tomaten und Brühe dazu und 10 Minuten köcheln.", "Hähnchen würfeln, braten und in die Suppe geben.", "Abschmecken und mit Brot servieren."]}, "wrap_pute": {"name": "Wrap mit Pute & Salat", "meal": "dinner", "min": 15, "g": 310, "kcal": 321, "p": 32, "c": 34, "f": 6, "ing": [["Putenbrust", 100], ["Vollkorn-Wrap", 60], ["Blattsalat", 50], ["Tomaten", 60], ["Naturjoghurt 1,5 %", 40]], "steps": ["Pute in Streifen braten und würzen.", "Wrap mit Joghurt bestreichen.", "Mit Salat, Tomate und Pute belegen und einrollen."]}, "studentenfutter": {"name": "Studentenfutter, kleine Handvoll", "meal": "snack", "min": 1, "g": 30, "kcal": 144, "p": 4, "c": 12, "f": 9, "ing": [["Studentenfutter", 30]], "steps": ["Abwiegen und genießen."]}, "quark_shake": {"name": "Magerquark mit Honig & Haferflocken + Shake", "meal": "snack", "min": 5, "g": 525, "kcal": 529, "p": 60, "c": 52, "f": 8, "ing": [["Magerquark", 200], ["Honig", 15], ["Haferflocken", 30], ["Proteinpulver", 30], ["Milch 1,5 %", 250]], "steps": ["Quark mit Honig und Haferflocken verrühren.", "Proteinpulver mit Milch shaken."]}, "apfel_mandeln": {"name": "Apfel & Mandeln", "meal": "snack", "min": 1, "g": 165, "kcal": 168, "p": 4, "c": 19, "f": 8, "ing": [["Apfel", 150], ["Mandeln", 15]], "steps": ["Apfel in Spalten schneiden, mit Mandeln essen."]}, "joghurt_beeren": {"name": "Naturjoghurt mit Beeren", "meal": "snack", "min": 2, "g": 280, "kcal": 130, "p": 9, "c": 17, "f": 3, "ing": [["Naturjoghurt 1,5 %", 200], ["Beeren (TK)", 80]], "steps": ["Beeren antauen lassen und unter den Joghurt heben."]}, "nussmix_shake": {"name": "Nussmix, Banane & Proteinshake", "meal": "snack", "min": 5, "g": 440, "kcal": 538, "p": 38, "c": 55, "f": 18, "ing": [["Studentenfutter", 40], ["Banane", 120], ["Proteinpulver", 30], ["Milch 1,5 %", 250]], "steps": ["Proteinpulver mit Milch shaken.", "Dazu Banane und Nussmix essen."]}, "brot_pb_milch": {"name": "Vollkornbrot mit Erdnussbutter & Milch", "meal": "snack", "min": 3, "g": 360, "kcal": 436, "p": 20, "c": 51, "f": 15, "ing": [["Vollkornbrot", 90], ["Erdnussbutter", 20], ["Milch 1,5 %", 250]], "steps": ["Brot mit Erdnussbutter bestreichen.", "Mit einem Glas Milch genießen."]}, "sandwich_pute": {"name": "Vollkornsandwich mit Putenbrust & Käse", "meal": "snack", "min": 5, "g": 220, "kcal": 376, "p": 29, "c": 37, "f": 10, "ing": [["Vollkornbrot", 90], ["Putenbrust", 60], ["Gouda", 30], ["Tomaten", 40]], "steps": ["Brot mit Putenbrust, Käse und Tomate belegen.", "Zuklappen, fertig."]}, "reiswaffeln_fk": {"name": "Reiswaffeln mit Frischkäse", "meal": "snack", "min": 2, "g": 100, "kcal": 143, "p": 7, "c": 18, "f": 4, "ing": [["Reiswaffeln", 20], ["Frischkäse light", 40], ["Gurke", 40]], "steps": ["Reiswaffeln mit Frischkäse bestreichen.", "Mit Gurkenscheiben belegen."]}, "bananen_smoothie": {"name": "Bananen-Smoothie mit Haferflocken", "meal": "snack", "min": 5, "g": 460, "kcal": 403, "p": 17, "c": 63, "f": 8, "ing": [["Banane", 120], ["Haferflocken", 40], ["Milch 1,5 %", 300]], "steps": ["Alles in den Mixer geben.", "30 Sekunden cremig mixen. Ideal 1 bis 2 Stunden vor dem Training."]}, "joghurt_zimt": {"name": "Naturjoghurt mit Zimt", "meal": "snack", "min": 1, "g": 201, "kcal": 94, "p": 8, "c": 10, "f": 3, "ing": [["Naturjoghurt 1,5 %", 200], ["Zimt", 0]], "steps": ["Joghurt in eine Schale geben und mit Zimt bestreuen."]}, "protein_shake": {"name": "Proteinshake mit Milch & Haferflocken", "meal": "snack", "min": 3, "g": 370, "kcal": 403, "p": 39, "c": 40, "f": 9, "ing": [["Proteinpulver", 30], ["Milch 1,5 %", 300], ["Haferflocken", 40]], "steps": ["Alles in einen Shaker geben.", "Kräftig schütteln oder kurz mixen."]}, "schoko_espresso": {"name": "Dunkle Schokolade & Espresso", "meal": "snack", "min": 2, "g": 50, "kcal": 111, "p": 2, "c": 7, "f": 8, "ing": [["Zartbitterschokolade", 20], ["Espresso", 30]], "steps": ["Espresso zubereiten.", "Zwei Stück dunkle Schokolade dazu genießen."]}, "nussmix_milch": {"name": "Trockenfrüchte-Nussmix & Milch", "meal": "snack", "min": 1, "g": 310, "kcal": 406, "p": 16, "c": 36, "f": 22, "ing": [["Studentenfutter", 60], ["Milch 1,5 %", 250]], "steps": ["Nussmix abwiegen, mit einem Glas Milch genießen."]}, "gemuese_hummus": {"name": "Karotten- & Gurkensticks mit Hummus", "meal": "snack", "min": 5, "g": 250, "kcal": 173, "p": 6, "c": 16, "f": 9, "ing": [["Karotten", 100], ["Gurke", 100], ["Hummus", 50]], "steps": ["Karotten und Gurke in Sticks schneiden.", "Mit Hummus zum Dippen servieren."]}};
+    this.state = { grams: null };
+  }
+  renderVals() {
+    const v = this.__nnRV();
+    const keys = ["setGrams"];
+    const clean = (e) => {
+      if (e && e.target && typeof e.target.value === 'string' && /[-−]/.test(e.target.value)) {
+        e.target.value = e.target.value.replace(/[-−]/g, '');
+      }
+    };
+    const wrapObj = (o) => {
+      keys.forEach((k) => {
+        if (typeof o[k] === 'function' && !o[k].__nn) {
+          const orig = o[k];
+          const w = (e) => { clean(e); return orig(e); };
+          w.__nn = true;
+          o[k] = w;
+        }
+      });
+    };
+    wrapObj(v);
+    Object.keys(v).forEach((k) => { if (Array.isArray(v[k])) v[k].forEach((it) => { if (it && typeof it === 'object') wrapObj(it); }); });
+    v.blockMinus = (e) => { if (e && (e.key === '-' || e.key === '−' || e.key === '+' || e.key === 'e' || e.key === 'E')) e.preventDefault(); };
+    return v;
+  }
+  __nnRV() {
+    const v = this.__renderVals();
+    const person = this.props.person === 'cristian' ? 'cristian' : 'tami';
+    let all = {};
+    try { all = JSON.parse(localStorage.getItem('vitaRatings') || '{}') || {}; } catch (e) { all = {}; }
+    const dish = v.title;
+    const r = (all[person] || {})[dish] || null;
+    const setRate = (val) => {
+      let a = {};
+      try { a = JSON.parse(localStorage.getItem('vitaRatings') || '{}') || {}; } catch (e) { a = {}; }
+      const mine = { ...(a[person] || {}) };
+      if (mine[dish] === val) delete mine[dish]; else mine[dish] = val;
+      a[person] = mine;
+      try { localStorage.setItem('vitaRatings', JSON.stringify(a)); } catch (e) {}
+      this.setState({ rRev: (this.state && this.state.rRev || 0) + 1 });
+    };
+    return Object.assign(v, {
+      upPressed: r === 'up' ? 'true' : 'false',
+      downPressed: r === 'down' ? 'true' : 'false',
+      upStyle: r === 'up' ? 'background:#F5E3DA;color:#C4532D;' : 'background:#FFFFFF;color:#6F706D;',
+      upFill: r === 'up' ? 'currentColor' : 'none',
+      downStyle: r === 'down' ? 'background:#111111;color:#FFFFFF;' : 'background:#FFFFFF;color:#6F706D;',
+      rateNote: r === 'up' ? 'In deinen Favoriten, kommt öfter.' : (r === 'down' ? 'Kommt für dich nicht mehr in den Plan.' : 'Hat es dir geschmeckt?'),
+      rateUp: () => setRate('up'),
+      rateDown: () => setRate('down')
+    });
+  }
+  __renderVals() {
+    const key = this.db[this.props.dish] ? this.props.dish : 'skyr_bowl';
+    const r = this.db[key];
+    const planGrams = Math.round(Number(this.props.grams) || r.g);
+    const grams = this.state.grams === null ? planGrams : Math.max(0, Math.round(Number(this.state.grams) || 0));
+    const fct = r.g ? grams / r.g : 0;
+    const who = this.props.person === 'cristian' ? 'Cristian' : 'Tami';
+    const extras = Array.isArray(this.props.extras) ? this.props.extras.filter((x) => x && x.who && x.name) : [];
+    const mine = extras.filter((x) => x.who === who);
+    const ex = mine.reduce((a, x) => ({ g: a.g + x.g, kcal: a.kcal + x.kcal, p: a.p + x.p, c: a.c + x.c, f: a.f + x.f }), { g: 0, kcal: 0, p: 0, c: 0, f: 0 });
+    const kcal = Math.round(r.kcal * fct) + ex.kcal, p = Math.round(r.p * fct) + ex.p, c = Math.round(r.c * fct) + ex.c, fat = Math.round(r.f * fct) + ex.f;
+    const mealLabels = { breakfast: 'Frühstück', lunch: 'Mittag', dinner: 'Abend', snack: 'Snack' };
+    const maxM = Math.max(p, c, fat, 1);
+    const close = () => { if (typeof this.props.closeFn === 'function') this.props.closeFn(); };
+    const unit = (n) => (/Milch|Brühe|Kokosmilch|Espresso/.test(n) ? ' ml' : ' g');
+    const people = ['Tami', 'Cristian'].filter((w) => extras.some((x) => x.who === w));
+    const extraGroups = people.map((w) => {
+      const items = extras.filter((x) => x.who === w);
+      const sumK = items.reduce((q, x) => q + x.kcal, 0);
+      const isT = w === 'Tami';
+      return {
+        initial: w.charAt(0),
+        title: (items.some((x) => x.type === 'alt') ? 'Für ' : 'Extra für ') + w + (w === who ? ' (du)' : ''),
+        sum: (sumK >= 0 ? '+ ' : '− ') + Math.abs(sumK) + ' kcal',
+        bg: isT ? 'background:#F7F6F2;border:1px solid #E3E0D8;' : 'background:#FFF3EE;border:1px solid #FFD2C2;',
+        avatar: isT ? 'background:#E3EEE6;color:#1F4D3A;' : 'background:#F5E3DA;color:#C4532D;',
+        titleColor: isT ? 'color:#1F4D3A;' : 'color:#A63A1E;',
+        items: items.map((x) => ({
+          emoji: this.ingEmoji(x.name),
+          name: (x.type === '-' ? 'weniger ' : (x.type === '+' ? '+ ' : '')) + x.name,
+          note: x.note ? ' · ' + x.note : '',
+          amount: (x.type === '-' ? '− ' : '') + Math.abs(x.g) + unit(x.name)
+        }))
+      };
+    });
+    return {
+      title: r.name,
+      metaLine: mealLabels[r.meal] + ' · ' + r.min + ' Min · für ' + who,
+      hasNote: !!this.props.note && extras.length === 0,
+      note: this.props.note || '',
+      grams: grams,
+      planGrams: planGrams,
+      resetStyle: grams === planGrams ? 'color:#8C8C86;' : 'color:#1F4D3A;text-decoration:underline;',
+      resetGrams: () => this.setState({ grams: null }),
+      setGrams: (e) => this.setState({ grams: e.target.value }),
+      less: () => this.setState({ grams: Math.max(10, grams - 10) }),
+      more: () => this.setState({ grams: grams + 10 }),
+      hasOwnExtras: mine.length > 0,
+      ownExtrasLine: 'Plus deine Extras: ' + mine.map((x) => (x.type === '-' ? 'weniger ' : '') + x.name.replace(/ \(roh\)/, '')).join(', ') + ' (' + (ex.kcal >= 0 ? '+' : '−') + Math.abs(ex.kcal) + ' kcal). In den Werten unten schon drin.',
+      kcal: kcal,
+      macros: [['Protein', p, '#1F4D3A'], ['Kohlenh.', c, '#7FA86A'], ['Fett', fat, '#C9B79C']].map((m) => ({ label: m[0], value: m[1], bar: 'width:' + Math.round(m[1] / maxM * 100) + '%;background:' + m[2] + ';' })),
+      per100: 'Grundrezept pro 100 g: ' + Math.round(r.kcal / r.g * 100) + ' kcal · ' + (r.p / r.g * 100).toFixed(1).replace('.', ',') + ' g Protein · ' + (r.c / r.g * 100).toFixed(1).replace('.', ',') + ' g Kohlenhydrate · ' + (r.f / r.g * 100).toFixed(1).replace('.', ',') + ' g Fett',
+      ingredients: r.ing.map((i) => ({ emoji: this.ingEmoji(i[0]), name: i[0], amount: i[1] ? (Math.round(i[1] * fct) + unit(i[0])) : 'nach Geschmack' })),
+      extraGroups: extraGroups,
+      steps: r.steps.map((s, i) => ({ n: i + 1, text: s })),
+      close: close,
+      actionText: this.props.actionLabel || 'Eintragen',
+      confirm: () => {
+        if (typeof this.props.addFn === 'function') this.props.addFn({ key: key, name: r.name, grams: grams + ex.g, baseG: grams, ex: ex, kcal: kcal, p: p, c: c, f: fat });
+        close();
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Onboarding: Aktivität</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  body{margin:0;background:#F3F1EC;font-family:'Inter',sans-serif;color:#111111}
+  a{color:#1F4D3A}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Geist:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;background:#F3F1EC;display:flex;flex-direction:column;overflow:hidden;">
+  <div style="flex:1 1 auto;overflow-y:auto;padding:48px 20px 32px;display:flex;flex-direction:column;gap:32px;">
+
+    <sc-if value="{{notEdit}}" hint-placeholder-val="{{true}}">
+    <div style="display:flex;gap:8px;">
+      <div style="flex:1;height:4px;border-radius:999px;background:#1F4D3A;"></div>
+      <div style="flex:1;height:4px;border-radius:999px;background:#1F4D3A;"></div>
+      <div style="flex:1;height:4px;border-radius:999px;background:#E6E3DC;"></div>
+      <div style="flex:1;height:4px;border-radius:999px;background:#E6E3DC;"></div>
+    </div>
+    </sc-if>
+
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#6F706D;">{{stepLabel}}</span>
+      <h1 style="margin:0;font-family:'DM Serif Display',Georgia,serif;font-size:32px;font-weight:400;letter-spacing:-0.01em;">Deine Aktivität</h1>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <label style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Sportart(en)</label>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        <button type="button" onClick="{{toggleFitness}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{fitnessStyle}}">Fitnessstudio</button>
+        <button type="button" onClick="{{toggleYoga}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{yogaStyle}}">Yoga</button>
+        <button type="button" onClick="{{toggleLaufen}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{laufenStyle}}">Laufen</button>
+        <button type="button" onClick="{{toggleSonstiges}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{sonstigesStyle}}">Sonstiges</button>
+      </div>
+      <sc-if value="{{sonstigesSel}}" hint-placeholder-val="{{true}}">
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Wähle aus der Liste (Mehrfachauswahl möglich):</span>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <button type="button" onClick="{{toggleSchwimmen}}" style="padding:8px 12px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{schwimmenStyle}}">Schwimmen</button>
+            <button type="button" onClick="{{toggleRadfahren}}" style="padding:8px 12px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{radfahrenStyle}}">Radfahren</button>
+            <button type="button" onClick="{{toggleFussball}}" style="padding:8px 12px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{fussballStyle}}">Fußball</button>
+            <button type="button" onClick="{{toggleKlettern}}" style="padding:8px 12px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{kletternStyle}}">Klettern</button>
+            <button type="button" onClick="{{toggleBoxen}}" style="padding:8px 12px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{boxenStyle}}">Boxen</button>
+            <button type="button" onClick="{{toggleTennis}}" style="padding:8px 12px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{tennisStyle}}">Tennis</button>
+            <button type="button" onClick="{{toggleWandern}}" style="padding:8px 12px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{wandernStyle}}">Wandern</button>
+            <button type="button" onClick="{{toggleTanzen}}" style="padding:8px 12px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{tanzenStyle}}">Tanzen</button>
+            <button type="button" onClick="{{togglePilates}}" style="padding:8px 12px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{pilatesStyle}}">Pilates</button>
+            <button type="button" onClick="{{toggleCrossfit}}" style="padding:8px 12px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{crossfitStyle}}">Crossfit</button>
+          </div>
+          <label for="sportnote" style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Nicht dabei? Eigene Sportart hinzufügen</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input id="sportnote" type="text" placeholder="z.B. Kampfsport, Reiten" value="{{draftSport}}" onInput="{{setDraftSport}}" style="flex:1;box-sizing:border-box;padding:12px 16px;border-radius:16px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+            <button type="button" onClick="{{addCustomSport}}" style="all:unset;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#FFFFFF;background:#1F4D3A;padding:12px 16px;border-radius:999px;white-space:nowrap;">Hinzufügen</button>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <sc-for list="{{customChips}}" as="c" hint-placeholder-count="1">
+              <button type="button" onClick="{{c.remove}}" aria-label="{{c.aria}}" style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid #1F4D3A;background:#1F4D3A;color:#FFFFFF;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">{{c.label}}<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+
+    <sc-if value="{{hasSports}}" hint-placeholder-val="{{true}}">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">An welchen Tagen trainierst du?</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;line-height:1.45;">Tipp die Tage an. Daraus ergibt sich, wie oft pro Woche. Dein Trainings- und Essensplan richtet sich danach, an Sporttagen gibt es mehr zu essen.</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <sc-for list="{{freqRows}}" as="r" hint-placeholder-count="2">
+            <div style="background:#FFFFFF;border:1px solid #E6E3DC;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px;">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;">
+                <span style="font-family:'Inter',sans-serif;font-size:14px;font-weight:600;">{{r.label}}</span>
+                <span style="font-family:'Geist',sans-serif;font-size:13px;font-weight:700;{{r.countStyle}}">{{r.countLabel}}</span>
+              </div>
+              <div style="display:flex;gap:4px;">
+                <sc-for list="{{r.days}}" as="dd" hint-placeholder-count="7">
+                  <button type="button" onClick="{{dd.toggle}}" aria-pressed="{{dd.pressed}}" aria-label="{{dd.aria}}" style="all:unset;box-sizing:border-box;cursor:pointer;flex:1;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;{{dd.style}}">{{dd.short}}</button>
+                </sc-for>
+              </div>
+              <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{r.burn}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Soll die App einen Trainingsplan für dich erstellen?</span>
+        <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Passend zu deinem Ziel, deinem Körperfokus und deinem Sport. Du kannst das später jederzeit ändern.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button type="button" onClick="{{pickPlanFull}}" style="text-align:left;padding:12px 16px;border-radius:16px;border:1px solid #E6E3DC;cursor:pointer;display:flex;flex-direction:column;gap:2px;{{planFullStyle}}">
+          <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Ja, kompletter Plan</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;opacity:.85;">Geräte mit Bild, Übungen, Sätze und Wiederholungen pro Tag</span>
+        </button>
+        <button type="button" onClick="{{pickPlanTips}}" style="text-align:left;padding:12px 16px;border-radius:16px;border:1px solid #E6E3DC;cursor:pointer;display:flex;flex-direction:column;gap:2px;{{planTipsStyle}}">
+          <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Nur Ergänzungen zu meinem Sport</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;opacity:.85;">z.B. 30 Min Bauchworkout nach dem Fußball</span>
+        </button>
+        <button type="button" onClick="{{pickPlanNone}}" style="text-align:left;padding:12px 16px;border-radius:16px;border:1px solid #E6E3DC;cursor:pointer;display:flex;flex-direction:column;gap:2px;{{planNoneStyle}}">
+          <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Nein, ich trainiere nach eigenem Plan</span>
+        </button>
+      </div>
+    </div>
+
+    <sc-if value="{{yogaSel}}" hint-placeholder-val="{{true}}">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Welchen Yoga-Stil machst du meistens?</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;line-height:1.45;">Danach richtet sich, wie viel Verbrauch wir für eine Einheit einplanen.</span>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <sc-for list="{{yogaOpts}}" as="o" hint-placeholder-count="3">
+            <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}" style="flex:1;padding:12px 8px;border-radius:16px;border:1px solid #E6E3DC;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;{{o.style}}"><span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">{{o.label}}</span><span style="font-family:'Inter',sans-serif;font-size:12px;opacity:.85;">{{o.sub}}</span></button>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{wantsPlan}}" hint-placeholder-val="{{true}}">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Wie lange trainierst du schon mit Gewichten?</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;line-height:1.45;">Bestimmt, welche Übungen und wie viele Sätze dein Plan bekommt.</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <sc-for list="{{expOpts}}" as="o" hint-placeholder-count="3">
+            <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}" style="text-align:left;padding:12px 16px;border-radius:16px;border:1px solid #E6E3DC;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;{{o.style}}"><span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">{{o.label}}</span><span style="font-family:'Inter',sans-serif;font-size:12px;opacity:.85;">{{o.sub}}</span></button>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Wo trainierst du?</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;line-height:1.45;">Mehrfachauswahl. Wir planen nur Übungen, die du dort machen kannst.</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <sc-for list="{{placeOpts}}" as="o" hint-placeholder-count="3">
+            <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{o.style}}">{{o.label}}</button>
+          </sc-for>
+        </div>
+        <sc-if value="{{homeSel}}" hint-placeholder-val="{{false}}">
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Was hast du zu Hause?</span>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+              <sc-for list="{{equipOpts}}" as="o" hint-placeholder-count="4">
+                <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}" style="padding:8px 12px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{o.style}}">{{o.label}}</button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Gibt es Einschränkungen?</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;line-height:1.45;">Übungen, die diese Stellen stark belasten, ersetzen wir. Bei Schmerzen lass das bitte ärztlich abklären.</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <sc-for list="{{limitOpts}}" as="o" hint-placeholder-count="5">
+            <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}" style="padding:8px 12px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{o.style}}">{{o.label}}</button>
+          </sc-for>
+        </div>
+        <sc-if value="{{limitOtherSel}}" hint-placeholder-val="{{false}}">
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <label for="limitnote" style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Was genau?</label>
+            <input id="limitnote" type="text" placeholder="z.B. Bandscheibenvorfall 2024" value="{{limitNote}}" onInput="{{setLimitNote}}" style="box-sizing:border-box;width:100%;padding:12px 16px;border-radius:16px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <label style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Alltagsaktivität</label>
+      <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Was trifft überwiegend zu? Beeinflusst auch dein Kalorienziel. Besonderheiten kannst du unten ergänzen.</p>
+      <div style="display:flex;gap:8px;">
+        <button type="button" onClick="{{pickSitzend}}" style="flex:1;padding:12px 8px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;{{sitzendStyle}}">Sitzend</button>
+        <button type="button" onClick="{{pickStehend}}" style="flex:1;padding:12px 8px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;{{stehendStyle}}">Stehend/laufend</button>
+        <button type="button" onClick="{{pickBewegt}}" style="flex:1;padding:12px 8px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;{{bewegtStyle}}">Viel Bewegung</button>
+      </div>
+      <label for="activitynote" style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;margin-top:4px;">Ergänzung (optional)</label>
+      <input id="activitynote" type="text" placeholder="z.B. Bürojob, aber viel Bewegung durch Hund" value="{{activityNote}}" onInput="{{setActivityNote}}" style="box-sizing:border-box;width:100%;padding:12px 16px;border-radius:16px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+    </div>
+
+  </div>
+
+  <div style="flex:0 0 auto;padding:14px 24px 20px;background:#F3F1EC;display:flex;gap:16px;align-items:center;">
+    <sc-if value="{{notEdit}}" hint-placeholder-val="{{true}}">
+      <a href="{{backHref}}" style="text-decoration:none;color:#6F706D;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;padding:16px 4px;">Zurück</a>
+      <a href="{{nextHref}}" style="flex:1;display:block;text-decoration:none;text-align:center;background:#1F4D3A;color:#FFFFFF;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;padding:15px;border-radius:999px;">Weiter</a>
+    </sc-if>
+    <sc-if value="{{isEdit}}" hint-placeholder-val="{{false}}">
+      <a href="{{editBackHref}}" onClick="{{finishEdit}}" style="flex:1;display:block;text-decoration:none;text-align:center;background:#1F4D3A;color:#FFFFFF;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;padding:15px;border-radius:999px;">Fertig</a>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.incoming = this.parseD();
+    const d = this.incoming;
+    this.state = {
+      sports: d.sports || { fitness: true, yoga: true, laufen: false, sonstiges: false },
+      activity: d.activity || 'sitzend',
+      extraSports: d.extraSports || {
+        schwimmen: false, radfahren: false, fussball: false, klettern: false, boxen: false,
+        tennis: false, wandern: false, tanzen: false, pilates: false, crossfit: false
+      },
+      days: d.days || { fitness: ['Mo', 'Mi', 'Fr'], yoga: ['Di', 'Sa'] },
+      customSports: d.customSports || [],
+      draftSport: '',
+      activityNote: d.activityNote || '',
+      planWish: d.planWish || 'full',
+      yogaStyle: d.yogaStyle || 'flow',
+      experience: d.experience || 'fortgeschritten',
+      places: d.places || ['studio'],
+      equipment: d.equipment || ['matte'],
+      limits: d.limits || [],
+      limitNote: d.limitNote || ''
+    };
+    this.labels = { fitness: 'Fitnessstudio', yoga: 'Yoga', laufen: 'Laufen', schwimmen: 'Schwimmen', radfahren: 'Radfahren', fussball: 'Fußball', klettern: 'Klettern', boxen: 'Boxen', tennis: 'Tennis', wandern: 'Wandern', tanzen: 'Tanzen', pilates: 'Pilates', crossfit: 'Crossfit' };
+    this.weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+    this.burnPerSession = { fitness: 350, yoga: 200, laufen: 450, schwimmen: 400, radfahren: 400, fussball: 650, klettern: 400, boxen: 550, tennis: 450, wandern: 400, tanzen: 300, pilates: 200, crossfit: 550 };
+  }
+  toggleDay(k, day) {
+    const cur = this.state.days[k] || [];
+    const next = cur.indexOf(day) >= 0 ? cur.filter((x) => x !== day) : this.weekdays.filter((w) => w === day || cur.indexOf(w) >= 0);
+    this.setState({ days: { ...this.state.days, [k]: next } });
+  }
+  addCustomSport() {
+    const label = (this.state.draftSport || '').trim();
+    if (!label) return;
+    const key = 'custom_' + label.toLowerCase().replace(/[^a-z0-9äöüß]+/g, '_');
+    if (this.state.customSports.some((c) => c.key === key)) { this.setState({ draftSport: '' }); return; }
+    this.setState({ customSports: [...this.state.customSports, { key, label }], draftSport: '' });
+  }
+  removeCustomSport(key) {
+    const days = { ...this.state.days }; delete days[key];
+    this.setState({ customSports: this.state.customSports.filter((c) => c.key !== key), days });
+  }
+  labelFor(k) {
+    if (this.labels[k]) return this.labels[k];
+    const c = this.state.customSports.find((x) => x.key === k);
+    return c ? c.label : k;
+  }
+  selectedSportKeys() {
+    const s = this.state.sports, ex = this.state.extraSports;
+    const main = ['fitness', 'yoga', 'laufen'].filter((k) => s[k]);
+    const extra = s.sonstiges ? Object.keys(ex).filter((k) => ex[k]) : [];
+    const custom = s.sonstiges ? this.state.customSports.map((c) => c.key) : [];
+    return main.concat(extra, custom);
+  }
+  editInfo() { try { const e = JSON.parse(localStorage.getItem('vitaEdit') || 'null'); return e && e.step === 'Onboarding3.dc.html' ? e : null; } catch (x) { return null; } }
+  parseD() {
+    if (this.editInfo()) { try { return JSON.parse(localStorage.getItem('vitaOnboardingData') || '{}') || {}; } catch (x) { return {}; } }
+    let stored = {};
+    try { stored = JSON.parse(localStorage.getItem('vitaOnboardingData') || '{}') || {}; } catch (e) { stored = {}; }
+    try {
+      const params = new URLSearchParams(__vitaLoc.search);
+      const raw = params.get('d');
+      return raw ? { ...stored, ...JSON.parse(raw) } : stored;
+    } catch (e) { return stored; }
+  }
+  saveLS(full) {
+    try { localStorage.setItem('vitaOnboardingData', JSON.stringify(full)); } catch (e) {}
+  }
+  toggleSport(k) {
+    const next = { ...this.state.sports, [k]: !this.state.sports[k] };
+    this.setState({ sports: next });
+  }
+  toggleExtra(k) {
+    const next = { ...this.state.extraSports, [k]: !this.state.extraSports[k] };
+    this.setState({ extraSports: next });
+  }
+  setActivity(a) { this.setState({ activity: a }); }
+  selStyle(active) {
+    return active
+      ? 'background:#1F4D3A;color:#FFFFFF;border-color:#1F4D3A;'
+      : 'background:#FFFFFF;color:#111111;border-color:#E6E3DC;';
+  }
+  componentDidMount() {
+    const e0 = this.editInfo();
+    this.__editTs = e0 ? e0.ts : 0;
+    this.__editPoll = setInterval(() => {
+      const e = this.editInfo();
+      const ts = e ? e.ts : 0;
+      if (ts !== this.__editTs) {
+        this.__editTs = ts;
+        if (e) {
+          const fresh = new this.constructor(this.props);
+          this.incoming = fresh.incoming;
+          this.setState(fresh.state);
+        } else this.forceUpdate();
+      }
+    }, 200);
+  }
+  componentWillUnmount() { if (this.__editPoll) clearInterval(this.__editPoll); }
+  renderVals() {
+    const v = this.__edRV();
+    const e = this.editInfo();
+    v.isEdit = !!e;
+    v.notEdit = !e;
+    v.stepLabel = e ? 'Einstellungen' : 'Schritt 2 von 4';
+    v.editBackHref = e ? (e.back || 'Profil.dc.html') : 'Profil.dc.html';
+    v.finishEdit = () => { try { localStorage.removeItem('vitaEdit'); } catch (x) {} };
+    return v;
+  }
+  __edRV() {
+    const s = this.state.sports;
+    const a = this.state.activity;
+    const ex = this.state.extraSports;
+    const keys = this.selectedSportKeys();
+    const days = this.state.days;
+    const freq = {};
+    keys.forEach((k) => { freq[k] = (days[k] || []).length; });
+    const pw = this.state.planWish;
+    const st = this.state;
+    const full = { ...this.incoming, sports: s, activity: a, extraSports: ex, freq: freq, days: days, customSports: this.state.customSports, activityNote: this.state.activityNote, planWish: pw,
+      yogaStyle: st.yogaStyle, experience: st.experience, places: st.places, equipment: st.equipment, limits: st.limits, limitNote: st.limitNote };
+    const togg = (field, v) => {
+      const cur = this.state[field];
+      if (field === 'limits' && v === 'keine') { this.setState({ limits: cur.indexOf('keine') >= 0 ? [] : ['keine'] }); return; }
+      let next = cur.indexOf(v) >= 0 ? cur.filter((x) => x !== v) : cur.concat([v]);
+      if (field === 'limits') next = next.filter((x) => x !== 'keine');
+      this.setState({ [field]: next });
+    };
+    const single = (field, list) => list.map((o) => ({ ...o, pressed: st[field] === o.key ? 'true' : 'false', style: this.selStyle(st[field] === o.key), pick: () => this.setState({ [field]: o.key }) }));
+    const multi = (field, list) => list.map((o) => { const on = st[field].indexOf(o.key) >= 0; return { ...o, pressed: on ? 'true' : 'false', style: this.selStyle(on), pick: () => togg(field, o.key) }; });
+    this.saveLS(full);
+    const backHref = 'Onboarding2.dc.html?d=' + encodeURIComponent(JSON.stringify(full));
+    const nextHref = 'Onboarding4.dc.html?d=' + encodeURIComponent(JSON.stringify(full));
+    return {
+      fitnessStyle: this.selStyle(s.fitness),
+      yogaStyle: this.selStyle(s.yoga),
+      laufenStyle: this.selStyle(s.laufen),
+      sonstigesStyle: this.selStyle(s.sonstiges),
+      sonstigesSel: s.sonstiges,
+      toggleFitness: () => this.toggleSport('fitness'),
+      toggleYoga: () => this.toggleSport('yoga'),
+      toggleLaufen: () => this.toggleSport('laufen'),
+      toggleSonstiges: () => this.toggleSport('sonstiges'),
+      schwimmenStyle: this.selStyle(ex.schwimmen),
+      toggleSchwimmen: () => this.toggleExtra('schwimmen'),
+      radfahrenStyle: this.selStyle(ex.radfahren),
+      toggleRadfahren: () => this.toggleExtra('radfahren'),
+      fussballStyle: this.selStyle(ex.fussball),
+      toggleFussball: () => this.toggleExtra('fussball'),
+      kletternStyle: this.selStyle(ex.klettern),
+      toggleKlettern: () => this.toggleExtra('klettern'),
+      boxenStyle: this.selStyle(ex.boxen),
+      toggleBoxen: () => this.toggleExtra('boxen'),
+      tennisStyle: this.selStyle(ex.tennis),
+      toggleTennis: () => this.toggleExtra('tennis'),
+      wandernStyle: this.selStyle(ex.wandern),
+      toggleWandern: () => this.toggleExtra('wandern'),
+      tanzenStyle: this.selStyle(ex.tanzen),
+      toggleTanzen: () => this.toggleExtra('tanzen'),
+      pilatesStyle: this.selStyle(ex.pilates),
+      togglePilates: () => this.toggleExtra('pilates'),
+      crossfitStyle: this.selStyle(ex.crossfit),
+      toggleCrossfit: () => this.toggleExtra('crossfit'),
+      sitzendStyle: this.selStyle(a === 'sitzend'),
+      stehendStyle: this.selStyle(a === 'stehend'),
+      bewegtStyle: this.selStyle(a === 'bewegt'),
+      pickSitzend: () => this.setActivity('sitzend'),
+      pickStehend: () => this.setActivity('stehend'),
+      pickBewegt: () => this.setActivity('bewegt'),
+      hasSports: keys.length > 0,
+      freqRows: keys.map((k) => {
+        const sel = days[k] || [];
+        const label = this.labelFor(k);
+        return {
+          label: label,
+          countLabel: sel.length ? sel.length + 'x pro Woche' : 'Tage wählen',
+          countStyle: sel.length ? 'color:#1F4D3A;' : 'color:#B4531A;',
+          burn: k === 'yoga' ? ('ca. ' + (st.yogaStyle === 'sanft' ? 160 : 260) + ' kcal pro Einheit (' + (st.yogaStyle === 'sanft' ? 'Sanft' : st.yogaStyle === 'power' ? 'Power' : 'Flow') + ')') : this.burnPerSession[k] ? ('ca. ' + this.burnPerSession[k] + ' kcal pro Einheit') : 'Verbrauch schätzen wir mit ca. 350 kcal pro Einheit',
+          days: this.weekdays.map((w) => {
+            const on = sel.indexOf(w) >= 0;
+            return {
+              short: w,
+              pressed: on ? 'true' : 'false',
+              aria: label + ' am ' + w,
+              style: on ? 'background:#1F4D3A;color:#FFFFFF;' : 'background:#F3F1EC;color:#6F706D;border:1px solid #E6E3DC;',
+              toggle: () => this.toggleDay(k, w)
+            };
+          })
+        };
+      }),
+      draftSport: this.state.draftSport,
+      setDraftSport: (e) => this.setState({ draftSport: e.target.value }),
+      addCustomSport: () => this.addCustomSport(),
+      customChips: this.state.customSports.map((c) => ({ label: c.label, aria: c.label + ' entfernen', remove: () => this.removeCustomSport(c.key) })),
+      activityNote: this.state.activityNote,
+      setActivityNote: (e) => this.setState({ activityNote: e.target.value }),
+      planFullStyle: this.selStyle(pw === 'full'),
+      planTipsStyle: this.selStyle(pw === 'tips'),
+      planNoneStyle: this.selStyle(pw === 'none'),
+      pickPlanFull: () => this.setState({ planWish: 'full' }),
+      pickPlanTips: () => this.setState({ planWish: 'tips' }),
+      pickPlanNone: () => this.setState({ planWish: 'none' }),
+      wantsPlan: pw !== 'none',
+      yogaSel: !!s.yoga,
+      yogaOpts: single('yogaStyle', [
+        { key: 'sanft', label: 'Sanft', sub: 'Hatha, Yin' },
+        { key: 'flow', label: 'Flow', sub: 'Vinyasa' },
+        { key: 'power', label: 'Power', sub: 'Ashtanga, Power' }
+      ]),
+      expOpts: single('experience', [
+        { key: 'einsteiger', label: 'Einsteiger', sub: 'unter 6 Monate' },
+        { key: 'fortgeschritten', label: 'Fortgeschritten', sub: '6 Monate bis 2 Jahre' },
+        { key: 'erfahren', label: 'Erfahren', sub: 'über 2 Jahre' }
+      ]),
+      placeOpts: multi('places', [
+        { key: 'studio', label: 'Fitnessstudio' },
+        { key: 'home', label: 'Zu Hause' },
+        { key: 'draussen', label: 'Draußen' }
+      ]),
+      homeSel: st.places.indexOf('home') >= 0,
+      equipOpts: multi('equipment', [
+        { key: 'matte', label: 'Matte' },
+        { key: 'kurzhanteln', label: 'Kurzhanteln' },
+        { key: 'baender', label: 'Widerstandsbänder' },
+        { key: 'kettlebell', label: 'Kettlebell' },
+        { key: 'klimmzug', label: 'Klimmzugstange' },
+        { key: 'nichts', label: 'Keine Geräte' }
+      ]),
+      limitOpts: multi('limits', [
+        { key: 'keine', label: 'Keine' },
+        { key: 'knie', label: 'Knie' },
+        { key: 'ruecken', label: 'Rücken' },
+        { key: 'schulter', label: 'Schulter' },
+        { key: 'handgelenk', label: 'Handgelenk' },
+        { key: 'sonstiges', label: 'Sonstiges' }
+      ]),
+      limitOtherSel: st.limits.indexOf('sonstiges') >= 0,
+      limitNote: st.limitNote,
+      setLimitNote: (e) => this.setState({ limitNote: e.target.value }),
+      backHref: backHref,
+      nextHref: nextHref
+    };
+  }
+}
+</script>
+</body>
+</html>

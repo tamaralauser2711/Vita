@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Onboarding: Zusammenfassung</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  body{margin:0;background:#F3F1EC;font-family:'Inter',sans-serif;color:#111111}
+  a{color:#1F4D3A}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Geist:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;background:#F3F1EC;display:flex;flex-direction:column;overflow:hidden;">
+  <div style="flex:1 1 auto;overflow-y:auto;padding:48px 20px 32px;display:flex;flex-direction:column;gap:32px;">
+
+    <div style="display:flex;gap:8px;">
+      <div style="flex:1;height:4px;border-radius:999px;background:#1F4D3A;"></div>
+      <div style="flex:1;height:4px;border-radius:999px;background:#1F4D3A;"></div>
+      <div style="flex:1;height:4px;border-radius:999px;background:#1F4D3A;"></div>
+      <div style="flex:1;height:4px;border-radius:999px;background:#1F4D3A;"></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#6F706D;">Fertig</span>
+      <h1 style="margin:0;font-family:'DM Serif Display',Georgia,serif;font-size:32px;font-weight:400;letter-spacing:-0.01em;">{{greeting}}</h1>
+      <p style="margin:0;font-family:'Inter',sans-serif;font-size:13px;line-height:1.5;color:#6F706D;">Hier sind all deine Angaben auf einen Blick. Stimmt etwas nicht? Tipp auf „Ändern“.</p>
+    </div>
+
+    <sc-if value="{{isDemo}}" hint-placeholder-val="{{false}}">
+      <div style="background:#FFF1C7;border:1px solid #E9C766;border-radius:16px;padding:12px 12px;font-family:'Inter',sans-serif;font-size:12px;line-height:1.45;color:#5C4500;">Du siehst gerade Beispieldaten. Geh das Onboarding einmal durch, dann stehen hier deine eigenen Angaben.</div>
+    </sc-if>
+
+    <div style="background:#E3EEE6;border-radius:28px;padding:28px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;color:#111111;">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#1F4D3A;">Dein Tagesziel</span>
+        <span style="font-family:'Geist',sans-serif;font-size:44px;font-weight:700;line-height:1.05;letter-spacing:-0.02em;">{{kcalDisplay}}</span>
+        <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{kcalNote}}</span>
+      </div>
+      <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:700;padding:8px 12px;border-radius:999px;background:#1F4D3A;color:#FFFFFF;white-space:nowrap;">{{goalLabel}}</span>
+    </div>
+
+    <sc-for list="{{sections}}" as="sec" hint-placeholder-count="6">
+      <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#6F706D;text-transform:uppercase;letter-spacing:.04em;">{{sec.title}}</span>
+          <a href="{{sec.editHref}}" onClick="{{sec.go}}" aria-label="{{sec.editAria}}" style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;text-decoration:none;padding:8px 0 8px 12px;">Ändern</a>
+        </div>
+        <sc-for list="{{sec.rows}}" as="row" hint-placeholder-count="3">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:5px 0;border-top:1px solid #EDEAE3;">
+            <span style="font-family:'Inter',sans-serif;font-size:13px;color:#6F706D;flex:0 0 auto;">{{row.k}}</span>
+            <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#111111;text-align:right;line-height:1.45;">{{row.v}}</span>
+          </div>
+        </sc-for>
+        <sc-for list="{{sec.notes}}" as="n" hint-placeholder-count="1">
+          <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#6F706D;border-top:1px solid #EDEAE3;padding-top:7px;">{{n.text}}</p>
+        </sc-for>
+      </div>
+    </sc-for>
+
+  </div>
+
+  <div style="flex:0 0 auto;padding:14px 24px 20px;background:#F3F1EC;display:flex;gap:16px;align-items:center;">
+    <a href="{{backHref}}" style="text-decoration:none;color:#6F706D;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;padding:16px 4px;">Zurück</a>
+    <a href="{{doneHref}}" style="flex:1;display:block;text-decoration:none;text-align:center;background:#1F4D3A;color:#FFFFFF;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;padding:15px;border-radius:999px;">Los geht's</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.reasonLabels = {
+      kennenlernen: 'Körper kennenlernen', ernaehrung: 'Auf Ernährung achten', fitter: 'Fitter werden',
+      fitbleiben: 'Fit bleiben', ereignis: 'Ereignis', gesundheit: 'Gesundheitliche Gründe',
+      selbstbewusstsein: 'Selbstbewusstsein stärken', energie: 'Mehr Energie im Alltag',
+      wettkampf: 'Für Sport/Wettkampf trainieren', vorbild: 'Vorbild sein (z.B. für Familie)',
+      rueckkehr: 'Rückkehr nach Pause/Verletzung'
+    };
+    this.sportLabels = {
+      fitness: 'Fitnessstudio', yoga: 'Yoga', laufen: 'Laufen', schwimmen: 'Schwimmen', radfahren: 'Radfahren', fussball: 'Fußball',
+      klettern: 'Klettern', boxen: 'Boxen', tennis: 'Tennis', wandern: 'Wandern', tanzen: 'Tanzen', pilates: 'Pilates', crossfit: 'Crossfit'
+    };
+    this.burn = { fitness: 350, yoga: 260, laufen: 450, schwimmen: 400, radfahren: 400, fussball: 650, klettern: 400, boxen: 550, tennis: 450, wandern: 400, tanzen: 300, pilates: 200, crossfit: 550 };
+    this.activityLabels = { sitzend: 'Sitzend', stehend: 'Stehend/laufend', bewegt: 'Viel Bewegung' };
+    this.dietLabels = {
+      alles: 'Alles, keine Einschränkung', vegetarisch: 'Vegetarisch', vegan: 'Vegan', pescetarisch: 'Pescetarisch',
+      flexitarisch: 'Flexitarisch', lowcarb: 'Low-Carb', keto: 'Keto', paleo: 'Paleo', glutenfrei: 'Glutenfrei',
+      laktosefrei: 'Laktosefrei', halal: 'Halal', koscher: 'Koscher', zuckerarm: 'Zuckerarm'
+    };
+    this.fastingInfo = {
+      '12:12': '12 Stunden fasten, 12 Stunden essen, z.B. 8 bis 20 Uhr.',
+      '14:10': '14 Stunden fasten, 10 Stunden essen, z.B. 9 bis 19 Uhr.',
+      '16:8': '16 Stunden fasten, 8 Stunden essen, z.B. 11 bis 19 Uhr.',
+      '18:6': '18 Stunden fasten, 6 Stunden essen, z.B. 12 bis 18 Uhr.',
+      '20:4': '20 Stunden fasten, 4 Stunden essen, z.B. 14 bis 18 Uhr.',
+      '5:2': '5 Tage normal essen, an 2 Tagen nur ca. 500 bis 600 kcal.'
+    };
+    this.zoneLabels = { arme: 'Arme', brust: 'Brust', bauch: 'Bauch', beineVorne: 'Beine', ruecken: 'Schultern & Rücken', po: 'Po', waden: 'Waden' };
+    this.weekdays = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
+    const loaded = this.parseD();
+    this.isDemo = !loaded.name && !loaded.weight;
+    this.data = this.isDemo ? { ...this.demo(), ...loaded } : loaded;
+    this.state = {};
+  }
+  demo() {
+    const in12 = new Date(); in12.setDate(in12.getDate() + 84);
+    const iso = in12.getFullYear() + '-' + String(in12.getMonth() + 1).padStart(2, '0') + '-' + String(in12.getDate()).padStart(2, '0');
+    return {
+      name: 'Tami', age: '24', height: '168', weight: '63', sex: 'w', goal: 'abnehmen', targetWeight: '58', targetDate: iso,
+      reasons: { energie: true, selbstbewusstsein: true },
+      sports: { fitness: true, yoga: true, laufen: false, sonstiges: false }, extraSports: {},
+      days: { fitness: ['Mo', 'Mi', 'Fr'], yoga: ['Di', 'Sa'] }, customSports: [],
+      activity: 'sitzend', activityNote: 'Bürojob, Wege meist mit dem Rad', planWish: 'full',
+      diet: { flexitarisch: true }, mealsPerDay: 4, coversAllMeals: true, fasting: true, fastingType: '12:12',
+      zones: { bauch: 'straffen', beineVorne: 'muskel', ruecken: 'muskel' }, dreambody: 'Definierter Bauch, kräftige Beine',
+      members: [{ name: 'Cristian', status: 'Einladung gesendet' }], shareProfile: true,
+      yogaStyle: 'flow', experience: 'fortgeschritten', places: ['studio'], equipment: ['matte'], limits: ['keine'],
+      allergies: [], dislikes: ['Pilze'], cookTimeWeek: '30', cookTimeWeekend: '60', cookLevel: 'mittel', budget: '90',
+      sharedMeals: { fruehstueck: ['Sa', 'So'], mittag: ['Sa', 'So'], abend: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'] }
+    };
+  }
+  parseD() {
+    let stored = {};
+    try { stored = JSON.parse(localStorage.getItem('vitaOnboardingData') || '{}') || {}; } catch (e) { stored = {}; }
+    try {
+      const params = new URLSearchParams(__vitaLoc.search);
+      const raw = params.get('d');
+      return raw ? { ...stored, ...JSON.parse(raw) } : stored;
+    } catch (e) { return stored; }
+  }
+  num(v) { return parseFloat(String(v || '').replace(',', '.')); }
+  de(n) { return n.toLocaleString('de-DE'); }
+  formatDate(iso) {
+    if (!iso) return '';
+    const p = iso.split('-');
+    return p.length === 3 ? (p[2] + '.' + p[1] + '.' + p[0]) : iso;
+  }
+  calcPlan(d) {
+    const num = (v) => parseFloat(String(v === undefined || v === null ? '' : v).replace(',', '.'));
+    const age = num(d.age), height = num(d.height), weight = num(d.weight), target = num(d.targetWeight);
+    if (!(age > 0 && height > 0 && weight > 0)) return null;
+    const sexAdd = d.sex === 'm' ? 5 : (d.sex === 'w' ? -161 : -78);
+    const bmr = 10 * weight + 6.25 * height - 5 * age + sexAdd;
+    const palMap = { sitzend: 1.3, stehend: 1.5, bewegt: 1.7 };
+    const pal = palMap[d.activity] || 1.3;
+    const tdee = bmr * pal;
+    const goal = d.goal || 'abnehmen';
+    const floor = Math.max(Math.round(bmr), d.sex === 'm' ? 1500 : 1200);
+    const res = { bmr: Math.round(bmr), pal, tdee: Math.round(tdee), goal, floor, adjust: 0, pace: 0, weeks: null, capped: false, msg: '', realisticDate: null, tooSlow: false };
+    const fmtDate = (dt) => String(dt.getDate()).padStart(2, '0') + '.' + String(dt.getMonth() + 1).padStart(2, '0') + '.' + dt.getFullYear();
+    const iso = (dt) => dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+    const kg = (x) => x.toFixed(1).replace('.', ',');
+    if (goal === 'halten' || !(target > 0) || target === weight) {
+      res.goalKcal = Math.round(tdee / 10) * 10;
+      return res;
+    }
+    const lose = goal === 'abnehmen';
+    const diff = Math.abs(weight - target);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    let weeks = null;
+    if (d.targetDate) {
+      const td = new Date(d.targetDate + 'T00:00:00');
+      weeks = (td - today) / (1000 * 60 * 60 * 24 * 7);
+    }
+    const defaultPace = lose ? 0.5 : 0.25;
+    const maxPace = lose ? Math.min(weight * 0.01, 1.0) : Math.min(weight * 0.005, 0.5);
+    let pace = weeks && weeks > 0 ? diff / weeks : defaultPace;
+    if (weeks !== null && weeks <= 0) res.msg = 'Das Zieldatum liegt in der Vergangenheit. Wähl ein späteres Datum, wir rechnen solange mit ' + kg(defaultPace) + ' kg pro Woche.';
+    if (weeks !== null && weeks <= 0) pace = defaultPace;
+    let daily = pace * 7700 / 7;
+    let maxDaily = maxPace * 7700 / 7;
+    if (lose) maxDaily = Math.min(maxDaily, tdee - floor);
+    if (daily > maxDaily && !d.targetDate) {
+      daily = Math.max(0, maxDaily);
+      pace = daily * 7 / 7700;
+      res.msg = 'Ohne Zieldatum planen wir mit ' + kg(pace) + ' kg pro Woche, das ist für dich gesund machbar. Mit Datum passen wir die Kalorien an.';
+    } else if (daily > maxDaily) {
+      res.capped = true;
+      daily = Math.max(0, maxDaily);
+      const realPace = daily * 7 / 7700;
+      const realWeeks = realPace > 0 ? Math.ceil(diff / realPace) : null;
+      if (realWeeks) { const rd = new Date(today); rd.setDate(rd.getDate() + realWeeks * 7); res.realisticDate = iso(rd); res.realisticDateLabel = fmtDate(rd); }
+      res.msg = 'Bis zu deinem Datum wären das ' + kg(pace) + ' kg pro Woche. Gesund machbar sind bei dir ca. ' + kg(realPace) + ' kg pro Woche' + (lose ? ', ohne unter ' + floor.toLocaleString('de-DE') + ' kcal zu fallen' : '') + '. Wir planen damit, dein Ziel erreichst du dann etwa am ' + (res.realisticDateLabel || '?') + '.';
+      pace = realPace;
+    } else if (weeks && weeks > 0) {
+      res.msg = 'Das sind ' + kg(pace) + ' kg pro Woche, gut machbar.';
+    } else if (!d.targetDate) {
+      res.msg = 'Ohne Zieldatum planen wir mit ' + kg(pace) + ' kg pro Woche. Mit Datum passen wir die Kalorien an.';
+    }
+    res.pace = pace;
+    res.weeks = pace > 0 ? Math.ceil(diff / pace) : null;
+    res.adjust = Math.round((lose ? -daily : daily) / 10) * 10;
+    res.goalKcal = Math.round((tdee + res.adjust) / 10) * 10;
+    return res;
+  }
+
+  componentDidMount() {
+    this.__lsSnap = this.__snap();
+    this.__poll = setInterval(() => { const s = this.__snap(); if (s !== this.__lsSnap) { this.__lsSnap = s; this.forceUpdate(); } }, 300);
+  }
+  componentWillUnmount() { if (this.__poll) clearInterval(this.__poll); }
+  __snap() { try { return (localStorage.getItem('vitaOnboardingData') || '') + '|' + (localStorage.getItem('vitaPlz') || ''); } catch (e) { return ''; } }
+  zoneState(v) { return v === 'straffen' ? 'straffen' : (v === 'muskel' ? 'Muskeln aufbauen' : (v === 'both' ? 'straffen & aufbauen' : '')); }
+  renderVals() {
+    const v = this.__sRV();
+    const __setEdit = (step, back) => { try { localStorage.setItem('vitaEdit', JSON.stringify({ step: String(step).split('?')[0], back: back, ts: Date.now() })); } catch (x) {} };
+    v.sections = (v.sections || []).map((s) => ({ ...s, go: () => __setEdit(s.editHref, 'Onboarding6.dc.html') }));
+    return v;
+  }
+  __sRV() {
+    const loaded = this.parseD();
+    this.isDemo = !loaded.name && !loaded.weight;
+    this.data = this.isDemo ? { ...this.demo(), ...loaded } : loaded;
+    const d = this.data;
+    const goal = d.goal || 'abnehmen';
+    const age = this.num(d.age), height = this.num(d.height), weight = this.num(d.weight), target = this.num(d.targetWeight);
+    const qs = '?d=' + encodeURIComponent(JSON.stringify(d));
+
+    const sports = d.sports || {}, extra = d.extraSports || {}, days = d.days || {}, custom = d.customSports || [];
+    const keys = ['fitness', 'yoga', 'laufen'].filter((k) => sports[k])
+      .concat(sports.sonstiges ? Object.keys(extra).filter((k) => extra[k]) : [])
+      .concat(sports.sonstiges ? custom.map((c) => c.key) : []);
+    const labelFor = (k) => this.sportLabels[k] || ((custom.find((c) => c.key === k) || {}).label) || k;
+    const sportRows = keys.map((k) => {
+      const dd = (days[k] || []).slice().sort((a, b) => this.weekdays.indexOf(a) - this.weekdays.indexOf(b));
+      return { k: labelFor(k), v: dd.length ? (dd.join(', ') + ' (' + dd.length + 'x)') : 'noch keine Tage gewählt' };
+    });
+    const weeklyBurn = keys.reduce((s, k) => s + (this.burn[k] || 350) * ((days[k] || []).length), 0);
+
+    let kcalDisplay = 'noch offen', kcalNote = 'Gib Alter, Größe und Gewicht an, dann rechnen wir.';
+    const plan = this.calcPlan(d);
+    if (plan) {
+      kcalDisplay = this.de(plan.goalKcal) + ' kcal';
+      kcalNote = 'Ohne Sport. An Trainingstagen kommt dein Verbrauch dazu.';
+    }
+    const goalLabel = goal === 'zunehmen' ? 'Zunehmen' : (goal === 'halten' ? 'Halten' : 'Abnehmen');
+
+    const aboutRows = [
+      { k: 'Name', v: d.name || 'keine Angabe' },
+      { k: 'Alter', v: age > 0 ? age + ' Jahre' : 'keine Angabe' },
+      { k: 'Größe', v: height > 0 ? height + ' cm' : 'keine Angabe' },
+      { k: 'Geschlecht', v: ({ w: 'weiblich', m: 'männlich', d: 'divers' })[d.sex] || 'keine Angabe' },
+      { k: 'Gewicht', v: weight > 0 ? this.de(weight) + ' kg' : 'keine Angabe' }
+    ];
+    const goalRows = [{ k: 'Ziel', v: goalLabel }];
+    const goalNotes = [];
+    if (goal !== 'halten') {
+      goalRows.push({ k: 'Zielgewicht', v: target > 0 ? this.de(target) + ' kg' : 'keine Angabe' });
+      goalRows.push({ k: 'Bis wann', v: d.targetDate ? this.formatDate(d.targetDate) : 'keine Angabe' });
+      if (plan && plan.msg) goalNotes.push({ text: plan.msg });
+      if (plan && plan.adjust) goalRows.push({ k: 'Tägliche Anpassung', v: (plan.adjust > 0 ? '+ ' : '− ') + this.de(Math.abs(plan.adjust)) + ' kcal' });
+    }
+    const reasons = Object.keys(d.reasons || {}).filter((k) => d.reasons[k]).map((k) => this.reasonLabels[k]);
+    goalRows.push({ k: 'Warum', v: reasons.length ? reasons.join(', ') : 'keine Angabe' });
+
+    const pw = d.planWish || 'full';
+    const trainingNotes = [{ text: pw === 'full' ? 'Die App erstellt dir einen kompletten Trainingsplan mit Geräten, Übungen, Sätzen und Wiederholungen.' : (pw === 'tips' ? 'Du bekommst Ergänzungen zu deinem Sport, z.B. ein kurzes Bauchworkout nach dem Training.' : 'Du trainierst nach deinem eigenen Plan.') }];
+    if (weeklyBurn > 0) trainingNotes.push({ text: 'Dein Sport verbraucht ca. ' + this.de(weeklyBurn) + ' kcal pro Woche. An diesen Tagen planen wir dir mehr Essen ein.' });
+    const activityRows = sportRows.length ? sportRows.slice() : [{ k: 'Sport', v: 'keine Sportart gewählt' }];
+    activityRows.push({ k: 'Alltag', v: this.activityLabels[d.activity] || 'keine Angabe' });
+    if (d.activityNote) activityRows.push({ k: 'Ergänzung', v: d.activityNote });
+    if (sports.yoga) activityRows.push({ k: 'Yoga-Stil', v: ({ sanft: 'Sanft', flow: 'Flow', power: 'Power' })[d.yogaStyle || 'flow'] });
+    const tpOn = (d.planWish || 'full') !== 'none';
+    if (tpOn) activityRows.push({ k: 'Erfahrung', v: ({ einsteiger: 'Einsteiger', fortgeschritten: 'Fortgeschritten', erfahren: 'Erfahren' })[d.experience || 'fortgeschritten'] });
+    const placeL = { studio: 'Fitnessstudio', home: 'Zu Hause', draussen: 'Draußen' };
+    const pl = (d.places || ['studio']).map((x) => placeL[x]).filter(Boolean);
+    if (tpOn) activityRows.push({ k: 'Trainingsort', v: pl.length ? pl.join(', ') : 'keine Angabe' });
+    const limL = { keine: 'Keine', knie: 'Knie', ruecken: 'Rücken', schulter: 'Schulter', handgelenk: 'Handgelenk', sonstiges: 'Sonstiges' };
+    const lim = (d.limits || []).map((x) => x === 'sonstiges' && d.limitNote ? d.limitNote : limL[x]).filter(Boolean);
+    if (tpOn) activityRows.push({ k: 'Einschränkungen', v: lim.length ? lim.join(', ') : 'Keine' });
+
+    const diet = Object.keys(d.diet || {}).filter((k) => d.diet[k]).map((k) => this.dietLabels[k]);
+    const nutritionRows = [
+      { k: 'Ernährungsplan', v: d.foodPlan === false ? 'nein, nur tracken' : 'ja' },
+      { k: 'Ernährungsweise', v: diet.length ? diet.join(', ') : 'keine Angabe' },
+      { k: 'Mahlzeiten', v: (d.mealsPerDay || 3) + ' pro Tag, inkl. Snacks' },
+      { k: 'Plan deckt ab', v: (d.coversAllMeals === false) ? 'einzelne Mahlzeiten' : 'alle Mahlzeiten' },
+      { k: 'Allergien', v: (d.allergies || []).length ? d.allergies.join(', ') : 'keine' },
+      { k: 'Mag ich nicht', v: (d.dislikes || []).length ? d.dislikes.join(', ') : 'nichts' },
+      { k: 'Kochzeit', v: 'unter der Woche ' + (d.cookTimeWeek === '60' ? '60+' : (d.cookTimeWeek || '30')) + ' Min, am Wochenende ' + (d.cookTimeWeekend === '60' ? '60+' : (d.cookTimeWeekend || '60')) + ' Min' },
+      { k: 'Kochniveau', v: ({ einfach: 'Einfach', mittel: 'Mittel', aufwendig: 'Aufwendig' })[d.cookLevel || 'mittel'] },
+      { k: 'Budget', v: d.budget ? (d.budget + ' € pro Woche') : 'keine Angabe' },
+      { k: 'Intervallfasten', v: d.fasting ? (d.fastingType === 'sonstiges' ? 'eigene Methode' : (d.fastingType || '12:12')) : 'nein' }
+    ];
+    if (d.foodPlan === false) nutritionRows.splice(1);
+    const nutritionNotes = [];
+    if (d.fasting && d.foodPlan !== false) nutritionNotes.push({ text: d.fastingType === 'sonstiges' ? ('Deine Methode: ' + (d.ownFasting || 'noch nicht beschrieben')) : this.fastingInfo[d.fastingType || '12:12'] });
+
+    const zones = d.zones || {};
+    const zoneRows = Object.keys(zones).filter((k) => zones[k]).map((k) => ({ k: this.zoneLabels[k], v: this.zoneState(zones[k]) }));
+    const bodyRows = zoneRows.length ? zoneRows : [{ k: 'Körperzonen', v: 'nichts ausgewählt' }];
+    const bodyNotes = d.dreambody ? [{ text: 'Traumkörper-Ziel: ' + d.dreambody }] : [];
+
+    const members = d.members || [];
+    const houseRows = [{ k: 'Du', v: 'Profil angelegt' }].concat(members.map((m) => ({ k: m.name, v: m.status || 'eingeladen' })));
+    const sm = d.sharedMeals || { fruehstueck: ['Sa', 'So'], mittag: ['Sa', 'So'], abend: this.weekdays };
+    const smL = { fruehstueck: 'Frühstück', mittag: 'Mittag', abend: 'Abend' };
+    Object.keys(smL).forEach((m) => {
+      const dd = sm[m] || [];
+      houseRows.push({ k: smL[m] + ' zusammen', v: dd.length === 7 ? 'jeden Tag' : (dd.length ? dd.join(', ') : 'nie') });
+    });
+    const houseNotes = [{ text: d.shareProfile === false ? 'Dein Profil ist privat.' : 'Die anderen sehen deine Kalorien, Mahlzeiten und dein Training. Dein Gewicht bleibt privat.' }];
+
+    const edit = (file, name) => ({ editHref: file + qs, editAria: name + ' ändern' });
+    return {
+      isDemo: this.isDemo,
+      greeting: d.name ? ('Super, ' + d.name + '!') : 'Alles startklar.',
+      goalLabel, kcalDisplay, kcalNote,
+      sections: [
+        { title: 'Über dich', rows: aboutRows, notes: [], ...edit('Onboarding2.dc.html', 'Über dich') },
+        { title: 'Dein Ziel', rows: goalRows, notes: goalNotes, ...edit('Onboarding2.dc.html', 'Ziel') },
+        { title: 'Sport & Aktivität', rows: activityRows, notes: trainingNotes, ...edit('Onboarding3.dc.html', 'Sport') },
+        { title: 'Ernährung', rows: nutritionRows, notes: nutritionNotes, ...edit('Onboarding4.dc.html', 'Ernährung') },
+        { title: 'Körperfokus', rows: bodyRows, notes: bodyNotes, ...edit('Onboarding5.dc.html', 'Körperfokus') },
+        { title: 'Haushalt', rows: houseRows, notes: houseNotes, ...edit('Onboarding5.dc.html', 'Haushalt') }
+      ],
+      backHref: 'Onboarding5.dc.html' + qs,
+      doneHref: 'Dashboard.dc.html' + qs
+    };
+  }
+}
+</script>
+</body>
+</html>

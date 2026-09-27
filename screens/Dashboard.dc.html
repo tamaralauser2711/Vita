@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Dashboard</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  body{margin:0;background:#F3F1EC;font-family:'Inter',sans-serif;color:#111111}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Geist:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+</helmet>
+<div style="position:relative;width:390px;height:844px;box-sizing:border-box;background:#F3F1EC;display:flex;flex-direction:column;overflow:hidden;">
+  <div id="vita-scroll-dashboard" style="flex:1 1 auto;overflow-y:auto;padding:32px 20px 32px;display:flex;flex-direction:column;gap:32px;">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{__todayLabel}}</div>
+        <h1 style="margin:2px 0 0;font-family:'DM Serif Display',Georgia,serif;font-size:32px;font-weight:400;letter-spacing:-0.01em;">Hallo, {{name}}</h1>
+      </div>
+      <button type="button" onClick="{{openPersonSheet}}" aria-label="Person wechseln oder Profil öffnen" style="flex:0 0 auto;all:unset;cursor:pointer;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Geist',sans-serif;font-size:15px;font-weight:700;{{avatarStyle}}">{{initials}}</button>
+    </div>
+
+    <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;align-items:center;">
+      <div style="display:grid;grid-template-columns:minmax(0, 1fr) 150px minmax(0, 1fr);align-items:center;gap:8px;width:100%;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span style="font-family:'Geist',sans-serif;font-size:20px;font-weight:700;">{{eatenKcal}}</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">gegessen</span>
+        </div>
+        <div style="position:relative;width:150px;height:150px;border-radius:50%;display:flex;align-items:center;justify-content:center;{{ringGradientStyle}}">
+          <div style="width:118px;height:118px;border-radius:50%;background:#FFFFFF;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+            <span style="font-family:'Geist',sans-serif;font-size:34px;font-weight:700;letter-spacing:-0.02em;line-height:1.05;">{{remainingKcal}}</span>
+            <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{remainingLabel}}</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span style="font-family:'Geist',sans-serif;font-size:20px;font-weight:700;">{{burnedKcal}}</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">verbraucht</span>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:16px;width:100%;margin-top:18px;border-top:1px solid #EDEAE3;padding-top:14px;">
+        <sc-for list="{{macroRows}}" as="mr" hint-placeholder-count="3">
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{mr.label}}</span>
+            <span style="font-family:'Inter',sans-serif;font-size:13px;color:#6F706D;"><span style="font-family:'Geist',sans-serif;font-size:15px;font-weight:700;color:#111111;">{{mr.eaten}}</span>/{{mr.target}} g</span>
+            <div style="height:6px;border-radius:999px;background:#E6E3DC;overflow:hidden;"><div style="height:100%;border-radius:999px;{{mr.bar}}"></div></div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <sc-if value="{{adjShow}}" hint-placeholder-val="{{true}}">
+      <div style="background:#E3EEE6;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px;">
+        <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#1F4D3A;">Dein Zwei-Wochen-Check</span>
+        <span style="font-family:'DM Serif Display',Georgia,serif;font-size:19px;font-weight:400;letter-spacing:-0.01em;line-height:1.25;">{{adjHeadline}}</span>
+        <span style="font-family:'Inter',sans-serif;font-size:13px;line-height:1.5;color:#111111;">{{adjText}}</span>
+        <sc-if value="{{adjOpen}}" hint-placeholder-val="{{true}}">
+          <div style="display:flex;gap:8px;">
+            <button type="button" onClick="{{adjAccept}}" style="all:unset;box-sizing:border-box;cursor:pointer;flex:1;text-align:center;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#FFFFFF;background:#1F4D3A;padding:12px;border-radius:999px;">Übernehmen</button>
+            <button type="button" onClick="{{adjLater}}" style="all:unset;box-sizing:border-box;cursor:pointer;flex:1;text-align:center;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#1F4D3A;background:#FFFFFF;padding:12px;border-radius:999px;">Noch nicht</button>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Mahlzeiten heute · {{name}}</span>
+        <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Antippen für Details</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));grid-auto-rows:1fr;gap:12px;">
+        <a href="Mahlzeiten.dc.html?meal=breakfast" onClick="{{go_breakfast}}" style="text-decoration:none;color:inherit;box-sizing:border-box;width:100%;height:100%;min-height:104px;border-radius:16px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;border:1.5px solid #E6E3DC;background:#F3F1EC;">
+          <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+            <span style="display:flex;align-items:center;gap:8px;min-width:0;"><span aria-hidden="true" style="width:32px;height:32px;border-radius:50%;background:#FFFFFF;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:17px;line-height:1;">{{breakfastEmoji}}</span><span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;white-space:nowrap;">Frühstück</span></span>
+          </div>
+          <span style="display:flex;flex-direction:column;gap:8px;"><span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;line-height:1.4;">{{breakfastBudget}}</span><span style="display:block;height:4px;border-radius:999px;background:#E6E3DC;overflow:hidden;"><span style="display:block;height:100%;border-radius:999px;{{breakfastBar}}"></span></span></span>
+        </a>
+        <a href="Mahlzeiten.dc.html?meal=lunch" onClick="{{go_lunch}}" style="text-decoration:none;color:inherit;box-sizing:border-box;width:100%;height:100%;min-height:104px;border-radius:16px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;border:1.5px solid #E6E3DC;background:#F3F1EC;">
+          <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+            <span style="display:flex;align-items:center;gap:8px;min-width:0;"><span aria-hidden="true" style="width:32px;height:32px;border-radius:50%;background:#FFFFFF;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:17px;line-height:1;">{{lunchEmoji}}</span><span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Mittag</span></span>
+          </div>
+          <span style="display:flex;flex-direction:column;gap:8px;"><span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;line-height:1.4;">{{lunchBudget}}</span><span style="display:block;height:4px;border-radius:999px;background:#E6E3DC;overflow:hidden;"><span style="display:block;height:100%;border-radius:999px;{{lunchBar}}"></span></span></span>
+        </a>
+        <a href="Mahlzeiten.dc.html?meal=dinner" onClick="{{go_dinner}}" style="text-decoration:none;color:inherit;box-sizing:border-box;width:100%;height:100%;min-height:104px;border-radius:16px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;border:1.5px solid #E6E3DC;background:#F3F1EC;">
+          <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+            <span style="display:flex;align-items:center;gap:8px;min-width:0;"><span aria-hidden="true" style="width:32px;height:32px;border-radius:50%;background:#FFFFFF;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:17px;line-height:1;">{{dinnerEmoji}}</span><span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Abend</span></span>
+          </div>
+          <span style="display:flex;flex-direction:column;gap:8px;"><span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;line-height:1.4;">{{dinnerBudget}}</span><span style="display:block;height:4px;border-radius:999px;background:#E6E3DC;overflow:hidden;"><span style="display:block;height:100%;border-radius:999px;{{dinnerBar}}"></span></span></span>
+        </a>
+        <a href="Mahlzeiten.dc.html?meal=snack" onClick="{{go_snack}}" style="text-decoration:none;color:inherit;box-sizing:border-box;width:100%;height:100%;min-height:104px;border-radius:16px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;border:1.5px solid #E6E3DC;background:#F3F1EC;">
+          <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+            <span style="display:flex;align-items:center;gap:8px;min-width:0;"><span aria-hidden="true" style="width:32px;height:32px;border-radius:50%;background:#FFFFFF;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:17px;line-height:1;">{{snackEmoji}}</span><span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Snack</span></span>
+          </div>
+          <span style="display:flex;flex-direction:column;gap:8px;"><span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;line-height:1.4;">{{snackBudget}}</span><span style="display:block;height:4px;border-radius:999px;background:#E6E3DC;overflow:hidden;"><span style="display:block;height:100%;border-radius:999px;{{snackBar}}"></span></span></span>
+        </a>
+      </div>
+    </div><sc-if value="{{hasTrainingPlan}}" hint-placeholder-val="{{true}}">
+    <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:8px;">
+      <button type="button" onClick="{{toggleTrainingExpand}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:100%;text-align:left;display:flex;flex-direction:column;gap:4px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Training heute</span>
+          <span style="font-family:'Inter',sans-serif;font-size:13px;color:#6F706D;">{{trainingArrow}}</span>
+        </div>
+        <div style="font-family:'Inter',sans-serif;font-size:13px;">{{trainingTypeLine}}</div>
+        <div style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{trainingNoteLine}}</div>
+      </button>
+      <sc-if value="{{trainingExpanded}}" hint-placeholder-val="{{true}}">
+        <div style="border-top:1px solid #EDEAE3;padding-top:10px;display:flex;flex-direction:column;gap:4px;">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#6F706D;text-transform:uppercase;letter-spacing:.04em;">Trainingsplan diese Woche</span>
+          <sc-for list="{{weekPlan}}" as="d" hint-placeholder-count="1">
+            <div style="display:flex;align-items:flex-start;gap:8px;padding:3px 0;">
+              <span style="width:22px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;flex:0 0 auto;{{d.colorStyle}}">{{d.short}}</span>
+              <span style="font-family:'Inter',sans-serif;font-size:12px;color:#111111;line-height:1.4;">{{d.type}}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="border-top:1px solid #EDEAE3;padding-top:10px;display:flex;flex-direction:column;gap:8px;">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#6F706D;">Heute manuell eintragen/anpassen</span>
+          <input type="text" placeholder="Trainingsart, z.B. Krafttraining Beine" value="{{draftTrainingType}}" onInput="{{setDraftTrainingType}}" style="box-sizing:border-box;width:100%;padding:12px 12px;border-radius:10px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="number" min="0" placeholder="Min" value="{{draftTrainingDuration}}" onInput="{{setDraftTrainingDuration}}" onKeyDown="{{blockMinus}}" style="width:70px;box-sizing:border-box;padding:12px 12px;border-radius:10px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Minuten</span>
+          </div>
+          <input type="text" placeholder="Notiz, z.B. inkl. Übungen mit Gerätebildern" value="{{draftTrainingNote}}" onInput="{{setDraftTrainingNote}}" style="box-sizing:border-box;width:100%;padding:12px 12px;border-radius:10px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+          <button type="button" onClick="{{saveTraining}}" style="all:unset;cursor:pointer;align-self:flex-end;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#FFFFFF;background:#1F4D3A;padding:12px 16px;border-radius:999px;">Speichern</button>
+        </div>
+      </sc-if>
+      <a href="Training.dc.html" style="align-self:flex-start;text-decoration:none;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#1F4D3A;padding:6px 0 2px;">Übungen &amp; Geräte ansehen</a>
+    </div>
+    </sc-if>
+    <sc-if value="{{noTrainingPlan}}" hint-placeholder-val="{{false}}">
+      <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:8px;">
+        <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Training heute</span>
+        <span style="font-family:'Inter',sans-serif;font-size:13px;line-height:1.5;color:#6F706D;">Du trainierst nach deinem eigenen Plan. Trag ein, was du gemacht hast, dann zählt der Verbrauch.</span>
+        <button type="button" onClick="{{openPlus}}" style="all:unset;box-sizing:border-box;cursor:pointer;align-self:flex-start;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#FFFFFF;background:#1F4D3A;padding:10px 16px;border-radius:999px;margin-top:4px;">Training eintragen</button>
+      </div>
+    </sc-if><div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Gewichtsverlauf</span>
+        <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Wochenschnitt, letzte 6 Wochen</span>
+      </div>
+      <svg viewBox="0 0 320 100" style="width:100%;height:100px;display:block;" preserveAspectRatio="none">
+        <sc-if value="{{weightHasTarget}}" hint-placeholder-val="{{true}}">
+          <line x1="6" y1="{{weightTargetY}}" x2="314" y2="{{weightTargetY}}" stroke="#C9C6BE" stroke-width="1" stroke-dasharray="4 3"></line>
+        </sc-if>
+        <polygon points="{{weightAreaPoints}}" fill="{{weightLineColor}}" fill-opacity="0.12" stroke="none"></polygon>
+        <polyline points="{{weightPoints}}" fill="none" stroke="{{weightLineColor}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        <circle cx="{{weightStartX}}" cy="{{weightStartY}}" r="3" fill="#FFFFFF" stroke="{{weightLineColor}}" stroke-width="2"></circle>
+        <circle cx="{{weightEndX}}" cy="{{weightEndY}}" r="4.5" fill="{{weightLineColor}}" stroke="#FFFFFF" stroke-width="2"></circle>
+      </svg>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Start {{weightStartLabel}}</span>
+        <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:700;color:#111111;">Aktuell {{weightCurrentLabel}}</span>
+        <sc-if value="{{weightHasTarget}}" hint-placeholder-val="{{true}}">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{weightTargetLabel}}</span>
+        </sc-if>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid #EDEAE3;padding-top:12px;">
+        <sc-if value="{{wSaved}}" hint-placeholder-val="{{false}}">
+          <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#1F4D3A;">{{wSavedLine}}</span>
+        </sc-if>
+        <sc-if value="{{wNotSaved}}" hint-placeholder-val="{{true}}">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <label for="weigh-in" style="flex:1;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Gewicht heute</label>
+            <input id="weigh-in" type="text" inputmode="decimal" placeholder="{{wPlaceholder}}" value="{{wDraft}}" onInput="{{setWDraft}}" onKeyDown="{{blockMinus}}" style="width:84px;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:1px solid #E6E3DC;font-family:'Geist',sans-serif;font-size:15px;font-weight:600;text-align:right;background:#FFFFFF;">
+            <span style="font-family:'Inter',sans-serif;font-size:13px;color:#6F706D;">kg</span>
+            <button type="button" onClick="{{saveWeight}}" style="all:unset;box-sizing:border-box;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#FFFFFF;background:#1F4D3A;padding:10px 16px;border-radius:999px;">Eintragen</button>
+          </div>
+        </sc-if>
+        <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.45;color:#6F706D;">Am besten morgens nüchtern, 1 bis 2 Mal pro Woche. Einzelne Tage schwanken durch Wasser, zählen tut der Wochenschnitt. Nächstes Wiegen: Donnerstag.</span>
+      </div>
+    </div>
+
+    
+
+    
+
+    <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px;">
+      <div>
+        <div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Wasser</div>
+        <div style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;margin-top:2px;">{{waterLine}} · Ziel {{waterGoal}}</div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:space-between;">
+        <button type="button" onClick="{{fillGlass1}}" aria-label="1. Glas (250 ml)" style="all:unset;box-sizing:border-box;cursor:pointer;width:32px;height:38px;border-radius:0 0 8px 8px;border:1.5px solid #E6E3DC;{{glass1Style}}"></button>
+        <button type="button" onClick="{{fillGlass2}}" aria-label="2. Glas (250 ml)" style="all:unset;box-sizing:border-box;cursor:pointer;width:32px;height:38px;border-radius:0 0 8px 8px;border:1.5px solid #E6E3DC;{{glass2Style}}"></button>
+        <button type="button" onClick="{{fillGlass3}}" aria-label="3. Glas (250 ml)" style="all:unset;box-sizing:border-box;cursor:pointer;width:32px;height:38px;border-radius:0 0 8px 8px;border:1.5px solid #E6E3DC;{{glass3Style}}"></button>
+        <button type="button" onClick="{{fillGlass4}}" aria-label="4. Glas (250 ml)" style="all:unset;box-sizing:border-box;cursor:pointer;width:32px;height:38px;border-radius:0 0 8px 8px;border:1.5px solid #E6E3DC;{{glass4Style}}"></button>
+        <button type="button" onClick="{{fillGlass5}}" aria-label="5. Glas (250 ml)" style="all:unset;box-sizing:border-box;cursor:pointer;width:32px;height:38px;border-radius:0 0 8px 8px;border:1.5px solid #E6E3DC;{{glass5Style}}"></button>
+        <button type="button" onClick="{{fillGlass6}}" aria-label="6. Glas (250 ml)" style="all:unset;box-sizing:border-box;cursor:pointer;width:32px;height:38px;border-radius:0 0 8px 8px;border:1.5px solid #E6E3DC;{{glass6Style}}"></button>
+        <button type="button" onClick="{{fillGlass7}}" aria-label="7. Glas (250 ml)" style="all:unset;box-sizing:border-box;cursor:pointer;width:32px;height:38px;border-radius:0 0 8px 8px;border:1.5px solid #E6E3DC;{{glass7Style}}"></button>
+        <button type="button" onClick="{{fillGlass8}}" aria-label="8. Glas (250 ml)" style="all:unset;box-sizing:border-box;cursor:pointer;width:32px;height:38px;border-radius:0 0 8px 8px;border:1.5px solid #E6E3DC;{{glass8Style}}"></button>
+      </div>
+      <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;line-height:1.45;">Ein Glas = 250 ml. Dein Ziel: 35 ml pro kg Körpergewicht, plus 500 ml pro Stunde Training.</p>
+    </div>
+
+    <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:12px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Haushalt</span>
+        <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;background:#E3EEE6;padding:4px 12px;border-radius:999px;">Sichtbarkeit an</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Geist',sans-serif;font-size:13px;font-weight:700;flex:0 0 auto;{{partnerAvatarStyle}}">{{partnerInitials}}</div>
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;font-family:'Inter',sans-serif;font-size:12px;"><span>{{partnerName}}</span><span style="color:#6F706D;">{{partnerLine}}</span></div>
+          <div style="height:6px;border-radius:999px;background:#E6E3DC;overflow:hidden;margin-top:5px;"><div style="{{partnerBarStyle}}"></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <nav style="flex:0 0 auto;display:flex;border-top:1px solid #E6E3DC;background:#FFFFFF;padding:10px 8px 16px;">
+    <a onClick="{{navClick}}" href="Dashboard.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#1F4D3A;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="21" height="21"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10v9a1 1 0 0 0 1 1H10v-5h4v5h3.5a1 1 0 0 0 1-1v-9"></path></svg>
+      <span>Startseite</span>
+    </a>
+    <a onClick="{{navClick}}" href="Essensplan.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#6F706D;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="21" height="21"><rect x="3.5" y="5" width="17" height="15" rx="2"></rect><path d="M3.5 9.5h17"></path><path d="M8 3v4M16 3v4"></path></svg>
+      <span>Essensplan</span>
+    </a>
+    <button type="button" onClick="{{openPlus}}" aria-label="Essen oder Training eintragen" aria-haspopup="dialog" style="all:unset;box-sizing:border-box;cursor:pointer;flex:0 0 64px;display:flex;align-items:flex-start;justify-content:center;">
+      <span style="width:54px;height:54px;margin-top:-26px;border-radius:50%;background:#1F4D3A;border:4px solid #F3F1EC;box-shadow:0 6px 16px rgba(31,77,58,.25);display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+      </span>
+    </button>
+    <a onClick="{{navClick}}" href="Training.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#6F706D;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="21" height="21"><path d="M6.5 7v10M3.5 9.5v5M17.5 7v10M20.5 9.5v5M6.5 12h11"></path></svg>
+      <span>Training</span>
+    </a>
+    <a onClick="{{navClick}}" href="Einkaufsliste.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#6F706D;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="21" height="21"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L20.5 8H6"></path><circle cx="9.5" cy="20" r="1.3"></circle><circle cx="17" cy="20" r="1.3"></circle></svg>
+      <span>Einkaufsliste</span>
+    </a>
+  </nav>
+  <sc-if value="{{plusOpen}}" hint-placeholder-val="{{false}}">
+    <dc-import name="Hinzufuegen" person="{{plusPerson}}" close-fn="{{closePlus}}" saved-fn="{{plusSaved}}" hint-size="390px,844px"></dc-import>
+  </sc-if>
+  <sc-if value="{{personSheetOpen}}" hint-placeholder-val="{{false}}">
+    <dc-import name="PersonSheet" person="{{sheetPerson}}" pick-fn="{{pickPersonFn}}" close-fn="{{closePersonSheet}}" hint-size="390px,844px"></dc-import>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.profiles = {
+      tamara: { name: 'Tami', initials: 'T', avatarBg: '#E3EEE6', avatarColor: '#1F4D3A', ringColor: '#1F4D3A', goal: 1650, protein: { val: '91/130g', pct: 70 }, carbs: { val: '105/150g', pct: 70 }, fat: { val: '38/55g', pct: 69 } },
+      basti: { name: 'Cristian', initials: 'C', avatarBg: '#F5E3DA', avatarColor: '#C4532D', ringColor: '#C4532D', goal: 3000, protein: { val: '133/190g', pct: 70 }, carbs: { val: '265/380g', pct: 70 }, fat: { val: '63/90g', pct: 70 } }
+    };
+    this.mealShare = { breakfast: 0.25, lunch: 0.35, dinner: 0.30, snack: 0.10 };
+    this.todayIndex = (new Date().getDay()+6)%7;
+    this.trainingPlans = {
+      tamara: [
+        { short: 'Mo', type: 'Kraft: Beine & Po', duration: '50', note: 'Fitnessstudio, 5 Übungen an Geräten', kcal: 350 },
+        { short: 'Di', type: 'Yoga', duration: '60', note: 'Beweglichkeit & Rumpfstabilität', kcal: 200 },
+        { short: 'Mi', type: 'Kraft: Rücken & Schultern', duration: '45', note: 'Fitnessstudio, 5 Übungen für einen definierten Rücken', kcal: 320 },
+        { short: 'Do', type: 'Ruhetag', duration: '', note: 'Lockerer Spaziergang, aktive Erholung', kcal: 0 },
+        { short: 'Fr', type: 'Kraft: Bauch & Ganzkörper', duration: '50', note: 'Inkl. 20 Min Cardio zum Abschluss', kcal: 380 },
+        { short: 'Sa', type: 'Yoga', duration: '60', note: 'Entspannt ins Wochenende', kcal: 200 },
+        { short: 'So', type: 'Ruhetag', duration: '', note: 'Dehnen & aktive Erholung', kcal: 0 }
+      ],
+      basti: [
+        { short: 'Mo', type: 'Oberkörper: Brust, Rücken & Arme', duration: '55', note: 'Hypertrophie, 8 bis 10 Wiederholungen', kcal: 360 },
+        { short: 'Di', type: 'Fußballtraining + Bauchworkout', duration: '120', note: 'Danach 30 Min Bauch, Knie vorher aufwärmen', kcal: 650 },
+        { short: 'Mi', type: 'Beine & Knie-Stabilität', duration: '40', note: 'Knieschonend, schützt ACL & Meniskus', kcal: 280 },
+        { short: 'Do', type: 'Fußballtraining + Bauchworkout', duration: '120', note: 'Danach 30 Min Bauch, bei Bedarf kühlen', kcal: 650 },
+        { short: 'Fr', type: 'Rücken, Schultern & Bauch', duration: '50', note: 'Hypertrophie, Bauch zum Schluss', kcal: 340 },
+        { short: 'Sa', type: 'Fußball: Spiel', duration: '90', note: 'Kniebandage bei Bedarf, gut aufwärmen', kcal: 700 },
+        { short: 'So', type: 'Mobility', duration: '20', note: 'Knie-Beweglichkeit, leichtes Dehnen', kcal: 60 }
+      ]
+    };
+    try {
+      const eff = JSON.parse(localStorage.getItem('vitaPlanEffective') || 'null');
+      if (eff && eff.tami && eff.cristian) this.trainingPlans = { tamara: eff.tami, basti: eff.cristian };
+    } catch (e) {}
+    try {
+      ['tamara', 'basti'].forEach((who) => {
+        const ob = JSON.parse(localStorage.getItemFor('vitaOnboardingData', who) || '{}') || {};
+        if (ob.name) this.profiles[who].name = String(ob.name).split(' ')[0];
+        if (ob.name) this.profiles[who].initials = String(ob.name).trim().charAt(0).toUpperCase();
+        const pl = this.calcPlan(ob);
+        if (!pl) return;
+        const w = parseFloat(String(ob.weight).replace(',', '.'));
+        const pr = Math.round(w * (pl.goal === 'abnehmen' ? 2 : 1.8));
+        const fa = Math.round(pl.goalKcal * 0.28 / 9);
+        this.profiles[who].goal = pl.goalKcal;
+        this.profiles[who].macroBase = { p: pr, c: Math.max(50, Math.round((pl.goalKcal - pr * 4 - fa * 9) / 4)), f: fa };
+      });
+    } catch (e) {}
+    const emptyMeals = () => ({
+      breakfast: { logged: false, name: '', kcal: 0 },
+      lunch: { logged: false, name: '', kcal: 0 },
+      dinner: { logged: false, name: '', kcal: 0 },
+      snack: { logged: false, name: '', kcal: 0 }
+    });
+    const defaultTraining = (person) => {
+      const t = this.trainingPlans[person][this.todayIndex];
+      return { type: t.type, duration: t.duration, note: t.note };
+    };
+    const savedMeals = this.loadJSON('vitaMealLogs');
+    const onboarding = { ...this.loadJSON('vitaOnboardingData'), ...this.parseD() };
+    this.weightSeries = this.buildWeightSeries(onboarding);
+    this.state = {
+      activePerson: this.loadActivePerson(),
+      mealLogs: { tamara: { ...emptyMeals(), ...(savedMeals.tamara || {}) }, basti: { ...emptyMeals(), ...(savedMeals.basti || {}) } },
+      trainingExpanded: false,
+      draftTrainingType: '',
+      draftTrainingDuration: '',
+      draftTrainingNote: '',
+      trainingLogs: { tamara: defaultTraining('tamara'), basti: defaultTraining('basti') },
+      waterLogs: { tamara: 0, basti: 0 }
+    };
+  }
+  parseD() {
+    try {
+      const params = new URLSearchParams(__vitaLoc.search);
+      const raw = params.get('d');
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) { return {}; }
+  }
+  loadJSON(key) {
+    try { return JSON.parse(localStorage.getItem(key) || '{}'); } catch (e) { return {}; }
+  }
+  loadActivePerson() {
+    try { return localStorage.getItem('vitaActivePerson') || 'tamara'; } catch (e) { return 'tamara'; }
+  }
+  saveActivePerson(p) {
+    try { localStorage.setItem('vitaActivePerson', p); } catch (e) {}
+  }
+  buildWeightSeries(onboarding) {
+    const weeks = 6;
+    const wiggle = [0, 0.3, -0.2, 0.4, -0.3, 0.2, 0];
+    const buildTrend = (start, end) => {
+      const pts = [];
+      for (let i = 0; i <= weeks; i++) {
+        const t = i / weeks;
+        let v = start + (end - start) * t;
+        if (i !== weeks) v += wiggle[i];
+        pts.push(Math.round(v * 10) / 10);
+      }
+      return pts;
+    };
+    const tamaraCurrent = parseFloat(onboarding.weight);
+    const tamaraEnd = tamaraCurrent > 0 ? tamaraCurrent : 63;
+    const tamaraGoal = onboarding.goal || 'abnehmen';
+    let tamaraStart;
+    if (tamaraGoal === 'zunehmen') tamaraStart = tamaraEnd - 2.4;
+    else if (tamaraGoal === 'halten') tamaraStart = tamaraEnd + 0.3;
+    else tamaraStart = tamaraEnd + 2.6;
+    const tamaraTargetRaw = parseFloat(onboarding.targetWeight);
+    const tamaraTarget = tamaraTargetRaw > 0 ? tamaraTargetRaw : 55;
+    return {
+      tamara: buildTrend(tamaraStart, tamaraEnd),
+      basti: buildTrend(66.5, 68),
+      tamaraTarget: tamaraTarget,
+      bastiTarget: 74
+    };
+  }
+  fmt(n) { return n.toLocaleString('de-DE'); }
+  toggleTrainingExpand() {
+    if (!this.state.trainingExpanded) {
+      const t = this.state.trainingLogs[this.state.activePerson];
+      this.setState({ trainingExpanded: true, draftTrainingType: t.type, draftTrainingDuration: t.duration, draftTrainingNote: t.note });
+    } else {
+      this.setState({ trainingExpanded: false });
+    }
+  }
+  saveTraining() {
+    const type = (this.state.draftTrainingType || '').trim();
+    if (!type) return;
+    const person = this.state.activePerson;
+    this.setState({
+      trainingLogs: { ...this.state.trainingLogs, [person]: { type: type, duration: this.state.draftTrainingDuration, note: (this.state.draftTrainingNote || '').trim() } },
+      trainingExpanded: false
+    });
+  }
+  setWaterGlass(idx) {
+    const person = this.state.activePerson;
+    const current = this.state.waterLogs[person];
+    const next = current > idx ? idx : idx + 1;
+    this.setState({ waterLogs: { ...this.state.waterLogs, [person]: next } });
+  }
+  waterGlassStyle(idx, count) {
+    return idx < count ? 'background:#2E9BE6;border-color:#2E9BE6;' : 'background:#FFFFFF;border-color:#E6E3DC;';
+  }
+  mealCircleStyle(m) { return m.logged ? 'background:#1F4D3A;border-color:#1F4D3A;' : ''; }
+  mealEmoji(key, m) {
+    const n = String((m && m.logged && m.name) || '').toLowerCase();
+    const map = [['pancake', '🥞'], ['toast', '🍞'], ['omelett', '🍳'], ['rührei', '🍳'], ['porridge', '🥣'], ['oats', '🥣'], ['skyr', '🥣'], ['joghurt', '🥣'], ['quark', '🥣'], ['steak', '🥩'], ['lachs', '🐟'], ['pasta', '🍝'], ['nudel', '🍝'], ['pizza', '🍕'], ['wrap', '🌯'], ['curry', '🍛'], ['eintopf', '🍲'], ['bowl', '🥗'], ['salat', '🥗'], ['hähnchen', '🍗'], ['apfel', '🍎'], ['nuss', '🥜'], ['banane', '🍌'], ['shake', '🥤'], ['smoothie', '🥤'], ['brot', '🥪'], ['sandwich', '🥪']];
+    const hit = n ? map.find((x) => n.indexOf(x[0]) !== -1) : null;
+    if (hit) return hit[1];
+    return { breakfast: '☕', lunch: '🥪', dinner: '🥗', snack: '🍎' }[key];
+  }
+  mealBar(m, allocated) {
+    const consumed = m.logged ? Number(m.kcal) : 0;
+    const pct = allocated > 0 ? Math.max(0, Math.min(100, Math.round(consumed / allocated * 100))) : 0;
+    return 'width:' + pct + '%;background:' + (consumed > allocated ? '#C4532D' : '#1F4D3A') + ';';
+  }
+  mealAllocation(goal, key) {
+    return Math.round((goal * this.mealShare[key]) / 10) * 10;
+  }
+  mealBudgetLine(m, allocated) {
+    const consumed = m.logged ? Number(m.kcal) : 0;
+    return this.fmt(consumed) + ' / ' + this.fmt(allocated) + ' kcal';
+  }
+  calcPlan(d) {
+    const num = (v) => parseFloat(String(v === undefined || v === null ? '' : v).replace(',', '.'));
+    const age = num(d.age), height = num(d.height), weight = num(d.weight), target = num(d.targetWeight);
+    if (!(age > 0 && height > 0 && weight > 0)) return null;
+    const sexAdd = d.sex === 'm' ? 5 : (d.sex === 'w' ? -161 : -78);
+    const bmr = 10 * weight + 6.25 * height - 5 * age + sexAdd;
+    const palMap = { sitzend: 1.3, stehend: 1.5, bewegt: 1.7 };
+    const pal = palMap[d.activity] || 1.3;
+    const tdee = bmr * pal;
+    const goal = d.goal || 'abnehmen';
+    const floor = Math.max(Math.round(bmr), d.sex === 'm' ? 1500 : 1200);
+    const res = { bmr: Math.round(bmr), pal, tdee: Math.round(tdee), goal, floor, adjust: 0, pace: 0, weeks: null, capped: false, msg: '', realisticDate: null, tooSlow: false };
+    const fmtDate = (dt) => String(dt.getDate()).padStart(2, '0') + '.' + String(dt.getMonth() + 1).padStart(2, '0') + '.' + dt.getFullYear();
+    const iso = (dt) => dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+    const kg = (x) => x.toFixed(1).replace('.', ',');
+    if (goal === 'halten' || !(target > 0) || target === weight) {
+      res.goalKcal = Math.round(tdee / 10) * 10;
+      return res;
+    }
+    const lose = goal === 'abnehmen';
+    const diff = Math.abs(weight - target);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    let weeks = null;
+    if (d.targetDate) {
+      const td = new Date(d.targetDate + 'T00:00:00');
+      weeks = (td - today) / (1000 * 60 * 60 * 24 * 7);
+    }
+    const defaultPace = lose ? 0.5 : 0.25;
+    const maxPace = lose ? Math.min(weight * 0.01, 1.0) : Math.min(weight * 0.005, 0.5);
+    let pace = weeks && weeks > 0 ? diff / weeks : defaultPace;
+    if (weeks !== null && weeks <= 0) res.msg = 'Das Zieldatum liegt in der Vergangenheit. Wähl ein späteres Datum, wir rechnen solange mit ' + kg(defaultPace) + ' kg pro Woche.';
+    if (weeks !== null && weeks <= 0) pace = defaultPace;
+    let daily = pace * 7700 / 7;
+    let maxDaily = maxPace * 7700 / 7;
+    if (lose) maxDaily = Math.min(maxDaily, tdee - floor);
+    if (daily > maxDaily && !d.targetDate) {
+      daily = Math.max(0, maxDaily);
+      pace = daily * 7 / 7700;
+      res.msg = 'Ohne Zieldatum planen wir mit ' + kg(pace) + ' kg pro Woche, das ist für dich gesund machbar. Mit Datum passen wir die Kalorien an.';
+    } else if (daily > maxDaily) {
+      res.capped = true;
+      daily = Math.max(0, maxDaily);
+      const realPace = daily * 7 / 7700;
+      const realWeeks = realPace > 0 ? Math.ceil(diff / realPace) : null;
+      if (realWeeks) { const rd = new Date(today); rd.setDate(rd.getDate() + realWeeks * 7); res.realisticDate = iso(rd); res.realisticDateLabel = fmtDate(rd); }
+      res.msg = 'Bis zu deinem Datum wären das ' + kg(pace) + ' kg pro Woche. Gesund machbar sind bei dir ca. ' + kg(realPace) + ' kg pro Woche' + (lose ? ', ohne unter ' + floor.toLocaleString('de-DE') + ' kcal zu fallen' : '') + '. Wir planen damit, dein Ziel erreichst du dann etwa am ' + (res.realisticDateLabel || '?') + '.';
+      pace = realPace;
+    } else if (weeks && weeks > 0) {
+      res.msg = 'Das sind ' + kg(pace) + ' kg pro Woche, gut machbar.';
+    } else if (!d.targetDate) {
+      res.msg = 'Ohne Zieldatum planen wir mit ' + kg(pace) + ' kg pro Woche. Mit Datum passen wir die Kalorien an.';
+    }
+    res.pace = pace;
+    res.weeks = pace > 0 ? Math.ceil(diff / pace) : null;
+    res.adjust = Math.round((lose ? -daily : daily) / 10) * 10;
+    res.goalKcal = Math.round((tdee + res.adjust) / 10) * 10;
+    return res;
+  }
+  personMacros(person) {
+    const logs = this.state.mealLogs[person];
+    const out = { p: 0, c: 0, f: 0 };
+    Object.keys(logs).forEach((k) => {
+      const m = logs[k];
+      if (!m || !m.logged) return;
+      const items = m.items && m.items.length ? m.items : [{ kcal: Number(m.kcal) || 0 }];
+      items.forEach((x) => {
+        const kc = Number(x.kcal) || 0;
+        out.p += x.p !== undefined ? Number(x.p) : kc * 0.2 / 4;
+        out.c += x.c !== undefined ? Number(x.c) : kc * 0.5 / 4;
+        out.f += x.f !== undefined ? Number(x.f) : kc * 0.3 / 9;
+      });
+    });
+    return { p: Math.round(out.p), c: Math.round(out.c), f: Math.round(out.f) };
+  }
+  personConsumed(person) {
+    const logs = this.state.mealLogs[person];
+    return Object.keys(logs).reduce((sum, k) => sum + (logs[k] && logs[k].logged ? Number(logs[k].kcal) || 0 : 0), 0);
+  }
+  scrollTop() {
+    const run = () => { try { const el = document.getElementById('vita-scroll-dashboard'); if (el) el.scrollTop = 0; } catch (e) {} };
+    run(); setTimeout(run, 0); setTimeout(run, 120);
+  }
+  readNav() { try { return JSON.parse(localStorage.getItem('vitaNav') || 'null'); } catch (e) { return null; } }
+  componentDidMount() {
+    this.scrollTop();
+    const n = this.readNav();
+    this.__navTs = n ? n.ts : 0;
+    this.__navTimer = setInterval(() => {
+      const x = this.readNav();
+      if (x && x.ts !== this.__navTs) {
+        this.__navTs = x.ts;
+        if (x.target === 'Dashboard.dc.html') this.scrollTop();
+      }
+    }, 150);
+  }
+  componentWillUnmount() { if (this.__navTimer) clearInterval(this.__navTimer); }
+  renderVals() {
+    const v = this.__navRV();
+    v.navClick = (e) => {
+      let target = '';
+      try { target = String((e && e.currentTarget && e.currentTarget.getAttribute('href')) || '').split('?')[0]; } catch (x) {}
+      try { localStorage.setItem('vitaNav', JSON.stringify({ target: target, ts: Date.now() })); } catch (x) {}
+      if (target === 'Dashboard.dc.html') this.scrollTop();
+    };
+    return v;
+  }
+  __navRV() {
+    const v = this.__nnRV();
+    const keys = ["setDraftTrainingDuration", "setWDraft"];
+    const clean = (e) => {
+      if (e && e.target && typeof e.target.value === 'string' && /[-−]/.test(e.target.value)) {
+        e.target.value = e.target.value.replace(/[-−]/g, '');
+      }
+    };
+    const wrapObj = (o) => {
+      keys.forEach((k) => {
+        if (typeof o[k] === 'function' && !o[k].__nn) {
+          const orig = o[k];
+          const w = (e) => { clean(e); return orig(e); };
+          w.__nn = true;
+          o[k] = w;
+        }
+      });
+    };
+    wrapObj(v);
+    Object.keys(v).forEach((k) => { if (Array.isArray(v[k])) v[k].forEach((it) => { if (it && typeof it === 'object') wrapObj(it); }); });
+    v.blockMinus = (e) => { if (e && (e.key === '-' || e.key === '−' || e.key === '+' || e.key === 'e' || e.key === 'E')) e.preventDefault(); };
+    return v;
+  }
+  __nnRV() {
+    const __v = this.__renderVals();
+    let __ls = 'tamara';
+    try { __ls = localStorage.getItem('vitaActivePerson') || 'tamara'; } catch (e) {}
+    const __cur = __ls === 'basti' ? 'cristian' : 'tami';
+    return Object.assign(__v, {
+      personSheetOpen: !!this.state.personSheet,
+      openPersonSheet: () => this.setState({ personSheet: true }),
+      closePersonSheet: () => this.setState({ personSheet: false }),
+      sheetPerson: __cur,
+      pickPersonFn: (k) => { if (k !== __cur && typeof __v.switchPerson === 'function') __v.switchPerson(); this.setState({ personSheet: false }); }
+    }, this.extraVals());
+  }
+  extraVals() {
+    const ap = this.state.activePerson === 'basti' ? 'basti' : 'tamara';
+    let ob = {};
+    try { ob = JSON.parse(localStorage.getItem('vitaOnboardingData') || '{}') || {}; } catch (e) {}
+    const kg = parseFloat(String(ob.weight || (ap === 'tamara' ? '63' : '70')).replace(',', '.')) || 65;
+    const tp = this.trainingPlans[ap][this.todayIndex];
+    const mins = parseInt(tp.duration || '0', 10) || 0;
+    const goalMl = Math.round((kg * 35 + mins / 60 * 500) / 250) * 250;
+    const adj = (this.state.adj || {})[ap] || 'open';
+    const setAdj = (v) => this.setState({ adj: { ...(this.state.adj || {}), [ap]: v } });
+    const texts = ap === 'tamara'
+      ? { head: 'Du nimmst etwas langsamer ab als geplant.', open: 'Im Schnitt 0,2 kg pro Woche statt 0,5 kg. Vorschlag: Tagesziel 1.650 → 1.530 kcal. Das bleibt über deinem Grundumsatz.', done: 'Übernommen. Ab morgen planen wir mit 1.530 kcal, der Essensplan passt die Portionen an.' }
+      : { head: 'Du nimmst schneller zu als geplant.', open: 'Im Schnitt 0,6 kg pro Woche statt 0,35 kg. Damit es vor allem Muskeln werden, Vorschlag: Tagesziel 3.000 → 2.850 kcal.', done: 'Übernommen. Ab morgen planen wir mit 2.850 kcal.' };
+    const ws = (this.state.wSaved || {})[ap];
+    const noTP = ob.planWish === 'none';
+    return {
+      hasTrainingPlan: !noTP,
+      noTrainingPlan: noTP,
+      adjShow: false,
+      adjOpen: adj === 'open',
+      adjHeadline: texts.head,
+      adjText: adj === 'done' ? texts.done : texts.open,
+      adjAccept: () => setAdj('done'),
+      adjLater: () => setAdj('later'),
+      waterGoal: goalMl.toLocaleString('de-DE') + ' ml',
+      wSaved: !!ws,
+      wNotSaved: !ws,
+      wSavedLine: ws ? ('Heute eingetragen: ' + ws + ' kg. Fließt in deinen Wochenschnitt ein.') : '',
+      wPlaceholder: String(kg).replace('.', ','),
+      wDraft: this.state.wDraft || '',
+      setWDraft: (e) => this.setState({ wDraft: e.target.value }),
+      saveWeight: () => { const v = (this.state.wDraft || '').trim(); if (!v) return; this.setState({ wSaved: { ...(this.state.wSaved || {}), [ap]: v }, wDraft: '' }); }
+    };
+  }
+  __renderVals() {
+    try {
+      const stored = localStorage.getItem('vitaActivePerson') || 'tamara';
+      if (stored !== this.state.activePerson) this.state.activePerson = stored;
+    } catch (e) {}
+    const s = this.state;
+    const p = this.profiles[s.activePerson];
+    const extraKey = (k) => k === 'tamara' ? 'tami' : 'cristian';
+    let extrasAll = {};
+    try { extrasAll = JSON.parse(localStorage.getItem('vitaExtraTraining') || '{}') || {}; } catch (e) {}
+    const extrasToday = (k) => (((extrasAll[extraKey(k)] || {})[String(this.todayIndex)]) || []);
+    const myExtras = extrasToday(s.activePerson);
+    const myExtraKcal = myExtras.reduce((sum, x) => sum + x.kcal, 0);
+    let burnAll = {};
+    try { burnAll = JSON.parse(localStorage.getItem('vitaTrainingBurn') || '{}') || {}; } catch (e) {}
+    const doneBurn = (k) => Number(((burnAll[extraKey(k)] || {})[String(this.todayIndex)]) || 0);
+    const myDone = doneBurn(s.activePerson);
+    const goal = p.goal + myExtraKcal + myDone;
+    const partnerKey = s.activePerson === 'tamara' ? 'basti' : 'tamara';
+    const partner = this.profiles[partnerKey];
+    const partnerGoal = partner.goal + doneBurn(partnerKey) + extrasToday(partnerKey).reduce((sum, x) => sum + x.kcal, 0);
+    const myLogs = s.mealLogs[s.activePerson];
+    const consumed = this.personConsumed(s.activePerson);
+    const remaining = goal - consumed;
+    const pct = Math.max(0, Math.min(100, Math.round((consumed / goal) * 100)));
+    const partnerConsumed = this.personConsumed(partnerKey);
+    const partnerPct = Math.max(0, Math.min(100, Math.round((partnerConsumed / partnerGoal) * 100)));
+    const myTraining = s.trainingLogs[s.activePerson];
+    const myWater = s.waterLogs[s.activePerson];
+
+    const breakfastAlloc = this.mealAllocation(goal, 'breakfast');
+    const lunchAlloc = this.mealAllocation(goal, 'lunch');
+    const dinnerAlloc = this.mealAllocation(goal, 'dinner');
+    const snackAlloc = this.mealAllocation(goal, 'snack');
+
+    const series = this.weightSeries[s.activePerson];
+    const target = s.activePerson === 'tamara' ? this.weightSeries.tamaraTarget : this.weightSeries.bastiTarget;
+    let minV = Math.min(...series);
+    let maxV = Math.max(...series);
+    if (target) { minV = Math.min(minV, target); maxV = Math.max(maxV, target); }
+    if (maxV - minV < 1) { maxV += 0.5; minV -= 0.5; }
+    const chartTop = 12, chartBottom = 90, xLeft = 6, xRight = 314;
+    const stepX = (xRight - xLeft) / (series.length - 1);
+    const yFor = (v) => chartBottom - ((v - minV) / (maxV - minV)) * (chartBottom - chartTop);
+    const weightPoints = series.map((v, i) => (xLeft + i * stepX).toFixed(1) + ',' + yFor(v).toFixed(1)).join(' ');
+    const weightAreaPoints = weightPoints + ' ' + xRight.toFixed(1) + ',' + chartBottom.toFixed(1) + ' ' + xLeft.toFixed(1) + ',' + chartBottom.toFixed(1);
+
+    const burned = myDone + myExtraKcal;
+    const baseMacros = p.macroBase || (s.activePerson === 'tamara' ? { p: 130, c: 150, f: 55 } : { p: 190, c: 380, f: 90 });
+    const macroTarget = { p: baseMacros.p + Math.round(burned * 0.2 / 4), c: baseMacros.c + Math.round(burned * 0.6 / 4), f: baseMacros.f + Math.round(burned * 0.2 / 9) };
+    const eatenMacros = this.personMacros(s.activePerson);
+    return {
+      eatenKcal: this.fmt(consumed),
+      burnedKcal: this.fmt(burned),
+      remainingLabel: remaining >= 0 ? 'kcal übrig' : 'kcal drüber',
+      macroRows: [['Protein', 'p', '#1F4D3A'], ['Kohlenhydrate', 'c', '#7FA86A'], ['Fett', 'f', '#C9B79C']].map((m) => ({
+        label: m[0], eaten: eatenMacros[m[1]], target: macroTarget[m[1]],
+        bar: 'width:' + Math.min(100, Math.round(eatenMacros[m[1]] / macroTarget[m[1]] * 100)) + '%;background:' + m[2] + ';'
+      })),
+      go_breakfast: () => { try { localStorage.setItem('vitaSelectedMeal', 'breakfast'); } catch (e) {} },
+      go_lunch: () => { try { localStorage.setItem('vitaSelectedMeal', 'lunch'); } catch (e) {} },
+      go_dinner: () => { try { localStorage.setItem('vitaSelectedMeal', 'dinner'); } catch (e) {} },
+      go_snack: () => { try { localStorage.setItem('vitaSelectedMeal', 'snack'); } catch (e) {} },
+      plusOpen: !!this.state.plusOpen,
+      openPlus: () => this.setState({ plusOpen: true }),
+      closePlus: () => this.setState({ plusOpen: false }),
+      plusSaved: () => this.setState({ extrasRev: (this.state.extrasRev || 0) + 1 }),
+      plusPerson: (this.state.activePerson === 'basti' ? 'cristian' : 'tami'),
+      name: p.name,
+      initials: p.initials,
+      avatarStyle: 'background:' + p.avatarBg + ';color:' + p.avatarColor + ';',
+      switchPerson: () => {
+        const next = this.state.activePerson === 'tamara' ? 'basti' : 'tamara';
+        this.setState({ activePerson: next });
+        this.saveActivePerson(next);
+      },
+      ringGradientStyle: 'background:conic-gradient(#1F4D3A 0% ' + pct + '%, #E3EEE6 ' + pct + '% 100%);',
+      remainingKcal: this.fmt(Math.abs(remaining)),
+      consumedLine: this.fmt(consumed) + ' von ' + this.fmt(goal) + ' kcal gegessen',
+      hasBurnToday: this.trainingPlans[s.activePerson][this.todayIndex].kcal + myExtraKcal > 0,
+      burnTodayLine: (myDone + myExtraKcal > 0)
+        ? ('+ ' + (myDone + myExtraKcal) + ' kcal durch erledigtes Training' + (myExtraKcal > 0 ? (' (inkl. ' + myExtras.map((x) => x.name).join(', ') + ')') : ''))
+        : ('Training heute ca. ' + this.trainingPlans[s.activePerson][this.todayIndex].kcal + ' kcal. Zählt, sobald du es abhakst.'),
+      proteinVal: p.protein.val,
+      proteinBarStyle: 'width:' + p.protein.pct + '%;height:100%;background:' + p.ringColor + ';',
+      carbsVal: p.carbs.val,
+      carbsBarStyle: 'width:' + p.carbs.pct + '%;height:100%;background:' + p.ringColor + ';',
+      fatVal: p.fat.val,
+      fatBarStyle: 'width:' + p.fat.pct + '%;height:100%;background:' + p.ringColor + ';',
+      weightPoints: weightPoints,
+      weightAreaPoints: weightAreaPoints,
+      weightLineColor: p.ringColor,
+      weightStartX: (xLeft).toFixed(1),
+      weightStartY: yFor(series[0]).toFixed(1),
+      weightEndX: (xLeft + (series.length - 1) * stepX).toFixed(1),
+      weightEndY: yFor(series[series.length - 1]).toFixed(1),
+      weightStartLabel: this.fmt(series[0]) + ' kg',
+      weightCurrentLabel: this.fmt(series[series.length - 1]) + ' kg',
+      weightHasTarget: !!target,
+      weightTargetY: target ? yFor(target).toFixed(1) : '0',
+      weightTargetLabel: target ? ('Ziel ' + this.fmt(target) + ' kg') : '',
+      breakfastCircle: this.mealCircleStyle(myLogs.breakfast),
+      breakfastBudget: this.mealBudgetLine(myLogs.breakfast, breakfastAlloc),
+      breakfastBar: this.mealBar(myLogs.breakfast, breakfastAlloc),
+      breakfastEmoji: this.mealEmoji('breakfast', myLogs.breakfast),
+      lunchCircle: this.mealCircleStyle(myLogs.lunch),
+      lunchBudget: this.mealBudgetLine(myLogs.lunch, lunchAlloc),
+      lunchBar: this.mealBar(myLogs.lunch, lunchAlloc),
+      lunchEmoji: this.mealEmoji('lunch', myLogs.lunch),
+      dinnerCircle: this.mealCircleStyle(myLogs.dinner),
+      dinnerBudget: this.mealBudgetLine(myLogs.dinner, dinnerAlloc),
+      dinnerBar: this.mealBar(myLogs.dinner, dinnerAlloc),
+      dinnerEmoji: this.mealEmoji('dinner', myLogs.dinner),
+      snackCircle: this.mealCircleStyle(myLogs.snack),
+      snackBudget: this.mealBudgetLine(myLogs.snack, snackAlloc),
+      snackBar: this.mealBar(myLogs.snack, snackAlloc),
+      snackEmoji: this.mealEmoji('snack', myLogs.snack),
+      partnerName: partner.name,
+      partnerInitials: partner.initials,
+      partnerAvatarStyle: 'background:' + partner.avatarBg + ';color:' + partner.avatarColor + ';',
+      partnerLine: this.fmt(partnerConsumed) + ' / ' + this.fmt(partnerGoal) + ' kcal',
+      partnerBarStyle: 'width:' + partnerPct + '%;height:100%;background:' + partner.ringColor + ';',
+      trainingTypeLine: myTraining.type + (myTraining.duration ? (' · ' + myTraining.duration + ' Min') : ''),
+      trainingNoteLine: myTraining.note,
+      trainingArrow: s.trainingExpanded ? '▾' : '▸',
+      trainingExpanded: s.trainingExpanded,
+      weekPlan: this.trainingPlans[s.activePerson].map((d, i) => ({
+        short: d.short,
+        type: d.type + (d.duration ? (' · ' + d.duration + ' Min') : ''),
+        colorStyle: i === this.todayIndex ? ('color:' + p.ringColor + ';') : 'color:#6F706D;'
+      })),
+      toggleTrainingExpand: () => this.toggleTrainingExpand(),
+      draftTrainingType: s.draftTrainingType,
+      draftTrainingDuration: s.draftTrainingDuration,
+      draftTrainingNote: s.draftTrainingNote,
+      setDraftTrainingType: (e) => this.setState({ draftTrainingType: e.target.value }),
+      setDraftTrainingDuration: (e) => this.setState({ draftTrainingDuration: e.target.value }),
+      setDraftTrainingNote: (e) => this.setState({ draftTrainingNote: e.target.value }),
+      saveTraining: () => this.saveTraining(),
+      waterLine: this.fmt(myWater * 250) + ' ml',
+      glass1Style: this.waterGlassStyle(0, myWater),
+      glass2Style: this.waterGlassStyle(1, myWater),
+      glass3Style: this.waterGlassStyle(2, myWater),
+      glass4Style: this.waterGlassStyle(3, myWater),
+      glass5Style: this.waterGlassStyle(4, myWater),
+      glass6Style: this.waterGlassStyle(5, myWater),
+      glass7Style: this.waterGlassStyle(6, myWater),
+      glass8Style: this.waterGlassStyle(7, myWater),
+      fillGlass1: () => this.setWaterGlass(0),
+      fillGlass2: () => this.setWaterGlass(1),
+      fillGlass3: () => this.setWaterGlass(2),
+      fillGlass4: () => this.setWaterGlass(3),
+      fillGlass5: () => this.setWaterGlass(4),
+      fillGlass6: () => this.setWaterGlass(5),
+      fillGlass7: () => this.setWaterGlass(6),
+      fillGlass8: () => this.setWaterGlass(7)
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Onboarding: Ernährung</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  body{margin:0;background:#F3F1EC;font-family:'Inter',sans-serif;color:#111111}
+  a{color:#1F4D3A}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Geist:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;background:#F3F1EC;display:flex;flex-direction:column;overflow:hidden;">
+  <div style="flex:1 1 auto;overflow-y:auto;padding:48px 20px 32px;display:flex;flex-direction:column;gap:32px;">
+
+    <sc-if value="{{notEdit}}" hint-placeholder-val="{{true}}">
+    <div style="display:flex;gap:8px;">
+      <div style="flex:1;height:4px;border-radius:999px;background:#1F4D3A;"></div>
+      <div style="flex:1;height:4px;border-radius:999px;background:#1F4D3A;"></div>
+      <div style="flex:1;height:4px;border-radius:999px;background:#1F4D3A;"></div>
+      <div style="flex:1;height:4px;border-radius:999px;background:#E6E3DC;"></div>
+    </div>
+    </sc-if>
+
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#6F706D;">{{stepLabel}}</span>
+      <h1 style="margin:0;font-family:'DM Serif Display',Georgia,serif;font-size:32px;font-weight:400;letter-spacing:-0.01em;">Deine Ernährung</h1>
+    </div>
+
+    <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px;">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Möchtest du einen Ernährungsplan?</span>
+        <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#6F706D;">Passend zu deinem Ziel und abgestimmt mit deinem Haushalt. Du kannst das später jederzeit ändern.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button type="button" onClick="{{pickFoodPlanYes}}" aria-pressed="{{foodPlanYesPressed}}" style="text-align:left;padding:12px 16px;border-radius:16px;border:1px solid #E6E3DC;cursor:pointer;display:flex;flex-direction:column;gap:2px;{{foodPlanYesStyle}}">
+          <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Ja, erstell mir einen Plan</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;opacity:.85;">Gerichte mit Rezept, Portionen und Einkaufsliste</span>
+        </button>
+        <button type="button" onClick="{{pickFoodPlanNo}}" aria-pressed="{{foodPlanNoPressed}}" style="text-align:left;padding:12px 16px;border-radius:16px;border:1px solid #E6E3DC;cursor:pointer;display:flex;flex-direction:column;gap:2px;{{foodPlanNoStyle}}">
+          <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Nein, ich trage nur ein, was ich esse</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;opacity:.85;">Du trackst kcal und Makros, ohne Vorgaben</span>
+        </button>
+      </div>
+      <sc-if value="{{foodPlan}}" hint-placeholder-val="{{true}}">
+        <div style="display:flex;flex-direction:column;gap:16px;border-top:1px solid #EDEAE3;padding-top:16px;">
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <label style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Wie oft möchtest du am Tag essen?</label>
+          <div style="display:flex;gap:8px;">
+            <button type="button" onClick="{{pickMeals2}}" style="flex:1;padding:12px 4px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{meals2Style}}">2</button>
+            <button type="button" onClick="{{pickMeals3}}" style="flex:1;padding:12px 4px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{meals3Style}}">3</button>
+            <button type="button" onClick="{{pickMeals4}}" style="flex:1;padding:12px 4px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{meals4Style}}">4</button>
+            <button type="button" onClick="{{pickMeals5}}" style="flex:1;padding:12px 4px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{meals5Style}}">5</button>
+            <button type="button" onClick="{{pickMeals6}}" style="flex:1;padding:12px 4px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{meals6Style}}">6</button>
+          </div>
+          <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Mahlzeiten pro Tag, inkl. Snacks.</p>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid #EDEAE3;padding-top:12px;">
+          <label style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Soll der Plan alle Mahlzeiten abdecken?</label>
+          <div style="display:flex;gap:8px;">
+            <button type="button" onClick="{{pickCoversAll}}" style="flex:1;padding:12px 8px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{coversAllStyle}}">Alle Mahlzeiten</button>
+            <button type="button" onClick="{{pickCoversSome}}" style="flex:1;padding:12px 8px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{coversSomeStyle}}">Nur einzelne Mahlzeiten</button>
+          </div>
+        </div>
+
+        <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#6F706D;border-top:1px solid #EDEAE3;padding-top:10px;">Jeden Sonntag bekommst du den Plan für die neue Woche. Mit Herz und Daumen bei den Gerichten lernt er, was euch schmeckt.</p>
+        </div>
+      </sc-if>
+      <sc-if value="{{noFoodPlan}}" hint-placeholder-val="{{false}}">
+        <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#6F706D;border-top:1px solid #EDEAE3;padding-top:10px;">Alles klar. Dein Kalorienziel bleibt, du trägst selbst ein, was du isst. Weitere Fragen zur Ernährung brauchen wir dann nicht. Wenn ihr gemeinsam esst, siehst du das Gericht aus dem Plan der anderen und kannst es mit einem Tipp eintragen.</p>
+      </sc-if>
+    </div>
+
+    <sc-if value="{{foodPlan}}" hint-placeholder-val="{{true}}">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <label style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Ernährungspräferenzen</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <button type="button" onClick="{{toggleAlles}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{allesStyle}}">Alles / keine Einschränkung</button>
+          <button type="button" onClick="{{toggleVegetarisch}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{vegetarischStyle}}">Vegetarisch</button>
+          <button type="button" onClick="{{toggleVegan}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{veganStyle}}">Vegan</button>
+          <button type="button" onClick="{{togglePescetarisch}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{pescetarischStyle}}">Pescetarisch</button>
+          <button type="button" onClick="{{toggleFlexitarisch}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{flexitarischStyle}}">Flexitarisch</button>
+          <button type="button" onClick="{{toggleLowcarb}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{lowcarbStyle}}">Low-Carb</button>
+          <button type="button" onClick="{{toggleKeto}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{ketoStyle}}">Keto</button>
+          <button type="button" onClick="{{togglePaleo}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{paleoStyle}}">Paleo</button>
+          <button type="button" onClick="{{toggleGlutenfrei}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{glutenfreiStyle}}">Glutenfrei</button>
+          <button type="button" onClick="{{toggleLaktosefrei}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{laktosefreiStyle}}">Laktosefrei</button>
+          <button type="button" onClick="{{toggleHalal}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{halalStyle}}">Halal</button>
+          <button type="button" onClick="{{toggleKoscher}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{koscherStyle}}">Koscher</button>
+          <button type="button" onClick="{{toggleZuckerarm}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{zuckerarmStyle}}">Zuckerarm</button>
+        </div>
+        <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Mehrfachauswahl möglich. "Alles" schließt die anderen Optionen aus.</p>
+      </div>
+
+      <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px;">
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Allergien und Unverträglichkeiten</span>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#6F706D;">Gilt für alle gemeinsamen Gerichte im Haushalt, weil aus einem Topf gekocht wird.</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <sc-for list="{{allergyOpts}}" as="o" hint-placeholder-count="8">
+            <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}" style="padding:8px 12px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{o.style}}">{{o.label}}</button>
+          </sc-for>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid #EDEAE3;padding-top:16px;">
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Mag ich nicht</span>
+            <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#6F706D;">Wir planen drumherum. Geht das bei einem gemeinsamen Gericht nicht, bekommst du eine Alternative.</span>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <sc-for list="{{dislikeOpts}}" as="o" hint-placeholder-count="8">
+              <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}" style="padding:8px 12px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{o.style}}">{{o.label}}</button>
+            </sc-for>
+          </div>
+          <label for="dislikenote" style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Etwas anderes?</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input id="dislikenote" type="text" placeholder="z.B. Rosenkohl" value="{{draftDislike}}" onInput="{{setDraftDislike}}" style="flex:1;box-sizing:border-box;padding:12px 16px;border-radius:16px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+            <button type="button" onClick="{{addDislike}}" style="all:unset;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#FFFFFF;background:#1F4D3A;padding:12px 16px;border-radius:999px;white-space:nowrap;">Hinzufügen</button>
+          </div>
+        </div>
+      </div>
+
+      <sc-if value="{{foodPlan}}" hint-placeholder-val="{{true}}">
+      <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px;">
+        <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Kochen und Budget</span>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;">Zeit zum Kochen unter der Woche</span>
+          <div style="display:flex;gap:8px;">
+            <sc-for list="{{timeWeekOpts}}" as="o" hint-placeholder-count="4">
+              <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}" style="flex:1;padding:12px 4px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{o.style}}">{{o.label}}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;">Zeit zum Kochen am Wochenende</span>
+          <div style="display:flex;gap:8px;">
+            <sc-for list="{{timeWeekendOpts}}" as="o" hint-placeholder-count="4">
+              <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}" style="flex:1;padding:12px 4px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{o.style}}">{{o.label}}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid #EDEAE3;padding-top:16px;">
+          <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;">Wie gern kochst du?</span>
+          <div style="display:flex;gap:8px;">
+            <sc-for list="{{levelOpts}}" as="o" hint-placeholder-count="3">
+              <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}" style="flex:1;padding:12px 4px;border-radius:16px;border:1px solid #E6E3DC;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;{{o.style}}"><span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">{{o.label}}</span><span style="font-family:'Inter',sans-serif;font-size:12px;opacity:.85;">{{o.sub}}</span></button>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid #EDEAE3;padding-top:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;">
+            <label for="budget" style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;">Budget pro Woche für den Haushalt</label>
+            <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">optional</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <input id="budget" type="number" min="0" inputmode="numeric" placeholder="z.B. 90" value="{{budget}}" onInput="{{setBudget}}" onKeyDown="{{blockMinus}}" style="flex:1;box-sizing:border-box;padding:12px 16px;border-radius:16px;border:1px solid #E6E3DC;font-family:'Geist',sans-serif;font-size:15px;font-weight:600;background:#FFFFFF;">
+            <span style="font-family:'Inter',sans-serif;font-size:14px;font-weight:600;color:#6F706D;">€</span>
+          </div>
+        </div>
+        <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#6F706D;border-top:1px solid #EDEAE3;padding-top:10px;">Du kannst alles später unter „Vorlieben“ im Essensplan ändern.</p>
+      </div>
+      </sc-if>
+
+
+      <div style="background:#FFFFFF;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px;">
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Intervallfasten</span>
+            <button type="button" onClick="{{toggleInfo}}" aria-expanded="{{infoExpanded}}" aria-label="Was ist Intervallfasten?" style="all:unset;box-sizing:border-box;cursor:pointer;width:44px;height:44px;margin:-10px -10px -10px 0;display:flex;align-items:center;justify-content:center;">
+              <span style="width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Geist',sans-serif;font-size:13px;font-weight:700;{{infoBtnStyle}}">?</span>
+            </button>
+          </div>
+          <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#6F706D;">Möchtest du Intervallfasten in deinen Ernährungsplan einbauen?</p>
+        </div>
+        <sc-if value="{{showInfo}}" hint-placeholder-val="{{false}}">
+          <div style="background:#F3F1EC;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;">
+            <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">So funktioniert Intervallfasten</span>
+            <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;line-height:1.55;color:#111111;">Du wechselst zwischen einem Zeitfenster, in dem du isst, und einer Fastenpause. In der Pause trinkst du nur Wasser, ungesüßten Tee oder schwarzen Kaffee.</p>
+            <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;line-height:1.55;color:#111111;">Die Zahlen bedeuten Stunden fasten : Stunden essen. Bei 16:8 fastest du also 16 Stunden und isst innerhalb von 8 Stunden. Die Nacht zählt mit, deshalb ist 12:12 für viele schon fast Alltag.</p>
+            <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;line-height:1.55;color:#111111;">Fasten ersetzt kein Kalorienziel, es hilft dir nur, es leichter einzuhalten. Starte leicht und steiger dich, wenn es sich gut anfühlt.</p>
+            <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#6F706D;">Nicht geeignet in Schwangerschaft und Stillzeit, bei Diabetes mit Medikamenten oder wenn du schon mal Probleme mit Essstörungen hattest. Sprich im Zweifel vorher mit deiner Ärztin oder deinem Arzt.</p>
+          </div>
+        </sc-if>
+        <div style="display:flex;gap:8px;">
+          <button type="button" onClick="{{pickFastingYes}}" style="flex:1;padding:12px 8px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{fastingYesStyle}}">Ja</button>
+          <button type="button" onClick="{{pickFastingNo}}" style="flex:1;padding:12px 8px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{fastingNoStyle}}">Nein</button>
+        </div>
+        <sc-if value="{{fasting}}" hint-placeholder-val="{{true}}">
+          <div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid #EDEAE3;padding-top:10px;">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;">Welche Methode?</span>
+            <sc-for list="{{fastOptions}}" as="o" hint-placeholder-count="6">
+              <button type="button" onClick="{{o.pick}}" aria-pressed="{{o.pressed}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;flex-direction:column;gap:4px;padding:12px 16px;border-radius:16px;{{o.style}}">
+                <span style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                  <span style="font-family:'Geist',sans-serif;font-size:14px;font-weight:700;">{{o.name}}</span>
+                  <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;{{o.levelStyle}}">{{o.level}}</span>
+                </span>
+                <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.45;">{{o.what}}</span>
+                <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.45;{{o.exampleStyle}}">{{o.example}}</span>
+              </button>
+            </sc-for>
+            <sc-if value="{{isOwnFasting}}" hint-placeholder-val="{{false}}">
+              <label for="ownfasting" style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Deine Methode</label>
+              <input id="ownfasting" type="text" placeholder="z.B. 13:11 oder nur abends nichts mehr essen" value="{{ownFasting}}" onInput="{{setOwnFasting}}" style="box-sizing:border-box;width:100%;padding:12px 16px;border-radius:16px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+            </sc-if>
+          </div>
+        </sc-if>
+        <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;border-top:1px solid #EDEAE3;padding-top:10px;">Du kannst das später jederzeit in den Einstellungen ändern.</p>
+      </div>
+    </sc-if>
+
+  </div>
+
+  <div style="flex:0 0 auto;padding:14px 24px 20px;background:#F3F1EC;display:flex;gap:16px;align-items:center;">
+    <sc-if value="{{notEdit}}" hint-placeholder-val="{{true}}">
+      <a href="{{backHref}}" style="text-decoration:none;color:#6F706D;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;padding:16px 4px;">Zurück</a>
+      <a href="{{nextHref}}" style="flex:1;display:block;text-decoration:none;text-align:center;background:#1F4D3A;color:#FFFFFF;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;padding:15px;border-radius:999px;">Weiter</a>
+    </sc-if>
+    <sc-if value="{{isEdit}}" hint-placeholder-val="{{false}}">
+      <a href="{{editBackHref}}" onClick="{{finishEdit}}" style="flex:1;display:block;text-decoration:none;text-align:center;background:#1F4D3A;color:#FFFFFF;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;padding:15px;border-radius:999px;">Fertig</a>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.incoming = this.parseD();
+    const d = this.incoming;
+    this.state = {
+      diet: d.diet || {
+        alles: false, vegetarisch: false, vegan: false, pescetarisch: false, flexitarisch: false,
+        lowcarb: false, keto: false, paleo: false, glutenfrei: false, laktosefrei: false,
+        halal: false, koscher: false, zuckerarm: false
+      },
+      mealsPerDay: d.mealsPerDay || 3,
+      coversAllMeals: d.coversAllMeals === undefined ? true : d.coversAllMeals,
+      fasting: d.fasting || false,
+      fastingType: d.fastingType || '12:12',
+      ownFasting: d.ownFasting || '',
+      showInfo: false,
+      allergies: d.allergies || [],
+      dislikes: d.dislikes || ['Pilze'],
+      customDislikes: d.customDislikes || [],
+      draftDislike: '',
+      cookTimeWeek: d.cookTimeWeek || '30',
+      cookTimeWeekend: d.cookTimeWeekend || '60',
+      cookLevel: d.cookLevel || 'mittel',
+      budget: d.budget === undefined ? '' : d.budget,
+      foodPlan: d.foodPlan === undefined ? true : d.foodPlan
+    };
+    this.fastMethods = [
+      { id: '12:12', level: 'Einstieg', what: '12 Stunden fasten, 12 Stunden essen.', example: 'z.B. 8 bis 20 Uhr essen. Im Grunde nur: nach dem Abendessen keine Snacks mehr.' },
+      { id: '14:10', level: 'Leicht', what: '14 Stunden fasten, 10 Stunden essen.', example: 'z.B. 9 bis 19 Uhr essen. Frühstück etwas später, Abendessen etwas früher.' },
+      { id: '16:8', level: 'Beliebt', what: '16 Stunden fasten, 8 Stunden essen.', example: 'z.B. 11 bis 19 Uhr essen. Meist fällt das Frühstück weg.' },
+      { id: '18:6', level: 'Fortgeschritten', what: '18 Stunden fasten, 6 Stunden essen.', example: 'z.B. 12 bis 18 Uhr essen. Zwei Mahlzeiten am Tag.' },
+      { id: '20:4', level: 'Sehr fortgeschritten', what: '20 Stunden fasten, 4 Stunden essen.', example: 'z.B. 14 bis 18 Uhr essen. Schwer mit viel Sport vereinbar.' },
+      { id: '5:2', level: 'Wochenrhythmus', what: '5 Tage normal essen, 2 Tage stark reduziert.', example: 'An 2 nicht aufeinanderfolgenden Tagen nur ca. 500 bis 600 kcal.' },
+      { id: 'sonstiges', level: 'Eigene', what: 'Du hast deinen eigenen Rhythmus?', example: 'Trag ihn unten ein.' }
+    ];
+  }
+  editInfo() { try { const e = JSON.parse(localStorage.getItem('vitaEdit') || 'null'); return e && e.step === 'Onboarding4.dc.html' ? e : null; } catch (x) { return null; } }
+  parseD() {
+    if (this.editInfo()) { try { return JSON.parse(localStorage.getItem('vitaOnboardingData') || '{}') || {}; } catch (x) { return {}; } }
+    let stored = {};
+    try { stored = JSON.parse(localStorage.getItem('vitaOnboardingData') || '{}') || {}; } catch (e) { stored = {}; }
+    try {
+      const params = new URLSearchParams(__vitaLoc.search);
+      const raw = params.get('d');
+      return raw ? { ...stored, ...JSON.parse(raw) } : stored;
+    } catch (e) { return stored; }
+  }
+  saveLS(full) {
+    try { localStorage.setItem('vitaOnboardingData', JSON.stringify(full)); } catch (e) {}
+  }
+  toggleDiet(k) {
+    if (k === 'alles') {
+      const turningOn = !this.state.diet.alles;
+      const cleared = Object.keys(this.state.diet).reduce((acc, key) => { acc[key] = false; return acc; }, {});
+      const next = { ...cleared, alles: turningOn };
+      this.setState({ diet: next });
+      return;
+    }
+    const next = { ...this.state.diet, [k]: !this.state.diet[k], alles: false };
+    this.setState({ diet: next });
+  }
+  selStyle(active) {
+    return active
+      ? 'background:#1F4D3A;color:#FFFFFF;border-color:#1F4D3A;'
+      : 'background:#FFFFFF;color:#111111;border-color:#E6E3DC;';
+  }
+  componentDidMount() {
+    const e0 = this.editInfo();
+    this.__editTs = e0 ? e0.ts : 0;
+    this.__editPoll = setInterval(() => {
+      const e = this.editInfo();
+      const ts = e ? e.ts : 0;
+      if (ts !== this.__editTs) {
+        this.__editTs = ts;
+        if (e) {
+          const fresh = new this.constructor(this.props);
+          this.incoming = fresh.incoming;
+          this.setState(fresh.state);
+        } else this.forceUpdate();
+      }
+    }, 200);
+  }
+  componentWillUnmount() { if (this.__editPoll) clearInterval(this.__editPoll); }
+  renderVals() {
+    const v = this.__edRV();
+    const e = this.editInfo();
+    v.isEdit = !!e;
+    v.notEdit = !e;
+    v.stepLabel = e ? 'Einstellungen' : 'Schritt 3 von 4';
+    v.editBackHref = e ? (e.back || 'Profil.dc.html') : 'Profil.dc.html';
+    v.finishEdit = () => { try { localStorage.removeItem('vitaEdit'); } catch (x) {} };
+    return v;
+  }
+  __edRV() {
+    const v = this.__nnRV();
+    const keys = ["setBudget"];
+    const clean = (e) => {
+      if (e && e.target && typeof e.target.value === 'string' && /[-−]/.test(e.target.value)) {
+        e.target.value = e.target.value.replace(/[-−]/g, '');
+      }
+    };
+    const wrapObj = (o) => {
+      keys.forEach((k) => {
+        if (typeof o[k] === 'function' && !o[k].__nn) {
+          const orig = o[k];
+          const w = (e) => { clean(e); return orig(e); };
+          w.__nn = true;
+          o[k] = w;
+        }
+      });
+    };
+    wrapObj(v);
+    Object.keys(v).forEach((k) => { if (Array.isArray(v[k])) v[k].forEach((it) => { if (it && typeof it === 'object') wrapObj(it); }); });
+    v.blockMinus = (e) => { if (e && (e.key === '-' || e.key === '−' || e.key === '+' || e.key === 'e' || e.key === 'E')) e.preventDefault(); };
+    return v;
+  }
+  __nnRV() {
+    const d = this.state.diet;
+    const s = this.state;
+    const full = {
+      ...this.incoming,
+      diet: d, mealsPerDay: s.mealsPerDay, coversAllMeals: s.coversAllMeals,
+      fasting: s.fasting, fastingType: s.fastingType, ownFasting: s.ownFasting,
+      allergies: s.allergies, dislikes: s.dislikes, customDislikes: s.customDislikes,
+      cookTimeWeek: s.cookTimeWeek, cookTimeWeekend: s.cookTimeWeekend, cookLevel: s.cookLevel, budget: s.budget, foodPlan: s.foodPlan
+    };
+    const multi = (field, labels) => labels.map((l) => { const on = s[field].indexOf(l) >= 0; return { label: l, pressed: on ? 'true' : 'false', style: this.selStyle(on), pick: () => this.setState({ [field]: on ? this.state[field].filter((x) => x !== l) : this.state[field].concat([l]) }) }; });
+    const single = (field, list) => list.map((o) => ({ ...o, pressed: s[field] === o.key ? 'true' : 'false', style: this.selStyle(s[field] === o.key), pick: () => this.setState({ [field]: o.key }) }));
+    const times = [{ key: '15', label: '15 Min' }, { key: '30', label: '30 Min' }, { key: '45', label: '45 Min' }, { key: '60', label: '60+' }];
+    const baseDislikes = ['Pilze', 'Koriander', 'Fisch', 'Oliven', 'Aubergine', 'Linsen', 'Tofu', 'Rote Bete'];
+    const backHref = 'Onboarding3.dc.html?d=' + encodeURIComponent(JSON.stringify(full));
+    this.saveLS(full);
+    const nextHref = 'Onboarding5.dc.html?d=' + encodeURIComponent(JSON.stringify(full));
+    return {
+      allesStyle: this.selStyle(d.alles),
+      vegetarischStyle: this.selStyle(d.vegetarisch),
+      veganStyle: this.selStyle(d.vegan),
+      pescetarischStyle: this.selStyle(d.pescetarisch),
+      flexitarischStyle: this.selStyle(d.flexitarisch),
+      lowcarbStyle: this.selStyle(d.lowcarb),
+      ketoStyle: this.selStyle(d.keto),
+      paleoStyle: this.selStyle(d.paleo),
+      glutenfreiStyle: this.selStyle(d.glutenfrei),
+      laktosefreiStyle: this.selStyle(d.laktosefrei),
+      halalStyle: this.selStyle(d.halal),
+      koscherStyle: this.selStyle(d.koscher),
+      zuckerarmStyle: this.selStyle(d.zuckerarm),
+      toggleAlles: () => this.toggleDiet('alles'),
+      toggleVegetarisch: () => this.toggleDiet('vegetarisch'),
+      toggleVegan: () => this.toggleDiet('vegan'),
+      togglePescetarisch: () => this.toggleDiet('pescetarisch'),
+      toggleFlexitarisch: () => this.toggleDiet('flexitarisch'),
+      toggleLowcarb: () => this.toggleDiet('lowcarb'),
+      toggleKeto: () => this.toggleDiet('keto'),
+      togglePaleo: () => this.toggleDiet('paleo'),
+      toggleGlutenfrei: () => this.toggleDiet('glutenfrei'),
+      toggleLaktosefrei: () => this.toggleDiet('laktosefrei'),
+      toggleHalal: () => this.toggleDiet('halal'),
+      toggleKoscher: () => this.toggleDiet('koscher'),
+      toggleZuckerarm: () => this.toggleDiet('zuckerarm'),
+      meals2Style: this.selStyle(s.mealsPerDay === 2),
+      meals3Style: this.selStyle(s.mealsPerDay === 3),
+      meals4Style: this.selStyle(s.mealsPerDay === 4),
+      meals5Style: this.selStyle(s.mealsPerDay === 5),
+      meals6Style: this.selStyle(s.mealsPerDay === 6),
+      pickMeals2: () => this.setState({ mealsPerDay: 2 }),
+      pickMeals3: () => this.setState({ mealsPerDay: 3 }),
+      pickMeals4: () => this.setState({ mealsPerDay: 4 }),
+      pickMeals5: () => this.setState({ mealsPerDay: 5 }),
+      pickMeals6: () => this.setState({ mealsPerDay: 6 }),
+      coversAllStyle: this.selStyle(s.coversAllMeals),
+      coversSomeStyle: this.selStyle(!s.coversAllMeals),
+      pickCoversAll: () => this.setState({ coversAllMeals: true }),
+      pickCoversSome: () => this.setState({ coversAllMeals: false }),
+      fastingYesStyle: this.selStyle(s.fasting),
+      fastingNoStyle: this.selStyle(!s.fasting),
+      pickFastingYes: () => this.setState({ fasting: true }),
+      pickFastingNo: () => this.setState({ fasting: false }),
+      fasting: s.fasting,
+      toggleInfo: () => this.setState({ showInfo: !this.state.showInfo }),
+      showInfo: s.showInfo,
+      infoExpanded: s.showInfo ? 'true' : 'false',
+      infoBtnStyle: s.showInfo ? 'background:#1F4D3A;color:#FFFFFF;' : 'background:#E3EEE6;color:#1F4D3A;',
+      isOwnFasting: s.fastingType === 'sonstiges',
+      ownFasting: s.ownFasting,
+      setOwnFasting: (e) => this.setState({ ownFasting: e.target.value }),
+      fastOptions: this.fastMethods.map((m) => {
+        const on = s.fastingType === m.id;
+        return {
+          name: m.id === 'sonstiges' ? 'Eigene Methode' : m.id,
+          level: m.level, what: m.what, example: m.example,
+          pressed: on ? 'true' : 'false',
+          style: on ? 'background:#1F4D3A;color:#FFFFFF;border:1.5px solid #1F4D3A;' : 'background:#FFFFFF;color:#111111;border:1.5px solid #E6E3DC;',
+          levelStyle: on ? 'background:rgba(255,255,255,.22);color:#FFFFFF;' : 'background:#F3F1EC;color:#1F4D3A;',
+          exampleStyle: on ? 'color:#F7F6F2;' : 'color:#6F706D;',
+          pick: () => this.setState({ fastingType: m.id })
+        };
+      }),
+      fast168Style: this.selStyle(s.fastingType === '16:8'),
+      fast186Style: this.selStyle(s.fastingType === '18:6'),
+      fast204Style: this.selStyle(s.fastingType === '20:4'),
+      fast52Style: this.selStyle(s.fastingType === '5:2'),
+      fastSonstigesStyle: this.selStyle(s.fastingType === 'sonstiges'),
+      pickFast168: () => this.setState({ fastingType: '16:8' }),
+      pickFast186: () => this.setState({ fastingType: '18:6' }),
+      pickFast204: () => this.setState({ fastingType: '20:4' }),
+      pickFast52: () => this.setState({ fastingType: '5:2' }),
+      pickFastSonstiges: () => this.setState({ fastingType: 'sonstiges' }),
+      allergyOpts: multi('allergies', ['Laktose', 'Gluten', 'Nüsse', 'Erdnüsse', 'Ei', 'Fisch', 'Meeresfrüchte', 'Soja', 'Sellerie', 'Fruktose']),
+      dislikeOpts: multi('dislikes', baseDislikes.concat(s.customDislikes)),
+      draftDislike: s.draftDislike,
+      setDraftDislike: (e) => this.setState({ draftDislike: e.target.value }),
+      addDislike: () => {
+        const v = (this.state.draftDislike || '').trim();
+        if (!v) return;
+        const exists = baseDislikes.concat(this.state.customDislikes).indexOf(v) >= 0;
+        this.setState({
+          customDislikes: exists ? this.state.customDislikes : this.state.customDislikes.concat([v]),
+          dislikes: this.state.dislikes.indexOf(v) >= 0 ? this.state.dislikes : this.state.dislikes.concat([v]),
+          draftDislike: ''
+        });
+      },
+      timeWeekOpts: single('cookTimeWeek', times),
+      timeWeekendOpts: single('cookTimeWeekend', times),
+      levelOpts: single('cookLevel', [
+        { key: 'einfach', label: 'Einfach', sub: 'wenig Schritte' },
+        { key: 'mittel', label: 'Mittel', sub: 'gern mal neu' },
+        { key: 'aufwendig', label: 'Aufwendig', sub: 'ich liebe es' }
+      ]),
+      budget: s.budget,
+      foodPlan: s.foodPlan,
+      noFoodPlan: !s.foodPlan,
+      foodPlanYesPressed: s.foodPlan ? 'true' : 'false',
+      foodPlanNoPressed: s.foodPlan ? 'false' : 'true',
+      foodPlanYesStyle: this.selStyle(s.foodPlan),
+      foodPlanNoStyle: this.selStyle(!s.foodPlan),
+      pickFoodPlanYes: () => this.setState({ foodPlan: true }),
+      pickFoodPlanNo: () => this.setState({ foodPlan: false }),
+      setBudget: (e) => this.setState({ budget: e.target.value }),
+      backHref: backHref,
+      nextHref: nextHref
+    };
+  }
+}
+</script>
+</body>
+</html>

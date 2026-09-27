@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Onboarding: Persönliche Angaben</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  body{margin:0;background:#F3F1EC;font-family:'Inter',sans-serif;color:#111111}
+  a{color:#1F4D3A}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Geist:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;background:#F3F1EC;display:flex;flex-direction:column;overflow:hidden;">
+  <div style="flex:1 1 auto;overflow-y:auto;padding:48px 20px 32px;display:flex;flex-direction:column;gap:32px;">
+
+    <sc-if value="{{notEdit}}" hint-placeholder-val="{{true}}">
+    <div style="display:flex;gap:8px;">
+      <div style="flex:1;height:4px;border-radius:999px;background:#1F4D3A;"></div>
+      <div style="flex:1;height:4px;border-radius:999px;background:#E6E3DC;"></div>
+      <div style="flex:1;height:4px;border-radius:999px;background:#E6E3DC;"></div>
+      <div style="flex:1;height:4px;border-radius:999px;background:#E6E3DC;"></div>
+    </div>
+    </sc-if>
+
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#6F706D;">{{stepLabel}}</span>
+      <h1 style="margin:0;font-family:'DM Serif Display',Georgia,serif;font-size:32px;font-weight:400;letter-spacing:-0.01em;">Persönliche Angaben</h1>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <label for="name" style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Name</label>
+      <input id="name" type="text" placeholder="z.B. Tamara" value="{{name}}" onInput="{{setName}}" style="box-sizing:border-box;width:100%;padding:12px 16px;border-radius:16px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <label style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Alter, Größe &amp; Gewicht</label>
+      <div style="display:flex;gap:8px;">
+        <div style="flex:1;display:flex;flex-direction:column;gap:4px;">
+          <label for="age" style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Alter</label>
+          <input id="age" type="number" min="0" placeholder="30" value="{{age}}" onInput="{{setAge}}" onKeyDown="{{blockMinus}}" style="box-sizing:border-box;width:100%;padding:12px 12px;border-radius:16px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:4px;">
+          <label for="height" style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Größe (cm)</label>
+          <input id="height" type="number" min="0" placeholder="170" value="{{height}}" onInput="{{setHeight}}" onKeyDown="{{blockMinus}}" style="box-sizing:border-box;width:100%;padding:12px 12px;border-radius:16px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:4px;">
+          <label for="weight" style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Gewicht (kg)</label>
+          <input id="weight" type="number" min="0" placeholder="70" value="{{weight}}" onInput="{{setWeight}}" onKeyDown="{{blockMinus}}" style="box-sizing:border-box;width:100%;padding:12px 12px;border-radius:16px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Geschlecht</span>
+      <div style="display:flex;gap:8px;">
+        <sc-for list="{{sexOptions}}" as="sx" hint-placeholder-count="3">
+          <button type="button" onClick="{{sx.pick}}" aria-pressed="{{sx.pressed}}" style="flex:1;padding:12px 8px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{sx.style}}">{{sx.label}}</button>
+        </sc-for>
+      </div>
+      <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Nur für die Berechnung deines Grundumsatzes.</p>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <label style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Dein Ziel</label>
+      <div style="display:flex;gap:8px;">
+        <button type="button" onClick="{{pickAbnehmen}}" style="flex:1;padding:12px 8px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{goalAbnehmenStyle}}">Abnehmen</button>
+        <button type="button" onClick="{{pickHalten}}" style="flex:1;padding:12px 8px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{goalHaltenStyle}}">Halten</button>
+        <button type="button" onClick="{{pickZunehmen}}" style="flex:1;padding:12px 8px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{goalZunehmenStyle}}">Zunehmen</button>
+      </div>
+      <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Davon hängen dein Kalorienziel und dein Plan ab.</p>
+    </div>
+
+    <button type="button" onClick="{{toggleKcalExpand}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:100%;text-align:left;display:flex;flex-direction:column;gap:12px;background:#FFFFFF;border-radius:20px;padding:24px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+        <div>
+          <div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Tägliches Kalorienziel</div>
+          <div style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;margin-top:2px;">{{kcalHint}}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="font-family:'Geist',sans-serif;font-size:20px;font-weight:700;color:#1F4D3A;white-space:nowrap;">{{kcalDisplay}}</div>
+          <span style="font-family:'Inter',sans-serif;font-size:13px;color:#6F706D;flex:0 0 auto;">{{kcalArrow}}</span>
+        </div>
+      </div>
+      <sc-if value="{{kcalExpanded}}" hint-placeholder-val="{{true}}">
+        <sc-if value="{{hasBodyValues}}" hint-placeholder-val="{{true}}">
+          <div style="border-top:1px solid #EDEAE3;padding-top:10px;display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;justify-content:space-between;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;"><span>Grundumsatz (Ruheverbrauch)</span><span style="color:#111111;font-weight:600;">{{bmrDisplay}}</span></div>
+            <div style="display:flex;justify-content:space-between;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;"><span>Alltagsbedarf ohne Sport</span><span style="color:#111111;font-weight:600;">{{tdeeDisplay}}</span></div>
+            <div style="display:flex;justify-content:space-between;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;"><span>Anpassung für dein Ziel "{{goalLabel}}"</span><span style="color:#111111;font-weight:600;">{{adjustmentDisplay}}</span></div>
+            <div style="display:flex;justify-content:space-between;font-family:'Inter',sans-serif;font-size:13px;font-weight:700;padding-top:5px;border-top:1px solid #EDEAE3;"><span>Dein Kalorienziel</span><span style="color:#1F4D3A;">{{kcalDisplay}}</span></div>
+            <p style="margin:4px 0 0;font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#6F706D;">Berechnet nach der Mifflin-St-Jeor-Formel, Alltagsfaktor {{activityFactorDisplay}} ({{activityFactorLabel}}). Dein Sport kommt an Trainingstagen extra dazu. {{activityFactorNote}}</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{missingBodyValues}}" hint-placeholder-val="{{true}}">
+          <div style="border-top:1px solid #EDEAE3;padding-top:10px;">
+            <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Trage oben Alter, Größe und Gewicht ein, um die Berechnung im Detail zu sehen.</p>
+          </div>
+        </sc-if>
+      </sc-if>
+    </button>
+
+    <sc-if value="{{showTargetSection}}" hint-placeholder-val="{{true}}">
+      <div style="display:flex;flex-direction:column;gap:16px;background:#FFFFFF;border-radius:20px;padding:24px;">
+        <label style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Zielgewicht &amp; Zeitspanne</label>
+
+        <div style="display:flex;gap:8px;">
+          <div style="flex:1;display:flex;flex-direction:column;gap:4px;">
+            <label for="targetweight" style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Zielgewicht (kg)</label>
+            <input id="targetweight" type="number" min="0" placeholder="65" value="{{targetWeight}}" onInput="{{setTargetWeight}}" onKeyDown="{{blockMinus}}" style="box-sizing:border-box;width:100%;padding:12px 12px;border-radius:16px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:4px;">
+            <label for="targetdate" style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Ziel bis wann?</label>
+            <input id="targetdate" type="date" value="{{targetDate}}" onInput="{{setTargetDate}}" style="box-sizing:border-box;width:100%;padding:12px 12px;border-radius:16px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+          </div>
+        </div>
+
+        <sc-if value="{{hasPlanMsg}}" hint-placeholder-val="{{false}}">
+          <div style="display:flex;flex-direction:column;gap:8px;border-radius:16px;padding:12px 16px;{{planMsgStyle}}">
+            <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#111111;">{{planMsg}}</p>
+            <sc-if value="{{canUseRealistic}}" hint-placeholder-val="{{false}}">
+              <button type="button" onClick="{{useRealistic}}" style="all:unset;box-sizing:border-box;cursor:pointer;align-self:flex-start;padding:8px 12px;border-radius:999px;background:#FFFFFF;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;">Datum {{realisticLabel}} übernehmen</button>
+            </sc-if>
+          </div>
+        </sc-if>
+        <sc-if value="{{showBmiWarning}}" hint-placeholder-val="{{true}}">
+          <div style="display:flex;gap:8px;align-items:flex-start;background:{{bmiBoxBg}};border:1px solid {{bmiBoxBorder}};border-radius:16px;padding:12px 16px;">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#B4531A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;margin-top:1px;" aria-hidden="true"><path d="M12 3 2.5 20h19L12 3z"></path><path d="M12 10v4.5"></path><path d="M12 17.5v.01"></path></svg>
+            <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#111111;">{{bmiMessage}}</p>
+          </div>
+        </sc-if>
+        <sc-if value="{{showBmiOk}}" hint-placeholder-val="{{true}}">
+          <div style="display:flex;gap:8px;align-items:flex-start;background:#E3EEE6;border:1px solid #1F4D3A;border-radius:16px;padding:12px 16px;">
+            <span style="font-size:15px;line-height:1.3;">✓</span>
+            <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;line-height:1.5;color:#111111;">{{bmiMessage}}</p>
+          </div>
+        </sc-if>
+
+        <div style="display:flex;flex-direction:column;gap:12px;border-top:1px solid #EDEAE3;padding-top:12px;">
+          <label style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Grund für dein Ziel</label>
+          <p style="margin:-4px 0 0;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Mehrfachauswahl möglich.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <button type="button" onClick="{{pickReasonKennenlernen}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{reasonKennenlernenStyle}}">Körper kennenlernen</button>
+            <button type="button" onClick="{{pickReasonErnaehrung}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{reasonErnaehrungStyle}}">Auf Ernährung achten</button>
+            <button type="button" onClick="{{pickReasonFitter}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{reasonFitterStyle}}">Fitter werden</button>
+            <button type="button" onClick="{{pickReasonFitBleiben}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{reasonFitBleibenStyle}}">Fit bleiben</button>
+            <button type="button" onClick="{{pickReasonSelbstbewusstsein}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{reasonSelbstbewusstseinStyle}}">Selbstbewusstsein stärken</button>
+            <button type="button" onClick="{{pickReasonEnergie}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{reasonEnergieStyle}}">Mehr Energie im Alltag</button>
+            <button type="button" onClick="{{pickReasonWettkampf}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{reasonWettkampfStyle}}">Für Sport/Wettkampf trainieren</button>
+            
+            <button type="button" onClick="{{pickReasonRueckkehr}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{reasonRueckkehrStyle}}">Rückkehr nach Pause/Verletzung</button>
+            <button type="button" onClick="{{pickReasonEreignis}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{reasonEreignisStyle}}">Ereignis (z.B. Hochzeit)</button>
+            <button type="button" onClick="{{pickReasonGesundheit}}" style="padding:12px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{reasonGesundheitStyle}}">Gesundheitliche Gründe</button>
+          </div>
+          <sc-if value="{{reasonIsEreignis}}" hint-placeholder-val="{{true}}">
+            <input type="text" placeholder="Welches Ereignis? (z.B. Hochzeit am 12.06.)" style="box-sizing:border-box;width:100%;padding:12px 16px;border-radius:16px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;background:#FFFFFF;">
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+
+  <div style="flex:0 0 auto;padding:14px 24px 20px;background:#F3F1EC;display:flex;gap:16px;align-items:center;">
+    <sc-if value="{{notEdit}}" hint-placeholder-val="{{true}}">
+      <a href="{{backHref}}" style="text-decoration:none;color:#6F706D;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;padding:16px 4px;">Zurück</a>
+      <a href="{{nextHref}}" style="flex:1;display:block;text-decoration:none;text-align:center;background:#1F4D3A;color:#FFFFFF;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;padding:15px;border-radius:999px;">Weiter</a>
+    </sc-if>
+    <sc-if value="{{isEdit}}" hint-placeholder-val="{{false}}">
+      <a href="{{editBackHref}}" onClick="{{finishEdit}}" style="flex:1;display:block;text-decoration:none;text-align:center;background:#1F4D3A;color:#FFFFFF;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;padding:15px;border-radius:999px;">Fertig</a>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.incoming = this.parseD();
+    const d = this.incoming;
+    this.state = {
+      name: d.name || '', age: d.age || '', height: d.height || '', weight: d.weight || '',
+      goal: d.goal || 'abnehmen',
+      sex: d.sex || '',
+      kcalExpanded: false,
+      targetWeight: d.targetWeight || '', targetDate: d.targetDate || '',
+      reasons: d.reasons || {
+        kennenlernen: false, ernaehrung: false, fitter: false, fitbleiben: false, ereignis: false, gesundheit: false,
+        selbstbewusstsein: false, energie: false, wettkampf: false, vorbild: false, rueckkehr: false
+      }
+    };
+  }
+  editInfo() { try { const e = JSON.parse(localStorage.getItem('vitaEdit') || 'null'); return e && e.step === 'Onboarding2.dc.html' ? e : null; } catch (x) { return null; } }
+  parseD() {
+    if (this.editInfo()) { try { return JSON.parse(localStorage.getItem('vitaOnboardingData') || '{}') || {}; } catch (x) { return {}; } }
+    let stored = {};
+    try { stored = JSON.parse(localStorage.getItem('vitaOnboardingData') || '{}') || {}; } catch (e) { stored = {}; }
+    try {
+      const params = new URLSearchParams(__vitaLoc.search);
+      const raw = params.get('d');
+      return raw ? { ...stored, ...JSON.parse(raw) } : stored;
+    } catch (e) { return stored; }
+  }
+  saveLS(full) {
+    try { localStorage.setItem('vitaOnboardingData', JSON.stringify(full)); } catch (e) {}
+  }
+  nonNegative(v) {
+    if (v === '') return '';
+    return v.replace(/-/g, '');
+  }
+  setGoal(g) { this.setState({ goal: g }); }
+  toggleReason(r) {
+    const next = { ...this.state.reasons, [r]: !this.state.reasons[r] };
+    this.setState({ reasons: next });
+  }
+  selStyle(active) {
+    return active
+      ? 'background:#1F4D3A;color:#FFFFFF;border-color:#1F4D3A;'
+      : 'background:#FFFFFF;color:#111111;border-color:#E6E3DC;';
+  }
+  goalLabelFor(g) {
+    if (g === 'abnehmen') return 'Abnehmen';
+    if (g === 'zunehmen') return 'Zunehmen';
+    return 'Halten';
+  }
+  bmiCategory(bmi) {
+    if (bmi < 18.5) return 'untergewichtig';
+    if (bmi < 25) return 'normalgewichtig';
+    if (bmi < 30) return 'übergewichtig';
+    return 'stark übergewichtig (Adipositas)';
+  }
+  calcPlan(d) {
+    const num = (v) => parseFloat(String(v === undefined || v === null ? '' : v).replace(',', '.'));
+    const age = num(d.age), height = num(d.height), weight = num(d.weight), target = num(d.targetWeight);
+    if (!(age > 0 && height > 0 && weight > 0)) return null;
+    const sexAdd = d.sex === 'm' ? 5 : (d.sex === 'w' ? -161 : -78);
+    const bmr = 10 * weight + 6.25 * height - 5 * age + sexAdd;
+    const palMap = { sitzend: 1.3, stehend: 1.5, bewegt: 1.7 };
+    const pal = palMap[d.activity] || 1.3;
+    const tdee = bmr * pal;
+    const goal = d.goal || 'abnehmen';
+    const floor = Math.max(Math.round(bmr), d.sex === 'm' ? 1500 : 1200);
+    const res = { bmr: Math.round(bmr), pal, tdee: Math.round(tdee), goal, floor, adjust: 0, pace: 0, weeks: null, capped: false, msg: '', realisticDate: null, tooSlow: false };
+    const fmtDate = (dt) => String(dt.getDate()).padStart(2, '0') + '.' + String(dt.getMonth() + 1).padStart(2, '0') + '.' + dt.getFullYear();
+    const iso = (dt) => dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+    const kg = (x) => x.toFixed(1).replace('.', ',');
+    if (goal === 'halten' || !(target > 0) || target === weight) {
+      res.goalKcal = Math.round(tdee / 10) * 10;
+      return res;
+    }
+    const lose = goal === 'abnehmen';
+    const diff = Math.abs(weight - target);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    let weeks = null;
+    if (d.targetDate) {
+      const td = new Date(d.targetDate + 'T00:00:00');
+      weeks = (td - today) / (1000 * 60 * 60 * 24 * 7);
+    }
+    const defaultPace = lose ? 0.5 : 0.25;
+    const maxPace = lose ? Math.min(weight * 0.01, 1.0) : Math.min(weight * 0.005, 0.5);
+    let pace = weeks && weeks > 0 ? diff / weeks : defaultPace;
+    if (weeks !== null && weeks <= 0) res.msg = 'Das Zieldatum liegt in der Vergangenheit. Wähl ein späteres Datum, wir rechnen solange mit ' + kg(defaultPace) + ' kg pro Woche.';
+    if (weeks !== null && weeks <= 0) pace = defaultPace;
+    let daily = pace * 7700 / 7;
+    let maxDaily = maxPace * 7700 / 7;
+    if (lose) maxDaily = Math.min(maxDaily, tdee - floor);
+    if (daily > maxDaily && !d.targetDate) {
+      daily = Math.max(0, maxDaily);
+      pace = daily * 7 / 7700;
+      res.msg = 'Ohne Zieldatum planen wir mit ' + kg(pace) + ' kg pro Woche, das ist für dich gesund machbar. Mit Datum passen wir die Kalorien an.';
+    } else if (daily > maxDaily) {
+      res.capped = true;
+      daily = Math.max(0, maxDaily);
+      const realPace = daily * 7 / 7700;
+      const realWeeks = realPace > 0 ? Math.ceil(diff / realPace) : null;
+      if (realWeeks) { const rd = new Date(today); rd.setDate(rd.getDate() + realWeeks * 7); res.realisticDate = iso(rd); res.realisticDateLabel = fmtDate(rd); }
+      res.msg = 'Bis zu deinem Datum wären das ' + kg(pace) + ' kg pro Woche. Gesund machbar sind bei dir ca. ' + kg(realPace) + ' kg pro Woche' + (lose ? ', ohne unter ' + floor.toLocaleString('de-DE') + ' kcal zu fallen' : '') + '. Wir planen damit, dein Ziel erreichst du dann etwa am ' + (res.realisticDateLabel || '?') + '.';
+      pace = realPace;
+    } else if (weeks && weeks > 0) {
+      res.msg = 'Das sind ' + kg(pace) + ' kg pro Woche, gut machbar.';
+    } else if (!d.targetDate) {
+      res.msg = 'Ohne Zieldatum planen wir mit ' + kg(pace) + ' kg pro Woche. Mit Datum passen wir die Kalorien an.';
+    }
+    res.pace = pace;
+    res.weeks = pace > 0 ? Math.ceil(diff / pace) : null;
+    res.adjust = Math.round((lose ? -daily : daily) / 10) * 10;
+    res.goalKcal = Math.round((tdee + res.adjust) / 10) * 10;
+    return res;
+  }
+  activityFactor(a) {
+    if (a === 'stehend') return 1.5;
+    if (a === 'bewegt') return 1.7;
+    return 1.3;
+  }
+  activityFactorLabel(a) {
+    if (a === 'sitzend') return 'sitzend';
+    if (a === 'stehend') return 'stehend/laufend';
+    if (a === 'bewegt') return 'viel Bewegung';
+    return 'mäßig aktiv';
+  }
+  componentDidMount() {
+    const e0 = this.editInfo();
+    this.__editTs = e0 ? e0.ts : 0;
+    this.__editPoll = setInterval(() => {
+      const e = this.editInfo();
+      const ts = e ? e.ts : 0;
+      if (ts !== this.__editTs) {
+        this.__editTs = ts;
+        if (e) {
+          const fresh = new this.constructor(this.props);
+          this.incoming = fresh.incoming;
+          this.setState(fresh.state);
+        } else this.forceUpdate();
+      }
+    }, 200);
+  }
+  componentWillUnmount() { if (this.__editPoll) clearInterval(this.__editPoll); }
+  renderVals() {
+    const v = this.__edRV();
+    const e = this.editInfo();
+    v.isEdit = !!e;
+    v.notEdit = !e;
+    v.stepLabel = e ? 'Einstellungen' : 'Schritt 1 von 4';
+    v.editBackHref = e ? (e.back || 'Profil.dc.html') : 'Profil.dc.html';
+    v.finishEdit = () => { try { localStorage.removeItem('vitaEdit'); } catch (x) {} };
+    return v;
+  }
+  __edRV() {
+    const v = this.__nnRV();
+    const keys = ["setAge", "setHeight", "setWeight", "setTargetWeight"];
+    const clean = (e) => {
+      if (e && e.target && typeof e.target.value === 'string' && /[-−]/.test(e.target.value)) {
+        e.target.value = e.target.value.replace(/[-−]/g, '');
+      }
+    };
+    const wrapObj = (o) => {
+      keys.forEach((k) => {
+        if (typeof o[k] === 'function' && !o[k].__nn) {
+          const orig = o[k];
+          const w = (e) => { clean(e); return orig(e); };
+          w.__nn = true;
+          o[k] = w;
+        }
+      });
+    };
+    wrapObj(v);
+    Object.keys(v).forEach((k) => { if (Array.isArray(v[k])) v[k].forEach((it) => { if (it && typeof it === 'object') wrapObj(it); }); });
+    v.blockMinus = (e) => { if (e && (e.key === '-' || e.key === '−' || e.key === '+' || e.key === 'e' || e.key === 'E')) e.preventDefault(); };
+    return v;
+  }
+  __nnRV() {
+    const g = this.state.goal;
+    const r = this.state.reasons;
+    const age = parseFloat(this.state.age);
+    const height = parseFloat(this.state.height);
+    const weight = parseFloat(this.state.weight);
+    const hasBodyValues = age > 0 && height > 0 && weight > 0;
+    const activity = this.incoming.activity;
+    const factor = this.activityFactor(activity);
+    const activityFactorNote = activity
+      ? 'Basiert auf deiner Angabe zur Alltagsaktivität aus Schritt 2.'
+      : 'Vorläufiger Schätzwert, wird nach deiner Angabe zur Alltagsaktivität im nächsten Schritt automatisch angepasst.';
+
+    let kcalDisplay = '? kcal';
+    let kcalHint = 'Alter, Größe & Gewicht eintragen';
+    let bmrDisplay = '?';
+    let tdeeDisplay = '?';
+    let adjustmentDisplay = '?';
+    const plan = this.calcPlan({ ...this.incoming, age: this.state.age, height: this.state.height, weight: this.state.weight, sex: this.state.sex, goal: g, targetWeight: this.state.targetWeight, targetDate: this.state.targetDate });
+    if (plan) {
+      kcalDisplay = plan.goalKcal.toLocaleString('de-DE') + ' kcal';
+      kcalHint = (this.state.sex ? '' : 'Geschlecht angeben für mehr Genauigkeit · ') + 'für dein Ziel „' + this.goalLabelFor(g) + '“ · tippen für Details';
+      bmrDisplay = plan.bmr.toLocaleString('de-DE') + ' kcal';
+      tdeeDisplay = plan.tdee.toLocaleString('de-DE') + ' kcal';
+      adjustmentDisplay = (plan.adjust > 0 ? '+ ' : (plan.adjust < 0 ? '− ' : '± ')) + Math.abs(plan.adjust).toLocaleString('de-DE') + ' kcal';
+    }
+
+    const showTargetSection = g === 'abnehmen' || g === 'zunehmen';
+    const heightM = height > 0 ? height / 100 : null;
+    const targetWeight = parseFloat(this.state.targetWeight);
+    const hasTargetInputs = showTargetSection && heightM && targetWeight > 0;
+
+    let showBmiWarning = false;
+    let showBmiOk = false;
+    let bmiMessage = '';
+    let bmiBoxBg = '#F5E3DA';
+    let bmiBoxBorder = '#C4532D';
+
+    if (hasTargetInputs) {
+      const targetBmi = targetWeight / (heightM * heightM);
+      const minHealthy = Math.round(18.5 * heightM * heightM * 10) / 10;
+      const maxHealthy = Math.round(24.9 * heightM * heightM * 10) / 10;
+      if (targetBmi < 18.5) {
+        showBmiWarning = true;
+        bmiMessage = 'Bei deiner Größe entspricht ' + targetWeight.toLocaleString('de-DE') + ' kg einem BMI von ' + targetBmi.toFixed(1) + ', das gilt als untergewichtig. Ein gesundes Zielgewicht liegt zwischen ' + minHealthy.toLocaleString('de-DE') + ' und ' + maxHealthy.toLocaleString('de-DE') + ' kg.';
+      } else if (targetBmi >= 25) {
+        showBmiWarning = true;
+        bmiBoxBg = '#F5E3DA';
+        bmiBoxBorder = '#C4532D';
+        bmiMessage = 'Bei deiner Größe entspricht ' + targetWeight.toLocaleString('de-DE') + ' kg einem BMI von ' + targetBmi.toFixed(1) + ', das gilt als ' + this.bmiCategory(targetBmi) + '. Ein gesundes Zielgewicht liegt zwischen ' + minHealthy.toLocaleString('de-DE') + ' und ' + maxHealthy.toLocaleString('de-DE') + ' kg.';
+      } else {
+        showBmiOk = true;
+        bmiMessage = 'Bei deiner Größe entspricht ' + targetWeight.toLocaleString('de-DE') + ' kg einem BMI von ' + targetBmi.toFixed(1) + ', das liegt im gesunden Bereich (' + minHealthy.toLocaleString('de-DE') + ' bis ' + maxHealthy.toLocaleString('de-DE') + ' kg).';
+      }
+    }
+
+    const full = {
+      ...this.incoming,
+      name: this.state.name, age: this.state.age, height: this.state.height, weight: this.state.weight,
+      goal: g, sex: this.state.sex, targetWeight: this.state.targetWeight, targetDate: this.state.targetDate, reasons: r
+    };
+    const backHref = 'Onboarding.dc.html?d=' + encodeURIComponent(JSON.stringify(full));
+    this.saveLS(full);
+    const nextHref = 'Onboarding3.dc.html?d=' + encodeURIComponent(JSON.stringify(full));
+
+    return {
+      name: this.state.name,
+      setName: (e) => this.setState({ name: e.target.value }),
+      age: this.state.age,
+      height: this.state.height,
+      weight: this.state.weight,
+      setAge: (e) => this.setState({ age: this.nonNegative(e.target.value) }),
+      setHeight: (e) => this.setState({ height: this.nonNegative(e.target.value) }),
+      setWeight: (e) => this.setState({ weight: this.nonNegative(e.target.value) }),
+      goalAbnehmenStyle: this.selStyle(g === 'abnehmen'),
+      goalHaltenStyle: this.selStyle(g === 'halten'),
+      goalZunehmenStyle: this.selStyle(g === 'zunehmen'),
+      goalLabel: this.goalLabelFor(g),
+      pickAbnehmen: () => this.setGoal('abnehmen'),
+      pickHalten: () => this.setGoal('halten'),
+      pickZunehmen: () => this.setGoal('zunehmen'),
+      kcalDisplay: kcalDisplay,
+      kcalHint: kcalHint,
+      kcalArrow: this.state.kcalExpanded ? '▾' : '▸',
+      kcalExpanded: this.state.kcalExpanded,
+      toggleKcalExpand: () => this.setState({ kcalExpanded: !this.state.kcalExpanded }),
+      hasBodyValues: hasBodyValues,
+      missingBodyValues: !hasBodyValues,
+      bmrDisplay: bmrDisplay,
+      tdeeDisplay: tdeeDisplay,
+      adjustmentDisplay: adjustmentDisplay,
+      activityFactorDisplay: factor.toString().replace('.', ','),
+      activityFactorLabel: this.activityFactorLabel(activity),
+      activityFactorNote: activityFactorNote,
+      showTargetSection: showTargetSection,
+      targetWeight: this.state.targetWeight,
+      setTargetWeight: (e) => this.setState({ targetWeight: this.nonNegative(e.target.value) }),
+      targetDate: this.state.targetDate,
+      setTargetDate: (e) => this.setState({ targetDate: e.target.value }),
+      sexOptions: [['w', 'Weiblich'], ['m', 'Männlich'], ['d', 'Divers']].map((o) => ({ label: o[1], pressed: this.state.sex === o[0] ? 'true' : 'false', style: this.selStyle(this.state.sex === o[0]), pick: () => this.setState({ sex: o[0] }) })),
+      hasPlanMsg: !!(plan && plan.msg && showTargetSection),
+      planMsg: plan ? plan.msg : '',
+      planMsgStyle: plan && plan.capped ? 'background:#FFF1C7;border:1px solid #E9C766;' : 'background:#E3EEE6;border:1px solid #C9C6BE;',
+      canUseRealistic: !!(plan && plan.capped && plan.realisticDate),
+      realisticLabel: plan && plan.realisticDateLabel ? plan.realisticDateLabel : '',
+      useRealistic: () => { if (plan && plan.realisticDate) this.setState({ targetDate: plan.realisticDate }); },
+      showBmiWarning: showBmiWarning,
+      showBmiOk: showBmiOk,
+      bmiMessage: bmiMessage,
+      bmiBoxBg: bmiBoxBg,
+      bmiBoxBorder: bmiBoxBorder,
+      reasonKennenlernenStyle: this.selStyle(r.kennenlernen),
+      reasonErnaehrungStyle: this.selStyle(r.ernaehrung),
+      reasonFitterStyle: this.selStyle(r.fitter),
+      reasonFitBleibenStyle: this.selStyle(r.fitbleiben),
+      reasonSelbstbewusstseinStyle: this.selStyle(r.selbstbewusstsein),
+      reasonEnergieStyle: this.selStyle(r.energie),
+      reasonWettkampfStyle: this.selStyle(r.wettkampf),
+      reasonVorbildStyle: this.selStyle(r.vorbild),
+      reasonRueckkehrStyle: this.selStyle(r.rueckkehr),
+      reasonEreignisStyle: this.selStyle(r.ereignis),
+      reasonGesundheitStyle: this.selStyle(r.gesundheit),
+      reasonIsEreignis: r.ereignis,
+      pickReasonKennenlernen: () => this.toggleReason('kennenlernen'),
+      pickReasonErnaehrung: () => this.toggleReason('ernaehrung'),
+      pickReasonFitter: () => this.toggleReason('fitter'),
+      pickReasonFitBleiben: () => this.toggleReason('fitbleiben'),
+      pickReasonSelbstbewusstsein: () => this.toggleReason('selbstbewusstsein'),
+      pickReasonEnergie: () => this.toggleReason('energie'),
+      pickReasonWettkampf: () => this.toggleReason('wettkampf'),
+      pickReasonVorbild: () => this.toggleReason('vorbild'),
+      pickReasonRueckkehr: () => this.toggleReason('rueckkehr'),
+      pickReasonEreignis: () => this.toggleReason('ereignis'),
+      pickReasonGesundheit: () => this.toggleReason('gesundheit'),
+      backHref: backHref,
+      nextHref: nextHref
+    };
+  }
+}
+</script>
+</body>
+</html>

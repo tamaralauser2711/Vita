@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Einkaufsliste</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  body{margin:0;background:#F3F1EC;font-family:'Inter',sans-serif;color:#111111}
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&amp;family=Geist:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+</helmet>
+<div style="position:relative;width:390px;height:844px;box-sizing:border-box;background:#F3F1EC;display:flex;flex-direction:column;overflow:hidden;">
+  <div id="vita-scroll-einkaufsliste" style="flex:1 1 auto;overflow-y:auto;padding:32px 20px 32px;display:flex;flex-direction:column;gap:32px;">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <h1 style="margin:0;font-family:'DM Serif Display',Georgia,serif;font-size:32px;font-weight:400;letter-spacing:-0.01em;">Einkaufsliste</h1>
+        <p style="margin:0;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Für Tami &amp; Cristian · Essensplan dieser Woche</p>
+        <span style="display:flex;align-items:center;gap:8px;font-family:'Inter',sans-serif;font-size:12px;color:#1F4D3A;margin-top:4px;"><span style="width:8px;height:8px;border-radius:50%;background:#2F8F5B;box-shadow:0 0 0 3px #D5EBDD;"></span>Live geteilt · {{liveLine}}</span>
+      </div>
+      <button type="button" onClick="{{openPersonSheet}}" aria-label="{{switchAria}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:40px;height:40px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-family:'Geist',sans-serif;font-size:15px;font-weight:700;{{avatarStyle}}">{{avatarInitial}}</button>
+    </div>
+
+    <div style="background:#FFFFFF;border-radius:28px;padding:28px 24px;display:flex;flex-direction:column;gap:16px;color:#111111;">
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#1F4D3A;">Dein Spar-Tipp für heute</span>
+        <span style="font-family:'DM Serif Display',Georgia,serif;font-size:19px;font-weight:400;letter-spacing:-0.01em;line-height:1.25;">{{tipHeadline}}</span>
+        <span style="font-family:'Inter',sans-serif;font-size:13px;line-height:1.45;color:#6F706D;">{{tipLine}}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <sc-for list="{{marketRows}}" as="m" hint-placeholder-count="4">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span style="width:96px;flex:0 0 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:'Inter',sans-serif;font-size:12px;{{m.nameStyle}}">{{m.name}}</span>
+            <div style="flex:1;height:8px;border-radius:999px;background:#EDEAE3;overflow:hidden;"><div style="height:100%;border-radius:999px;{{m.barStyle}}"></div></div>
+            <span style="width:58px;text-align:right;font-family:'Inter',sans-serif;font-size:12px;{{m.nameStyle}}">{{m.total}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Beispielpreise für den Prototyp. Später kommen hier die echten Wochenangebote rein.</span>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+        <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;">Deine Supermärkte</span>
+        <button type="button" onClick="{{togglePlz}}" aria-expanded="{{plzExpanded}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;padding:6px 0;">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"></path><circle cx="12" cy="10" r="2.3"></circle></svg>
+          {{plzLabel}}
+        </button>
+      </div>
+      <sc-if value="{{plzOpen}}" hint-placeholder-val="{{false}}">
+        <div style="background:#FFFFFF;border:1px solid #E6E3DC;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;">
+          <label for="plz-einkauf" style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.45;color:#6F706D;">Angebote sind regional. Mit deinem Standort stimmen die Preise für deine Filialen.</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input id="plz-einkauf" type="text" inputmode="numeric" maxlength="5" placeholder="PLZ" value="{{plz}}" onInput="{{setPlz}}" style="width:110px;box-sizing:border-box;padding:12px 16px;border-radius:10px;border:1px solid #E6E3DC;font-family:'Geist',sans-serif;font-size:15px;font-weight:600;background:#FFFFFF;">
+            <button type="button" onClick="{{useLocation}}" style="all:unset;box-sizing:border-box;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;background:#E3EEE6;padding:12px 16px;border-radius:999px;">Standort verwenden</button>
+          </div>
+        </div>
+      </sc-if>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        <sc-for list="{{marketChips}}" as="c" hint-placeholder-count="5">
+          <button type="button" onClick="{{c.toggle}}" aria-pressed="{{c.pressed}}" style="padding:8px 16px;border-radius:999px;border:1px solid #E6E3DC;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;{{c.style}}">{{c.name}}</button>
+        </sc-for>
+        <button type="button" onClick="{{toggleSearch}}" aria-expanded="{{searchExpanded}}" aria-label="Weiteren Supermarkt hinzufügen" style="all:unset;box-sizing:border-box;cursor:pointer;width:38px;height:36px;border-radius:999px;border:1.5px dashed #1F4D3A;display:flex;align-items:center;justify-content:center;color:#1F4D3A;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+        </button>
+      </div>
+      <sc-if value="{{searchOpen}}" hint-placeholder-val="{{false}}">
+        <div style="background:#FFFFFF;border:1px solid #E6E3DC;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:8px;background:#F3F1EC;border:1px solid #E6E3DC;border-radius:10px;padding:0 10px;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#6F706D" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m20 20-4-4"></path></svg>
+            <input type="search" aria-label="Supermarkt suchen" placeholder="Supermarkt suchen, z.B. Netto" value="{{query}}" onInput="{{setQuery}}" style="flex:1;min-width:0;border:none;background:transparent;padding:10px 0;font-family:'Inter',sans-serif;font-size:13px;">
+          </div>
+          <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.45;color:#6F706D;">Hier findest du nur Märkte, deren Wochenangebote wir zuverlässig auslesen können.</span>
+          <sc-for list="{{searchResults}}" as="r" hint-placeholder-count="4">
+            <button type="button" onClick="{{r.add}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 2px;border-top:1px solid #EDEAE3;">
+              <span style="display:flex;flex-direction:column;gap:1px;">
+                <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">{{r.name}}</span>
+                <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{r.type}}</span>
+              </span>
+              <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;">Hinzufügen</span>
+            </button>
+          </sc-for>
+          <sc-if value="{{noResults}}" hint-placeholder-val="{{false}}">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.45;color:#6F706D;border-top:1px solid #EDEAE3;padding-top:8px;">„{{query}}“ können wir leider noch nicht auslesen. Wir arbeiten daran, mehr Märkte anzubinden.</span>
+          </sc-if>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;">Auf deiner Liste</span>
+        <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{listCount}}</span>
+      </div>
+      <div style="background:#FFFFFF;border:1px solid #E6E3DC;border-radius:16px;padding:2px 16px;">
+        <sc-for list="{{listItems}}" as="item" hint-placeholder-count="4">
+          <div style="display:flex;align-items:center;gap:12px;border-bottom:1px solid #EDEAE3;">
+            <button type="button" onClick="{{item.toggle}}" aria-label="{{item.aria}}" style="all:unset;box-sizing:border-box;cursor:pointer;flex:1;display:flex;align-items:center;gap:16px;padding:11px 0;min-width:0;">
+              <span style="width:20px;height:20px;border-radius:10px;border:1.5px solid #C9C6BE;flex:0 0 auto;{{item.box}}"></span>
+              <span style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;">
+                <span style="font-family:'Inter',sans-serif;font-size:13px;{{item.text}}">{{item.label}}</span>
+                <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{item.note}}</span>
+              </span>
+            </button>
+            <span style="font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#1F4D3A;background:#E3EEE6;padding:4px 8px;border-radius:999px;white-space:nowrap;{{item.offerStyle}}">{{item.offer}}</span>
+            <span title="{{item.whoTitle}}" aria-label="{{item.whoTitle}}" style="width:22px;height:22px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-family:'Geist',sans-serif;font-size:11px;font-weight:700;{{item.whoStyle}}">{{item.who}}</span>
+            <sc-if value="{{item.hasHint}}" hint-placeholder-val="{{false}}">
+              <button type="button" onClick="{{item.hintAction}}" style="all:unset;box-sizing:border-box;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;padding:4px 8px;border-radius:999px;white-space:nowrap;{{item.hintStyle}}">{{item.hint}}</button>
+            </sc-if>
+            <button type="button" onClick="{{item.remove}}" aria-label="{{item.removeAria}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:32px;height:44px;display:flex;align-items:center;justify-content:center;color:#8C8C86;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+            </button>
+          </div>
+        </sc-for>
+        <sc-if value="{{isAdding}}" hint-placeholder-val="{{false}}">
+          <div style="display:flex;flex-direction:column;gap:8px;padding:10px 0;">
+            <div style="display:flex;align-items:center;gap:8px;background:#F3F1EC;border:1px solid #E6E3DC;border-radius:10px;padding:0 10px;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#6F706D" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="m20 20-4-4"></path></svg>
+              <input id="ownitem" type="search" aria-label="Produkt suchen" placeholder="Produkt suchen, z.B. Kaffee, Spülmittel" value="{{draftLabel}}" onInput="{{setDraftLabel}}" style="flex:1;min-width:0;border:none;background:transparent;padding:10px 0;font-family:'Inter',sans-serif;font-size:13px;">
+            </div>
+            <sc-for list="{{productHits}}" as="ph" hint-placeholder-count="3">
+              <button type="button" onClick="{{ph.pick}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;align-items:center;gap:12px;padding:12px 2px;border-bottom:1px solid #EDEAE3;">
+                <span style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;">
+                  <span style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                    <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">{{ph.name}}</span>
+                    <span style="font-family:'Inter',sans-serif;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;{{ph.tagStyle}}">{{ph.tag}}</span>
+                  </span>
+                  <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{ph.meta}}</span>
+                </span>
+                <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;white-space:nowrap;">{{ph.price}}</span>
+              </button>
+            </sc-for>
+            <sc-if value="{{hasDraft}}" hint-placeholder-val="{{false}}">
+              <button type="button" onClick="{{confirmAdd}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:100%;padding:12px 2px;font-family:'Inter',sans-serif;font-size:13px;color:#6F706D;">„{{draftLabel}}“ ohne Produkt hinzufügen <span style="font-size:12px;">(nicht im Preisvergleich)</span></button>
+            </sc-if>
+            <button type="button" onClick="{{cancelAdd}}" style="all:unset;cursor:pointer;align-self:flex-start;font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;padding:4px 0;">Abbrechen</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{isNotAdding}}" hint-placeholder-val="{{true}}">
+          <button type="button" onClick="{{startAdd}}" style="all:unset;cursor:pointer;width:100%;display:flex;align-items:center;gap:16px;padding:12px 0;">
+            <span style="width:20px;height:20px;border-radius:10px;border:1.5px dashed #1F4D3A;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:14px;line-height:1;color:#1F4D3A;">+</span>
+            <span style="font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:#1F4D3A;">Eigenen Artikel hinzufügen</span>
+          </button>
+        </sc-if>
+      </div>
+    </div>
+
+    <sc-if value="{{hasSuggestions}}" hint-placeholder-val="{{true}}">
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:12px;">
+          <div style="display:flex;flex-direction:column;gap:2px;">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#6F706D;">Vorschläge aus dem Essensplan</span>
+            <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Brauchst du das? Ein Tipp und es ist auf der Liste.</span>
+          </div>
+          <button type="button" onClick="{{addAll}}" style="all:unset;cursor:pointer;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#1F4D3A;white-space:nowrap;padding:6px 0;">Alle hinzufügen</button>
+        </div>
+        <div style="background:#FFFFFF;border:1px solid #E6E3DC;border-radius:16px;padding:2px 16px;">
+          <sc-for list="{{suggestions}}" as="sg" hint-placeholder-count="4">
+            <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #EDEAE3;">
+              <span style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;">
+                <span style="font-family:'Inter',sans-serif;font-size:13px;">{{sg.label}}</span>
+                <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{sg.note}}</span>
+              </span>
+              <span style="font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#1F4D3A;background:#E3EEE6;padding:4px 8px;border-radius:999px;white-space:nowrap;{{sg.offerStyle}}">{{sg.offer}}</span>
+              <button type="button" onClick="{{sg.add}}" aria-label="{{sg.aria}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:44px;height:44px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;">
+                <span style="width:30px;height:30px;border-radius:50%;background:#1F4D3A;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:18px;line-height:1;">+</span>
+              </button>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+
+  <nav style="flex:0 0 auto;display:flex;border-top:1px solid #E6E3DC;background:#FFFFFF;padding:10px 8px 16px;">
+    <a onClick="{{navClick}}" href="Dashboard.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#6F706D;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="21" height="21"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10v9a1 1 0 0 0 1 1H10v-5h4v5h3.5a1 1 0 0 0 1-1v-9"></path></svg>
+      <span>Startseite</span>
+    </a>
+    <a onClick="{{navClick}}" href="Essensplan.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#6F706D;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="21" height="21"><rect x="3.5" y="5" width="17" height="15" rx="2"></rect><path d="M3.5 9.5h17"></path><path d="M8 3v4M16 3v4"></path></svg>
+      <span>Essensplan</span>
+    </a>
+    <button type="button" onClick="{{openPlus}}" aria-label="Essen oder Training eintragen" aria-haspopup="dialog" style="all:unset;box-sizing:border-box;cursor:pointer;flex:0 0 64px;display:flex;align-items:flex-start;justify-content:center;">
+      <span style="width:54px;height:54px;margin-top:-26px;border-radius:50%;background:#1F4D3A;border:4px solid #F3F1EC;box-shadow:0 6px 16px rgba(31,77,58,.25);display:flex;align-items:center;justify-content:center;box-sizing:border-box;">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+      </span>
+    </button>
+    <a onClick="{{navClick}}" href="Training.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#6F706D;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="21" height="21"><path d="M6.5 7v10M3.5 9.5v5M17.5 7v10M20.5 9.5v5M6.5 12h11"></path></svg>
+      <span>Training</span>
+    </a>
+    <a onClick="{{navClick}}" href="Einkaufsliste.dc.html" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:#1F4D3A;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="21" height="21"><path d="M3 4h2l2.2 11.2a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.6L20.5 8H6"></path><circle cx="9.5" cy="20" r="1.3"></circle><circle cx="17" cy="20" r="1.3"></circle></svg>
+      <span>Einkaufsliste</span>
+    </a>
+  </nav>
+  <sc-if value="{{plusOpen}}" hint-placeholder-val="{{false}}">
+    <dc-import name="Hinzufuegen" person="{{plusPerson}}" close-fn="{{closePlus}}" saved-fn="{{plusSaved}}" hint-size="390px,844px"></dc-import>
+  </sc-if>
+  <sc-if value="{{personSheetOpen}}" hint-placeholder-val="{{false}}">
+    <dc-import name="PersonSheet" person="{{sheetPerson}}" pick-fn="{{pickPersonFn}}" close-fn="{{closePersonSheet}}" hint-size="390px,844px"></dc-import>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.products = [{"id": "soja_e", "g": "soja", "k": ["soja", "sojasauce", "sojasoße"], "name": "Sojasauce (Eigenmarke)", "size": "250 ml", "eigen": true, "prices": {"lidl": 1.29, "aldi": 1.29, "rewe": 1.39, "edeka": 1.42, "kaufland": 1.32}}, {"id": "soja_m", "g": "soja", "k": ["soja", "sojasauce", "sojasoße", "kikkoman"], "name": "Kikkoman Sojasauce", "size": "250 ml", "eigen": false, "prices": {"lidl": null, "aldi": null, "rewe": 3.49, "edeka": 3.63, "kaufland": 3.39}}, {"id": "spuel_e", "g": "spuel", "k": ["spülmittel", "spüli", "spuelmittel"], "name": "Spülmittel (Eigenmarke)", "size": "500 ml", "eigen": true, "prices": {"lidl": 0.79, "aldi": 0.79, "rewe": 0.85, "edeka": 0.87, "kaufland": 0.81}}, {"id": "spuel_m", "g": "spuel", "k": ["spülmittel", "spüli", "spuelmittel", "fairy"], "name": "Fairy Spülmittel", "size": "450 ml", "eigen": false, "prices": {"lidl": null, "aldi": null, "rewe": 2.29, "edeka": 2.38, "kaufland": 2.22}}, {"id": "klopapier_e", "g": "klopapier", "k": ["toilettenpapier", "klopapier", "wc-papier"], "name": "Toilettenpapier (Eigenmarke)", "size": "8 Rollen", "eigen": true, "prices": {"lidl": 2.49, "aldi": 2.49, "rewe": 2.69, "edeka": 2.74, "kaufland": 2.54}}, {"id": "klopapier_m", "g": "klopapier", "k": ["toilettenpapier", "klopapier", "wc-papier", "zewa"], "name": "Zewa Toilettenpapier", "size": "8 Rollen", "eigen": false, "prices": {"lidl": null, "aldi": null, "rewe": 4.99, "edeka": 5.19, "kaufland": 4.84}}, {"id": "kaffee_e", "g": "kaffee", "k": ["kaffee", "espresso", "bohnen"], "name": "Kaffee Crema Bohnen (Eigenmarke)", "size": "1 kg", "eigen": true, "prices": {"lidl": 10.99, "aldi": 10.99, "rewe": 11.87, "edeka": 12.09, "kaufland": 11.21}}, {"id": "kaffee_m", "g": "kaffee", "k": ["kaffee", "espresso", "bohnen", "tchibo"], "name": "Tchibo Caffè Crema Bohnen", "size": "1 kg", "eigen": false, "prices": {"lidl": 16.14, "aldi": 16.14, "rewe": 16.99, "edeka": 17.67, "kaufland": 16.48}}, {"id": "butter_e", "g": "butter", "k": ["butter"], "name": "Deutsche Markenbutter (Eigenmarke)", "size": "250 g", "eigen": true, "prices": {"lidl": 1.99, "aldi": 1.99, "rewe": 2.15, "edeka": 2.19, "kaufland": 2.03}}, {"id": "butter_m", "g": "butter", "k": ["butter", "kerrygold"], "name": "Kerrygold Butter", "size": "250 g", "eigen": false, "prices": {"lidl": 3.13, "aldi": 3.13, "rewe": 3.29, "edeka": 3.42, "kaufland": 3.19}}, {"id": "ketchup_e", "g": "ketchup", "k": ["ketchup"], "name": "Tomatenketchup (Eigenmarke)", "size": "500 ml", "eigen": true, "prices": {"lidl": 1.19, "aldi": 1.19, "rewe": 1.29, "edeka": 1.31, "kaufland": 1.21}}, {"id": "ketchup_m", "g": "ketchup", "k": ["ketchup", "heinz"], "name": "Heinz Tomato Ketchup", "size": "500 ml", "eigen": false, "prices": {"lidl": 2.84, "aldi": 2.84, "rewe": 2.99, "edeka": 3.11, "kaufland": 2.9}}, {"id": "mehl_e", "g": "mehl", "k": ["mehl", "weizenmehl"], "name": "Weizenmehl Type 405 (Eigenmarke)", "size": "1 kg", "eigen": true, "prices": {"lidl": 0.59, "aldi": 0.59, "rewe": 0.64, "edeka": 0.65, "kaufland": 0.6}}, {"id": "mehl_m", "g": "mehl", "k": ["mehl", "weizenmehl", "aurora"], "name": "Aurora Weizenmehl Type 405", "size": "1 kg", "eigen": false, "prices": {"lidl": null, "aldi": null, "rewe": 1.49, "edeka": 1.55, "kaufland": 1.45}}, {"id": "zucker_e", "g": "zucker", "k": ["zucker"], "name": "Zucker (Eigenmarke)", "size": "1 kg", "eigen": true, "prices": {"lidl": 0.99, "aldi": 0.99, "rewe": 1.07, "edeka": 1.09, "kaufland": 1.01}}, {"id": "zucker_m", "g": "zucker", "k": ["zucker", "südzucker"], "name": "Südzucker Feinzucker", "size": "1 kg", "eigen": false, "prices": {"lidl": null, "aldi": null, "rewe": 1.69, "edeka": 1.76, "kaufland": 1.64}}, {"id": "zahnpasta_e", "g": "zahnpasta", "k": ["zahnpasta", "zahncreme"], "name": "Zahncreme (Eigenmarke)", "size": "75 ml", "eigen": true, "prices": {"lidl": 0.65, "aldi": 0.65, "rewe": 0.7, "edeka": 0.72, "kaufland": 0.66}}, {"id": "zahnpasta_m", "g": "zahnpasta", "k": ["zahnpasta", "zahncreme", "elmex"], "name": "Elmex Zahnpasta", "size": "75 ml", "eigen": false, "prices": {"lidl": 2.8, "aldi": 2.8, "rewe": 2.95, "edeka": 3.07, "kaufland": 2.86}}, {"id": "duschgel_e", "g": "duschgel", "k": ["duschgel", "dusche"], "name": "Duschgel (Eigenmarke)", "size": "300 ml", "eigen": true, "prices": {"lidl": 0.79, "aldi": 0.79, "rewe": 0.85, "edeka": 0.87, "kaufland": 0.81}}, {"id": "duschgel_m", "g": "duschgel", "k": ["duschgel", "dusche", "nivea"], "name": "Nivea Duschgel", "size": "250 ml", "eigen": false, "prices": {"lidl": 2.37, "aldi": 2.37, "rewe": 2.49, "edeka": 2.59, "kaufland": 2.42}}, {"id": "wasser_e", "g": "wasser", "k": ["wasser", "mineralwasser", "sprudel"], "name": "Mineralwasser (Eigenmarke)", "size": "6 × 1,5 l", "eigen": true, "prices": {"lidl": 1.14, "aldi": 1.14, "rewe": 1.23, "edeka": 1.25, "kaufland": 1.16}}, {"id": "wasser_m", "g": "wasser", "k": ["wasser", "mineralwasser", "sprudel", "gerolsteiner"], "name": "Gerolsteiner Mineralwasser", "size": "6 × 1 l", "eigen": false, "prices": {"lidl": null, "aldi": null, "rewe": 5.49, "edeka": 5.71, "kaufland": 5.33}}, {"id": "pesto_e", "g": "pesto", "k": ["pesto"], "name": "Pesto Genovese (Eigenmarke)", "size": "190 g", "eigen": true, "prices": {"lidl": 1.39, "aldi": 1.39, "rewe": 1.5, "edeka": 1.53, "kaufland": 1.42}}, {"id": "pesto_m", "g": "pesto", "k": ["pesto", "barilla"], "name": "Barilla Pesto alla Genovese", "size": "190 g", "eigen": false, "prices": {"lidl": null, "aldi": null, "rewe": 2.99, "edeka": 3.11, "kaufland": 2.9}}, {"id": "parmesan_e", "g": "parmesan", "k": ["parmesan", "parmigiano", "hartkäse"], "name": "Hartkäse gerieben (Eigenmarke)", "size": "200 g", "eigen": true, "prices": {"lidl": 2.29, "aldi": 2.29, "rewe": 2.47, "edeka": 2.52, "kaufland": 2.34}}, {"id": "parmesan_m", "g": "parmesan", "k": ["parmesan", "parmigiano", "hartkäse", "parmigiano"], "name": "Parmigiano Reggiano (Marke)", "size": "200 g", "eigen": false, "prices": {"lidl": null, "aldi": null, "rewe": 4.99, "edeka": 5.19, "kaufland": 4.84}}, {"id": "senf_e", "g": "senf", "k": ["senf"], "name": "Senf mittelscharf (Eigenmarke)", "size": "250 ml", "eigen": true, "prices": {"lidl": 0.55, "aldi": 0.55, "rewe": 0.59, "edeka": 0.61, "kaufland": 0.56}}, {"id": "senf_m", "g": "senf", "k": ["senf", "löwensenf"], "name": "Löwensenf Mittelscharf", "size": "250 ml", "eigen": false, "prices": {"lidl": null, "aldi": null, "rewe": 1.79, "edeka": 1.86, "kaufland": 1.74}}, {"id": "hafermilch_e", "g": "hafermilch", "k": ["hafermilch", "haferdrink", "oatly"], "name": "Haferdrink (Eigenmarke)", "size": "1 l", "eigen": true, "prices": {"lidl": 0.95, "aldi": 0.95, "rewe": 1.03, "edeka": 1.04, "kaufland": 0.97}}, {"id": "hafermilch_m", "g": "hafermilch", "k": ["hafermilch", "haferdrink", "oatly", "oatly"], "name": "Oatly Haferdrink", "size": "1 l", "eigen": false, "prices": {"lidl": null, "aldi": null, "rewe": 2.29, "edeka": 2.38, "kaufland": 2.22}}, {"id": "waschmittel_e", "g": "waschmittel", "k": ["waschmittel", "waschpulver"], "name": "Vollwaschmittel Gel (Eigenmarke)", "size": "20 WL", "eigen": true, "prices": {"lidl": 2.99, "aldi": 2.99, "rewe": 3.23, "edeka": 3.29, "kaufland": 3.05}}, {"id": "waschmittel_m", "g": "waschmittel", "k": ["waschmittel", "waschpulver", "persil"], "name": "Persil Universal Gel", "size": "20 WL", "eigen": false, "prices": {"lidl": 6.64, "aldi": 6.64, "rewe": 6.99, "edeka": 7.27, "kaufland": 6.78}}, {"id": "chips_e", "g": "chips", "k": ["chips"], "name": "Kartoffelchips (Eigenmarke)", "size": "200 g", "eigen": true, "prices": {"lidl": 0.99, "aldi": 0.99, "rewe": 1.07, "edeka": 1.09, "kaufland": 1.01}}, {"id": "chips_m", "g": "chips", "k": ["chips", "funny-frisch"], "name": "funny-frisch Chipsfrisch", "size": "175 g", "eigen": false, "prices": {"lidl": 1.89, "aldi": 1.89, "rewe": 1.99, "edeka": 2.07, "kaufland": 1.93}}, {"id": "frischkaese_e", "g": "frischkaese", "k": ["frischkäse", "philadelphia"], "name": "Frischkäse (Eigenmarke)", "size": "200 g", "eigen": true, "prices": {"lidl": 0.89, "aldi": 0.89, "rewe": 0.96, "edeka": 0.98, "kaufland": 0.91}}, {"id": "frischkaese_m", "g": "frischkaese", "k": ["frischkäse", "philadelphia", "philadelphia"], "name": "Philadelphia Frischkäse", "size": "175 g", "eigen": false, "prices": {"lidl": null, "aldi": null, "rewe": 2.19, "edeka": 2.28, "kaufland": 2.12}}, {"id": "zitronen_e", "g": "zitronen", "k": ["zitrone", "zitronen"], "name": "Zitronen", "size": "500 g", "eigen": true, "prices": {"lidl": 1.49, "aldi": 1.49, "rewe": 1.61, "edeka": 1.64, "kaufland": 1.52}}, {"id": "knoblauch_e", "g": "knoblauch", "k": ["knoblauch"], "name": "Knoblauch", "size": "3 Knollen", "eigen": true, "prices": {"lidl": 0.99, "aldi": 0.99, "rewe": 1.07, "edeka": 1.09, "kaufland": 1.01}}, {"id": "salz_e", "g": "salz", "k": ["salz"], "name": "Jodsalz (Eigenmarke)", "size": "500 g", "eigen": true, "prices": {"lidl": 0.29, "aldi": 0.29, "rewe": 0.31, "edeka": 0.32, "kaufland": 0.3}}, {"id": "salz_m", "g": "salz", "k": ["salz", "bad"], "name": "Bad Reichenhaller Jodsalz", "size": "500 g", "eigen": false, "prices": {"lidl": 0.85, "aldi": 0.85, "rewe": 0.89, "edeka": 0.93, "kaufland": 0.86}}, {"id": "muellbeutel_e", "g": "muellbeutel", "k": ["müllbeutel", "muellbeutel", "mülltüten"], "name": "Müllbeutel (Eigenmarke)", "size": "35 l, 25 Stk", "eigen": true, "prices": {"lidl": 1.29, "aldi": 1.29, "rewe": 1.39, "edeka": 1.42, "kaufland": 1.32}}, {"id": "muellbeutel_m", "g": "muellbeutel", "k": ["müllbeutel", "muellbeutel", "mülltüten", "swirl"], "name": "Swirl Müllbeutel", "size": "35 l, 20 Stk", "eigen": false, "prices": {"lidl": null, "aldi": null, "rewe": 2.99, "edeka": 3.11, "kaufland": 2.9}}];
+    this.supported = [
+      { id: 'aldinord', name: 'Aldi Nord', type: 'Discounter', f: 1.0 },
+      { id: 'netto', name: 'Netto Marken-Discount', type: 'Discounter', f: 1.02 },
+      { id: 'penny', name: 'Penny', type: 'Discounter', f: 1.03 },
+      { id: 'norma', name: 'Norma', type: 'Discounter', f: 0.99 },
+      { id: 'globus', name: 'Globus', type: 'SB-Warenhaus', f: 1.06 },
+      { id: 'marktkauf', name: 'Marktkauf', type: 'Supermarkt', f: 1.1 },
+      { id: 'famila', name: 'Famila', type: 'Supermarkt', f: 1.08 },
+      { id: 'hit', name: 'HIT', type: 'Supermarkt', f: 1.12 },
+      { id: 'tegut', name: 'tegut…', type: 'Supermarkt', f: 1.18 },
+      { id: 'alnatura', name: 'Alnatura', type: 'Bio-Supermarkt', f: 1.3 },
+      { id: 'denns', name: 'denn’s Biomarkt', type: 'Bio-Supermarkt', f: 1.35 }
+    ];
+    this.markets = [
+      { id: 'lidl', name: 'Lidl' }, { id: 'aldi', name: 'Aldi Süd' }, { id: 'rewe', name: 'Rewe' },
+      { id: 'edeka', name: 'Edeka' }, { id: 'kaufland', name: 'Kaufland' }
+    ];
+    const it = (id, label, note, p, offer) => ({ id, label, note, prices: { lidl: p[0], aldi: p[1], rewe: p[2], edeka: p[3], kaufland: p[4] }, offer: offer || null });
+    this.catalog = [
+      it('huhn', 'Hähnchenbrust, 1,2 kg', 'Hähnchen-Bowl & Wrap', [10.99, 9.49, 13.49, 14.29, 11.49], 'aldi'),
+      it('lachs', 'Lachsfilet, 400 g', 'Montag Abend', [4.99, 5.99, 6.99, 7.49, 6.29], 'lidl'),
+      it('eier', 'Eier, 20 Stück', 'Rührei, Omelett & Cristians Extra-Spiegelei', [4.99, 5.38, 6.18, 6.58, 5.58], 'lidl'),
+      it('skyr', 'Skyr, 4 × 500 g', 'Frühstück & Cristians Snacks', [5.56, 5.56, 6.36, 6.76, 5.56]),
+      it('hafer', 'Haferflocken, 1 kg', 'Porridge & Overnight Oats', [1.58, 1.58, 1.98, 2.18, 1.58]),
+      it('bananen', 'Bananen, 1 Bund', 'Porridge & Cristians Smoothie', [1.29, 1.29, 1.59, 1.69, 1.39]),
+      it('brokkoli', 'Brokkoli, 500 g', 'Lachs-Pfanne', [1.49, 1.59, 1.99, 1.99, 1.69]),
+      it('reis', 'Basmatireis, 1 kg', 'Bowls & Curry, Cristians Extra-Portion', [1.89, 1.79, 2.49, 2.69, 1.99]),
+      it('tomaten', 'Tomaten, 1 kg', 'Omelett, Pasta-Sauce & Salat', [1.79, 2.29, 2.99, 3.29, 2.49], 'lidl'),
+      it('suesskart', 'Süßkartoffeln, 1 kg', 'Süßkartoffel-Bowl', [2.49, 2.49, 2.99, 3.19, 2.69]),
+      it('beeren', 'Beeren (TK), 2 Beutel', 'Skyr-Bowl & French Toast', [5.18, 4.98, 5.98, 6.38, 5.38]),
+      it('pute', 'Putengeschnetzeltes, 500 g', 'Montag Mittag', [5.49, 5.49, 6.49, 6.79, 5.79]),
+      it('rind', 'Rindergeschnetzeltes, 500 g', 'Donnerstag Mittag', [7.99, 7.79, 9.49, 9.99, 7.49], 'kaufland'),
+      it('nudeln', 'Vollkornnudeln, 1 kg', 'Pasta, Cristians Beilage', [1.98, 1.98, 2.58, 2.78, 1.98]),
+      it('milch', 'Milch, 3 l', 'Shakes & Smoothies', [3.27, 3.27, 3.57, 3.87, 3.27]),
+      it('erdnuss', 'Erdnussbutter, 1 Glas', 'Porridge & Cristians Snacks', [2.49, 2.39, 3.49, 3.79, 2.69]),
+      it('feta', 'Feta, 200 g', 'Ofengemüse mit Feta', [1.49, 1.49, 1.99, 2.19, 1.59]),
+      it('protein', 'Proteinpulver, 1 kg', 'Cristians Shakes', [12.99, 12.99, 16.99, 17.99, 14.99])
+    ];
+    this.need = { huhn: '1,1 kg', lachs: '360 g', eier: '14 Stück', skyr: '1,8 kg', hafer: '380 g', bananen: '5 Stück', brokkoli: '450 g', reis: '720 g', tomaten: '850 g', suesskart: '900 g', beeren: '600 g', pute: '480 g', rind: '450 g', nudeln: '600 g', milch: '2,6 l', erdnuss: '180 g', feta: '150 g', protein: '420 g' };
+    this.addedByDefault = { huhn: 'cristian', lachs: 'tami', eier: 'cristian', skyr: 'tami', hafer: 'tami', bananen: 'cristian', brokkoli: 'tami', reis: 'cristian', c1: 'tami' };
+    this.state = {
+      addedBy: {},
+      checkedBy: {},
+      onList: ['huhn', 'lachs', 'eier', 'skyr', 'hafer', 'bananen', 'brokkoli', 'reis'],
+      checked: {},
+      custom: [{ id: 'c1', label: 'Kikkoman Sojasauce', productId: 'soja_m' }],
+      nextId: 2,
+      selected: { lidl: true, aldi: true, rewe: true, edeka: true, kaufland: false },
+      searchOpen: false,
+      query: '',
+      adding: false,
+      draftLabel: ''
+    };
+  }
+  euro(n) { return n.toFixed(2).replace('.', ',') + ' €'; }
+  byId(id) { return this.catalog.find((c) => c.id === id); }
+  activeP() { try { return localStorage.getItem('vitaActivePerson') === 'basti' ? 'cristian' : 'tami'; } catch (e) { return 'tami'; } }
+  priceOf(c, id) {
+    if (c.prices[id] !== undefined) return c.prices[id];
+    const m = this.supported.find((x) => x.id === id);
+    return Math.round(c.prices.lidl * (m ? m.f : 1.05) * 100) / 100;
+  }
+  marketName(id) { const m = this.markets.find((x) => x.id === id); return m ? m.name : id; }
+  remove(id) {
+    const checked = { ...this.state.checked }; delete checked[id];
+    this.setState({ onList: this.state.onList.filter((x) => x !== id), custom: this.state.custom.filter((c) => c.id !== id), checked });
+  }
+  prod(id) { return this.products.find((p) => p.id === id); }
+  prodPrice(pr, m) {
+    if (pr.prices[m] !== undefined && pr.prices[m] !== null) return pr.prices[m];
+    const e = this.products.find((x) => x.g === pr.g && x.eigen);
+    if (pr.prices.lidl !== undefined && pr.prices.lidl !== null && !(m in pr.prices)) return Math.round(pr.prices.lidl * ((this.supported.find((x) => x.id === m) || {}).f || 1.05) * 100) / 100;
+    return e ? this.prodPrice(e, m) : 0;
+  }
+  searchProducts(q) {
+    const s = (q || '').trim().toLowerCase();
+    if (s.length < 2) return [];
+    return this.products.filter((p) => p.name.toLowerCase().indexOf(s) >= 0 || p.k.some((k) => k.indexOf(s) >= 0 || s.indexOf(k) >= 0)).slice(0, 5);
+  }
+  addProduct(p) {
+    const id = 'c' + this.state.nextId;
+    this.setState({ custom: [...this.state.custom, { id, label: p.name, productId: p.id }], nextId: this.state.nextId + 1, adding: false, draftLabel: '' });
+  }
+  confirmAdd() {
+    const label = (this.state.draftLabel || '').trim();
+    if (!label) return;
+    const id = 'c' + this.state.nextId;
+    this.setState({ custom: [...this.state.custom, { id, label }], nextId: this.state.nextId + 1, adding: false, draftLabel: '' });
+  }
+  scrollTop() {
+    const run = () => { try { const el = document.getElementById('vita-scroll-einkaufsliste'); if (el) el.scrollTop = 0; } catch (e) {} };
+    run(); setTimeout(run, 0); setTimeout(run, 120);
+  }
+  readNav() { try { return JSON.parse(localStorage.getItem('vitaNav') || 'null'); } catch (e) { return null; } }
+  componentDidMount() {
+    this.scrollTop();
+    const n = this.readNav();
+    this.__navTs = n ? n.ts : 0;
+    this.__navTimer = setInterval(() => {
+      const x = this.readNav();
+      if (x && x.ts !== this.__navTs) {
+        this.__navTs = x.ts;
+        if (x.target === 'Einkaufsliste.dc.html') this.scrollTop();
+      }
+    }, 150);
+  }
+  componentWillUnmount() { if (this.__navTimer) clearInterval(this.__navTimer); }
+  renderVals() {
+    const v = this.__navRV();
+    v.navClick = (e) => {
+      let target = '';
+      try { target = String((e && e.currentTarget && e.currentTarget.getAttribute('href')) || '').split('?')[0]; } catch (x) {}
+      try { localStorage.setItem('vitaNav', JSON.stringify({ target: target, ts: Date.now() })); } catch (x) {}
+      if (target === 'Einkaufsliste.dc.html') this.scrollTop();
+    };
+    return v;
+  }
+  __navRV() {
+    const __v = this.__renderVals();
+    let __ls = 'tamara';
+    try { __ls = localStorage.getItem('vitaActivePerson') || 'tamara'; } catch (e) {}
+    const __cur = __ls === 'basti' ? 'cristian' : 'tami';
+    return Object.assign(__v, {
+      personSheetOpen: !!this.state.personSheet,
+      openPersonSheet: () => this.setState({ personSheet: true }),
+      closePersonSheet: () => this.setState({ personSheet: false }),
+      sheetPerson: __cur,
+      pickPersonFn: (k) => { if (k !== __cur && typeof __v.switchPerson === 'function') __v.switchPerson(); this.setState({ personSheet: false }); }
+    }, this.extraVals());
+  }
+  whoFor(id, on) {
+    const added = this.state.addedBy[id] || this.addedByDefault[id] || 'tami';
+    const by = on ? (this.state.checkedBy[id] || added) : added;
+    const nm = by === 'cristian' ? 'Cristian' : 'Tami';
+    return {
+      who: nm.charAt(0),
+      whoTitle: (on ? 'Abgehakt von ' : 'Hinzugefügt von ') + nm,
+      whoStyle: by === 'cristian' ? 'background:#F5E3DA;color:#C4532D;' : 'background:#E3EEE6;color:#1F4D3A;'
+    };
+  }
+  extraVals() {
+    let plz = '';
+    try { plz = localStorage.getItem('vitaPlz') || ''; } catch (e) {}
+    if (this.state.plz !== undefined) plz = this.state.plz;
+    const setP = (v) => { try { localStorage.setItem('vitaPlz', v); } catch (e) {} this.setState({ plz: v }); };
+    const me = this.activeP() === 'cristian' ? 'Cristian' : 'Tami';
+    const other = me === 'Tami' ? 'Cristian' : 'Tami';
+    const ok = /^[0-9]{5}$/.test(plz);
+    return {
+      liveLine: 'ihr seht beide dieselbe Liste',
+      plz: plz,
+      plzLabel: ok ? 'PLZ ' + plz : 'Standort angeben',
+      plzOpen: !!this.state.plzOpen || !ok,
+      plzExpanded: this.state.plzOpen ? 'true' : 'false',
+      togglePlz: () => this.setState({ plzOpen: !this.state.plzOpen }),
+      setPlz: (e) => setP(e.target.value.replace(/[^0-9]/g, '').slice(0, 5)),
+      useLocation: () => { setP('10115'); this.setState({ plzOpen: false }); }
+    };
+  }
+  __renderVals() {
+    const s = this.state;
+    const active = this.markets.filter((m) => s.selected[m.id]);
+    const listed = s.onList.map((id) => this.byId(id));
+    const prodItems = s.custom.filter((c) => c.productId).map((c) => this.prod(c.productId)).filter(Boolean);
+    const totals = active.map((m) => ({ id: m.id, name: m.name, total: listed.reduce((sum, c) => sum + this.priceOf(c, m.id), 0) + prodItems.reduce((sum, p) => sum + this.prodPrice(p, m.id), 0) }));
+    const sorted = totals.slice().sort((a, b) => a.total - b.total);
+    const best = sorted[0];
+    const worst = sorted[sorted.length - 1];
+    const max = worst ? worst.total : 1;
+    const offersAtBest = best ? listed.filter((c) => c.offer === best.id).length : 0;
+    const carries = (p, mid) => (mid in p.prices) ? p.prices[mid] !== null : p.prices.lidl !== null;
+    const cheapestAt = (p) => { const opts = active.filter((m) => carries(p, m.id)).map((m) => ({ m, v: this.prodPrice(p, m.id) })).sort((a, b) => a.v - b.v); return opts[0] || null; };
+    const notAt = (p) => active.filter((m) => !carries(p, m.id)).map((m) => m.name);
+    let tipHeadline = 'Wähl mindestens einen Supermarkt aus.';
+    let tipLine = 'Dann vergleichen wir deine Liste für dich.';
+    if (best && listed.length === 0) {
+      tipHeadline = 'Deine Liste ist noch leer.';
+      tipLine = 'Füg Vorschläge aus dem Essensplan hinzu, dann rechnen wir für dich.';
+    } else if (best && sorted.length === 1) {
+      tipHeadline = 'Dein Einkauf bei ' + best.name + ': ' + this.euro(best.total);
+      tipLine = 'Wähl einen zweiten Supermarkt aus, damit wir vergleichen können.';
+    } else if (best) {
+      tipHeadline = 'Geh heute zu ' + best.name + '.';
+      tipLine = 'Du sparst insgesamt ' + this.euro(worst.total - best.total) + ' im Vergleich zu ' + worst.name + '.' + (offersAtBest ? (' ' + offersAtBest + (offersAtBest === 1 ? ' Artikel ist' : ' Artikel sind') + ' dort gerade im Angebot.') : '');
+    }
+    const offerFor = (c) => (c.offer && s.selected[c.offer]) ? ('Angebot ' + this.marketName(c.offer)) : '';
+    const listItems = listed.map((c) => {
+      const on = !!s.checked[c.id];
+      const o = offerFor(c);
+      return {
+        label: c.label, note: (this.need[c.id] ? 'Plan: ' + this.need[c.id] + ' · ' : '') + 'für ' + c.note, offer: o, offerStyle: o ? '' : 'display:none;',
+        ...this.whoFor(c.id, on),
+        box: on ? 'background:#1F4D3A;border-color:#1F4D3A;' : '',
+        text: on ? 'color:#8C8C86;text-decoration:line-through;' : '',
+        aria: c.label + (on ? ', im Wagen' : ', abhaken'),
+        removeAria: c.label + ' entfernen',
+        toggle: () => this.setState({ checked: { ...this.state.checked, [c.id]: !on }, checkedBy: { ...this.state.checkedBy, [c.id]: this.activeP() } }),
+        remove: () => this.remove(c.id)
+      };
+    }).concat(s.custom.map((c) => {
+      const on = !!s.checked[c.id];
+      const p = c.productId ? this.prod(c.productId) : null;
+      const eig = p && !p.eigen ? this.products.find((x) => x.g === p.g && x.eigen) : null;
+      const ch = p && active.length ? cheapestAt(p) : null;
+      const saving = (p && eig && cheapestAt(p) && cheapestAt(eig)) ? (cheapestAt(p).v - cheapestAt(eig).v) : 0;
+      let hint = '', hintStyle = '', hintAction = null;
+      if (!p) { hint = 'Produkt wählen'; hintStyle = 'background:#FFF1C7;color:#8A6100;'; hintAction = () => this.setState({ adding: true, draftLabel: c.label, replaceId: c.id }); }
+      else if (saving > 0.2) { hint = 'Eigenmarke ' + this.euro(saving) + ' günstiger'; hintStyle = 'background:#E3E8FF;color:#3B4FC4;'; hintAction = () => this.setState({ custom: this.state.custom.map((x) => x.id === c.id ? { ...x, label: eig.name, productId: eig.id } : x) }); }
+      return {
+        label: c.label,
+        note: p ? (p.size + (ch ? ' · ab ' + this.euro(ch.v) + ' bei ' + ch.m.name : '') + (notAt(p).length ? ' · bei ' + notAt(p).join(', ') + ' nur Eigenmarke' : '')) : 'nicht im Preisvergleich',
+        hasHint: !!hint, hint, hintStyle, hintAction: hintAction || (() => {}),
+        offer: '', offerStyle: 'display:none;',
+        ...this.whoFor(c.id, on),
+        box: on ? 'background:#1F4D3A;border-color:#1F4D3A;' : '',
+        text: on ? 'color:#8C8C86;text-decoration:line-through;' : '',
+        aria: c.label + (on ? ', im Wagen' : ', abhaken'),
+        removeAria: c.label + ' entfernen',
+        toggle: () => this.setState({ checked: { ...this.state.checked, [c.id]: !on }, checkedBy: { ...this.state.checkedBy, [c.id]: this.activeP() } }),
+        remove: () => this.remove(c.id)
+      };
+    }));
+    const suggestions = this.catalog.filter((c) => s.onList.indexOf(c.id) === -1);
+    const total = listItems.length;
+    const done = Object.keys(s.checked).filter((k) => s.checked[k]).length;
+    return {
+      plusOpen: !!this.state.plusOpen,
+      openPlus: () => this.setState({ plusOpen: true }),
+      closePlus: () => this.setState({ plusOpen: false }),
+      plusSaved: () => this.setState({ extrasRev: (this.state.extrasRev || 0) + 1 }),
+      plusPerson: this.activeP(),
+      avatarInitial: this.activeP() === 'tami' ? 'T' : 'C',
+      avatarStyle: this.activeP() === 'tami' ? 'background:#E3EEE6;color:#1F4D3A;' : 'background:#F5E3DA;color:#C4532D;',
+      switchAria: 'Person wechseln, aktuell ' + (this.activeP() === 'tami' ? 'Tami' : 'Cristian'),
+      switchPerson: () => { try { localStorage.setItem('vitaActivePerson', this.activeP() === 'tami' ? 'basti' : 'tamara'); } catch (e) {} this.setState({ pRev: (this.state.pRev || 0) + 1 }); },
+      tipHeadline, tipLine,
+      marketRows: totals.map((t) => {
+        const isBest = best && t.id === best.id && sorted.length > 1;
+        return {
+          name: t.name, total: this.euro(t.total),
+          nameStyle: isBest ? 'color:#111111;font-weight:700;' : 'color:#6F706D;',
+          barStyle: 'width:' + Math.max(8, Math.round((t.total / max) * 100)) + '%;background:' + (isBest ? '#1F4D3A' : '#D3D0C8') + ';'
+        };
+      }),
+      searchOpen: s.searchOpen,
+      searchExpanded: s.searchOpen ? 'true' : 'false',
+      toggleSearch: () => this.setState({ searchOpen: !this.state.searchOpen, query: '' }),
+      query: s.query,
+      setQuery: (e) => this.setState({ query: e.target.value }),
+      searchResults: this.supported
+        .filter((m) => !this.markets.some((x) => x.id === m.id))
+        .filter((m) => !s.query.trim() || m.name.toLowerCase().indexOf(s.query.trim().toLowerCase()) >= 0)
+        .map((m) => ({
+          name: m.name, type: m.type,
+          add: () => {
+            this.markets = [...this.markets, { id: m.id, name: m.name }];
+            this.setState({ selected: { ...this.state.selected, [m.id]: true }, searchOpen: false, query: '' });
+          }
+        })),
+      noResults: !!s.query.trim() && !this.supported.some((m) => !this.markets.some((x) => x.id === m.id) && m.name.toLowerCase().indexOf(s.query.trim().toLowerCase()) >= 0),
+      marketChips: this.markets.map((m) => ({
+        name: m.name,
+        pressed: s.selected[m.id] ? 'true' : 'false',
+        style: s.selected[m.id] ? 'background:#1F4D3A;color:#FFFFFF;border-color:#1F4D3A;' : 'background:#FFFFFF;color:#111111;',
+        toggle: () => this.setState({ selected: { ...this.state.selected, [m.id]: !this.state.selected[m.id] } })
+      })),
+      listCount: done + ' von ' + total + ' im Wagen',
+      listItems,
+      isAdding: s.adding,
+      isNotAdding: !s.adding,
+      draftLabel: s.draftLabel,
+      setDraftLabel: (e) => this.setState({ draftLabel: e.target.value }),
+      startAdd: () => this.setState({ adding: true, draftLabel: '', replaceId: null }),
+      cancelAdd: () => this.setState({ adding: false, draftLabel: '', replaceId: null }),
+      hasDraft: (s.draftLabel || '').trim().length > 0 && !s.replaceId,
+      productHits: this.searchProducts(s.draftLabel).map((p) => {
+        const ch = active.length ? cheapestAt(p) : null;
+        return {
+          name: p.name, tag: p.eigen ? 'Eigenmarke' : 'Marke',
+          tagStyle: p.eigen ? 'background:#E3EEE6;color:#1F4D3A;' : 'background:#EEF0F2;color:#4A5560;',
+          meta: p.size + (ch ? ' · günstigster Markt: ' + ch.m.name : ''),
+          price: ch ? 'ab ' + this.euro(ch.v) : '',
+          pick: () => {
+            if (this.state.replaceId) {
+              this.setState({ custom: this.state.custom.map((x) => x.id === this.state.replaceId ? { ...x, label: p.name, productId: p.id } : x), adding: false, draftLabel: '', replaceId: null });
+            } else this.addProduct(p);
+          }
+        };
+      }),
+      confirmAdd: () => this.confirmAdd(),
+      hasSuggestions: suggestions.length > 0,
+      suggestions: suggestions.map((c) => {
+        const o = offerFor(c);
+        return {
+          label: c.label, note: (this.need[c.id] ? 'Plan: ' + this.need[c.id] + ', Packung gerundet · ' : '') + 'für ' + c.note, offer: o, offerStyle: o ? '' : 'display:none;',
+          aria: c.label + ' zur Liste hinzufügen',
+          add: () => this.setState({ onList: [...this.state.onList, c.id], addedBy: { ...this.state.addedBy, [c.id]: this.activeP() } })
+        };
+      }),
+      addAll: () => { const ab = { ...this.state.addedBy }; this.catalog.forEach((c) => { if (this.state.onList.indexOf(c.id) < 0) ab[c.id] = this.activeP(); }); this.setState({ onList: this.catalog.map((c) => c.id), addedBy: ab }); }
+    };
+  }
+}
+</script>
+</body>
+</html>
