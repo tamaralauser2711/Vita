@@ -567,6 +567,31 @@
     return h('div', { style: { position: 'absolute', left: 12, right: 12, top: 8, zIndex: 200, background: '#111111', color: '#FFFFFF', fontFamily: "'Inter',sans-serif", fontSize: 12, padding: '8px 12px', borderRadius: 999, textAlign: 'center', pointerEvents: 'none', opacity: 0.88 } }, txt);
   }
 
+  /* keep the reading position when fresh data from the other phone re-renders a screen */
+  function pathOf(el, root) {
+    var path = [];
+    while (el && el !== root) { path.unshift(Array.prototype.indexOf.call(el.parentNode.children, el)); el = el.parentNode; }
+    return path;
+  }
+  function byPath(root, path) {
+    var el = root;
+    for (var i = 0; i < path.length && el; i++) el = el.children[path[i]];
+    return el;
+  }
+  function saveScroll() {
+    var root = document.getElementById('vita'); var out = [];
+    if (!root) return out;
+    root.querySelectorAll('*').forEach(function (el) { if (el.scrollTop > 0) out.push({ path: pathOf(el, root), top: el.scrollTop }); });
+    return out;
+  }
+  function restoreScroll(saved) {
+    if (!saved || !saved.length) return;
+    var root = document.getElementById('vita');
+    var apply = function () { saved.forEach(function (x) { var el = byPath(root, x.path); if (el) el.scrollTop = x.top; }); };
+    // the screens scroll themselves to the top right after mounting (at 0 and 120 ms), so restore after that
+    [0, 60, 180, 350].forEach(function (t) { setTimeout(apply, t); });
+  }
+
   class App extends React.Component {
     constructor(p) {
       super(p);
@@ -598,7 +623,10 @@
       var idle = Date.now() - lastInteraction;
       var ae = document.activeElement;
       var typing = ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA');
-      if (idle > 6000 && !typing) this.setState((s) => ({ epoch: s.epoch + 1 }));
+      if (idle > 6000 && !typing) {
+        var saved = saveScroll();
+        this.setState((s) => ({ epoch: s.epoch + 1 }), () => restoreScroll(saved));
+      }
       else this.__rt = setTimeout(() => this.remoteChanged(), 2000);
     }
     render() {
