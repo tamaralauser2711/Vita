@@ -17,22 +17,20 @@ function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { ...cors, "Content-Type": "application/json" } });
 }
 
-// Supabase prüft die Signatur des Tokens bereits. Hier stellen wir nur sicher,
-// dass es ein angemeldeter Nutzer ist und nicht bloß der öffentliche Schlüssel.
-function role(req: Request): string | null {
-  const token = (req.headers.get("Authorization") || "").replace(/^Bearer\s+/i, "");
-  try {
-    const part = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
-    return JSON.parse(atob(part)).role ?? null;
-  } catch {
-    return null;
-  }
+// Prüft bei Supabase, ob die Anfrage von einem angemeldeten Nutzer (eurem Haushalts-Login) kommt.
+async function isLoggedIn(req: Request): Promise<boolean> {
+  const auth = req.headers.get("Authorization") || "";
+  const apikey = req.headers.get("apikey") || Deno.env.get("SUPABASE_ANON_KEY") || "";
+  const url = Deno.env.get("SUPABASE_URL");
+  if (!auth || !url) return false;
+  const r = await fetch(url + "/auth/v1/user", { headers: { Authorization: auth, apikey } });
+  return r.ok;
 }
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   if (req.method !== "POST") return json({ error: "Nur POST" }, 405);
-  if (role(req) !== "authenticated") return json({ error: "Bitte in der App anmelden." }, 401);
+  if (!(await isLoggedIn(req))) return json({ error: "Bitte in der App anmelden." }, 401);
 
   const key = Deno.env.get("ANTHROPIC_API_KEY");
   if (!key) return json({ error: "ANTHROPIC_API_KEY ist nicht hinterlegt." }, 500);

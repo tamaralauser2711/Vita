@@ -167,7 +167,17 @@
   function askAI(prompt, tier) {
     if (!sb) return Promise.reject(new Error('offline'));
     return sb.functions.invoke('ai', { body: { prompt: prompt, tier: tier || 'quick' } }).then(function (r) {
-      if (r.error) throw r.error;
+      if (r.error) {
+        var ctx = r.error.context;
+        var status = ctx && ctx.status;
+        var readBody = ctx && typeof ctx.json === 'function' ? ctx.json().catch(function () { return null; }) : Promise.resolve(null);
+        return readBody.then(function (b) {
+          var e = new Error((b && b.error) || (b && b.message) || r.error.message || 'unbekannt');
+          e.status = status;
+          console.warn('[vita] KI-Fehler', status, e.message);
+          throw e;
+        });
+      }
       var text = r.data && r.data.text;
       if (typeof text !== 'string') throw new Error('keine Antwort');
       return text;
@@ -525,9 +535,10 @@
               if (req !== this.__aiReq) return;
               this.__aiResult = { key: name + '|' + amount, r: r };
               this.setState({ ai: 'done' });
-            }).catch(() => {
+            }).catch((err) => {
               if (req !== this.__aiReq) return;
               this.__aiResult = null;
+              this.__aiError = (err && err.status ? err.status + ': ' : '') + ((err && err.message) || 'unbekannt');
               this.setState({ ai: 'done' });
             });
           }, 900);
@@ -535,7 +546,19 @@
         estimate(name, amount) {
           var key = (name || '').trim() + '|' + (amount || '').trim();
           if (this.__aiResult && this.__aiResult.key === key) return this.__aiResult.r;
-          return super.estimate(name, amount);
+          var fb = super.estimate(name, amount);
+          if (fb && this.__aiError) fb = Object.assign({}, fb, { sure: false });
+          return fb;
+        }
+        renderVals() {
+          var v = super.renderVals();
+          var key = (this.state.fName || '').trim() + '|' + (this.state.fAmount || '').trim();
+          var hasAi = this.__aiResult && this.__aiResult.key === key;
+          if (this.state.ai === 'done' && this.__aiError && !hasAi && v.aiReady) {
+            v.aiTitle = 'KI nicht erreichbar, nur grobe Schätzung (Fehler ' + this.__aiError + ')';
+          }
+          if (hasAi) this.__aiError = null;
+          return v;
         }
         componentWillUnmount() { clearTimeout(this.__aiDebounce); this.__aiReq = -1; if (super.componentWillUnmount) super.componentWillUnmount(); }
       };
