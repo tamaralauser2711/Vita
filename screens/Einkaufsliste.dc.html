@@ -108,9 +108,9 @@
               <span style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;">
                 <span style="font-family:'Inter',sans-serif;font-size:13px;{{item.text}}">{{item.label}}</span>
                 <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{item.note}}</span>
+                <span style="align-self:flex-start;margin-top:4px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#1F4D3A;background:#E3EEE6;padding:4px 8px;border-radius:999px;white-space:nowrap;{{item.offerStyle}}">{{item.offer}}</span>
               </span>
             </button>
-            <span style="font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#1F4D3A;background:#E3EEE6;padding:4px 8px;border-radius:999px;white-space:nowrap;{{item.offerStyle}}">{{item.offer}}</span>
             <span title="{{item.whoTitle}}" aria-label="{{item.whoTitle}}" style="width:22px;height:22px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-family:'Geist',sans-serif;font-size:11px;font-weight:700;{{item.whoStyle}}">{{item.who}}</span>
             <sc-if value="{{item.hasHint}}" hint-placeholder-val="{{false}}">
               <button type="button" onClick="{{item.hintAction}}" style="all:unset;box-sizing:border-box;cursor:pointer;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;padding:4px 8px;border-radius:999px;white-space:nowrap;{{item.hintStyle}}">{{item.hint}}</button>
@@ -173,8 +173,8 @@
               <span style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;">
                 <span style="font-family:'Inter',sans-serif;font-size:13px;">{{sg.label}}</span>
                 <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{sg.note}}</span>
+                <span style="align-self:flex-start;margin-top:4px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#1F4D3A;background:#E3EEE6;padding:4px 8px;border-radius:999px;white-space:nowrap;{{sg.offerStyle}}">{{sg.offer}}</span>
               </span>
-              <span style="font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#1F4D3A;background:#E3EEE6;padding:4px 8px;border-radius:999px;white-space:nowrap;{{sg.offerStyle}}">{{sg.offer}}</span>
               <button type="button" onClick="{{sg.add}}" aria-label="{{sg.aria}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:44px;height:44px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;">
                 <span style="width:30px;height:30px;border-radius:50%;background:#1F4D3A;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:18px;line-height:1;">+</span>
               </button>
