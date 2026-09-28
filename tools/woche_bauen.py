@@ -131,26 +131,26 @@ PLAN = [
 C = 'Cristian'
 EX = {
  0: {'breakfast': [(C, 'Haferflocken', 40), (C, 'Banane', 120), (C, 'Erdnussbutter', 20)],
-     'lunch': [(C, 'Basmatireis (roh)', 90), (C, 'Hähnchenbrust', 100), (C, 'Olivenöl', 7)],
-     'dinner': [(C, 'Eiweißbrot', 60), (C, 'Vollkorntoast', 60), (C, 'Hüttenkäse', 100)]},
- 1: {'breakfast': [(C, 'Eier', 120), (C, 'Vollkorntoast', 60), (C, 'Avocado', 50)],
-     'lunch': [(C, 'High-Protein-Pasta (roh)', 90), (C, 'Rinderhack, mager', 75), (C, 'Olivenöl', 5)],
-     'dinner': [(C, 'Eier', 120), (C, 'Vollkorntoast', 90)]},
+     'lunch': [(C, 'Basmatireis (roh)', 80), (C, 'Hähnchenbrust', 40), (C, 'Olivenöl', 7)],
+     'dinner': [(C, 'Eiweißbrot', 60), (C, 'Hüttenkäse', 100)]},
+ 1: {'breakfast': [(C, 'Eier', 120), (C, 'Vollkorntoast', 60), (C, 'Avocado', 20)],
+     'lunch': [(C, 'High-Protein-Pasta (roh)', 105), (C, 'Rinderhack, mager', 30), (C, 'Olivenöl', 5)],
+     'dinner': [(C, 'Eier', 120), (C, 'Vollkorntoast', 40)]},
  2: {'breakfast': [(C, 'Haferflocken', 40), (C, 'Milch 1,5 %', 150), (C, 'Erdnussbutter', 20), (C, 'Banane', 60)],
-     'lunch': [(C, 'Protein-Wraps', 80), (C, 'Hähnchenbrust', 100), (C, 'Avocado', 80)],
-     'dinner': [(C, 'Lachsfilet', 50), (C, 'Kartoffeln', 250), (C, 'Olivenöl', 5), (C, 'Skyr', 100)]},
+     'lunch': [(C, 'Protein-Wraps', 80), (C, 'Hähnchenbrust', 40), (C, 'Avocado', 40), (C, 'Banane', 70)],
+     'dinner': [(C, 'Lachsfilet', 50), (C, 'Kartoffeln', 120), (C, 'Olivenöl', 5), (C, 'Skyr', 100)]},
  3: {'breakfast': [(C, 'Haferflocken', 50), (C, 'Mandeln', 20), (C, 'Honig', 15)],
-     'lunch': [(C, 'Kartoffeln', 400), (C, 'Putenschnitzel', 100), (C, 'Olivenöl', 8)],
+     'lunch': [(C, 'Kartoffeln', 250), (C, 'Putenschnitzel', 100), (C, 'Olivenöl', 8)],
      'dinner': [(C, 'Basmatireis (roh)', 80), (C, 'Edamame (geschält)', 80)]},
- 4: {'breakfast': [(C, 'Vollkorntoast', 80), (C, 'Hüttenkäse', 100), (C, 'Banane', 100)],
-     'lunch': [(C, 'Basmatireis (roh)', 90), (C, 'Hähnchenbrust', 80), (C, 'Avocado', 50)],
+ 4: {'breakfast': [(C, 'Vollkorntoast', 40), (C, 'Hüttenkäse', 100), (C, 'Banane', 100)],
+     'lunch': [(C, 'Basmatireis (roh)', 75), (C, 'Hähnchenbrust', 30), (C, 'Avocado', 50)],
      'dinner': [(C, 'Kartoffeln', 250), (C, 'Rinderhack, mager', 80), (C, 'Olivenöl', 6), (C, 'Skyr', 100)]},
  5: {'breakfast': [(C, 'Haferflocken', 40), (C, 'Eier', 60), (C, 'Magerquark', 100), (C, 'Erdnussbutter', 15)],
-     'lunch': [(C, 'Basmatireis (roh)', 90), (C, 'Hähnchenbrust', 80), (C, 'Olivenöl', 5)],
-     'dinner': [(C, 'Feta', 50), (C, 'Kartoffeln', 200), (C, 'Eiweißbrot', 50)]},
- 6: {'breakfast': [(C, 'Eier', 120), (C, 'Vollkorntoast', 60), (C, 'Mandarinen', 150)],
+     'lunch': [(C, 'Basmatireis (roh)', 75), (C, 'Hähnchenbrust', 30), (C, 'Olivenöl', 5)],
+     'dinner': [(C, 'Feta', 50), (C, 'Kartoffeln', 200)]},
+ 6: {'breakfast': [(C, 'Eier', 120), (C, 'Vollkorntoast', 20), (C, 'Mandarinen', 150)],
      'lunch': [(C, 'Nudeln (roh)', 90), (C, 'Lachsfilet', 50), (C, 'Frischkäse', 15)],
-     'dinner': [(C, 'Kartoffeln', 300), (C, 'Magerquark', 150), (C, 'Leinöl', 8)]},
+     'dinner': [(C, 'Kartoffeln', 260), (C, 'Magerquark', 150), (C, 'Leinöl', 8)]},
 }
 
 db = {}
@@ -328,5 +328,5 @@ if __name__ == '__main__':
         ext = sum(x['kcal'] for m in e.values() for x in m)
         t = db[b]['kcal'] + db[l]['kcal'] + db[dn]['kcal']
         print(TAGE[d], 'Tami', t + db[st]['kcal'], 'P', db[b]['p'] + db[l]['p'] + db[dn]['p'] + db[st]['p'],
-              '| Cristian', t + db[sc]['kcal'] + ext)
+              '| Cristian', t + db[sc]['kcal'] + ext, 'P', db[b]['p'] + db[l]['p'] + db[dn]['p'] + db[sc]['p'] + sum(x['p'] for m in e.values() for x in m if x['who']=='Cristian'))
     for c in catalog: print(c['id'], needTxt.get(c['id'], '-'), c['label'], c['prices'])
