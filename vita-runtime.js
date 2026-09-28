@@ -166,7 +166,7 @@
   /* ───────────────────────── KI (Supabase Edge Function "ai") ───────────────────────── */
   function askAI(prompt, tier) {
     if (!sb) return Promise.reject(new Error('offline'));
-    return sb.functions.invoke('ai', { body: { prompt: prompt, tier: tier || 'quick' } }).then(function (r) {
+    return sb.functions.invoke(CFG.aiFunction || 'ai', { body: { prompt: prompt, tier: tier || 'quick' } }).then(function (r) {
       if (r.error) {
         var ctx = r.error.context;
         var status = ctx && ctx.status;
