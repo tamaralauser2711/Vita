@@ -18,10 +18,20 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Geist:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
 <style>
   html, body { overflow: hidden; }
-  html { height: 100%; box-sizing: border-box; background: #F3F1EC; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  html { height: 100%; box-sizing: border-box; background: #F3F1EC; padding-top: env(safe-area-inset-top, 0px); }
   body { height: 100%; margin: 0; background: #F3F1EC; font-family: 'Inter', system-ui, sans-serif; color: #111111; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
   #vita { position: relative; height: 100%; max-width: 480px; margin: 0 auto; overflow: hidden; background: #F3F1EC; }
   @media (min-width: 520px) { #vita { box-shadow: 0 0 0 1px #E6E3DC; } }
+  /* Unterer Rand: Screens ohne Menüleiste halten Abstand zum Home-Balken */
+  #vita { box-sizing: border-box; padding-bottom: env(safe-area-inset-bottom, 0px); }
+  #vita:has(nav) { padding-bottom: 0; }
+  /* Menüleiste: größer, reicht bis ganz unten, weiße Fläche hinter dem Home-Balken */
+  #vita nav { padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px)) !important; }
+  #vita nav > a { min-height: 60px; justify-content: center; gap: 5px !important; font-size: 13px !important; -webkit-user-select: none; user-select: none; }
+  #vita nav > a svg { width: 27px; height: 27px; }
+  #vita nav > button { flex-basis: 72px !important; }
+  #vita nav > button > span { width: 62px !important; height: 62px !important; margin-top: -24px !important; }
+  #vita nav > button > span svg { width: 28px; height: 28px; }
   input, textarea, select { font-size: 16px !important; } /* keeps iOS from zooming into fields */
 </style>
 </head>
@@ -30,7 +40,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="config.js?v=202609280835"></script>
-<script src="vita-runtime.js?v=202609280835"></script>
+<script src="config.js?v=202609280900"></script>
+<script src="vita-runtime.js?v=202609280900"></script>
 </body>
 </html>
