@@ -401,7 +401,7 @@
   function loadModule(name) {
     if (modules[name]) return Promise.resolve(modules[name]);
     if (loading[name]) return loading[name];
-    loading[name] = fetch(SCREEN_DIR + name + '.dc.html').then(function (r) {
+    loading[name] = fetch(SCREEN_DIR + name + '.dc.html', { cache: 'no-cache' }).then(function (r) {
       if (!r.ok) throw new Error('Screen ' + name + ' nicht gefunden');
       return r.text();
     }).then(function (text) {
