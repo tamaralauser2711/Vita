@@ -277,14 +277,14 @@ class Component extends DCLogic {
     try { person = localStorage.getItem('vitaActivePerson') === 'basti' ? 'basti' : 'tamara'; } catch (e) {}
     this.meal = meal;
     this.person = person;
-    this.state = { logs: this.loadLogs(), tab: 'plan', fName: '', fAmount: '', fKcal: '', fP: '', fC: '', fF: '', ai: 'idle', scan: 'idle', scanSel: {}, scanGrams: {}, recipe: null };
+    this.state = { logs: this.loadLogs(), tab: 'plan', fName: '', fAmount: '', fKcal: null, fP: null, fC: null, fF: null, ai: 'idle', scan: 'idle', scanSel: {}, scanGrams: {}, recipe: null };
     /* Poll localStorage for meal & person changes (DC Canvas may not re-construct or re-render on artboard revisit) */
     this._mealPoll = setInterval(() => {
       try {
         const sm = localStorage.getItem('vitaSelectedMeal');
         if (sm && this.mealLabels[sm] && sm !== this.meal) {
           this.meal = sm;
-          this.setState({ tab: 'plan', ai: 'idle', scan: 'idle', fName: '', fAmount: '', fKcal: '', fP: '', fC: '', fF: '', scanSel: {}, scanGrams: {}, recipe: null, logs: this.loadLogs() });
+          this.setState({ tab: 'plan', ai: 'idle', scan: 'idle', fName: '', fAmount: '', fKcal: null, fP: null, fC: null, fF: null, scanSel: {}, scanGrams: {}, recipe: null, logs: this.loadLogs() });
         }
         const sp = localStorage.getItem('vitaActivePerson');
         const ep = sp === 'basti' ? 'basti' : 'tamara';
@@ -399,17 +399,17 @@ class Component extends DCLogic {
   }
   freeValues(ai) {
     const s = this.state;
-    const pick = (own, fromAi) => { const x = parseFloat(String(own).replace(',', '.')); return own !== '' && x >= 0 ? Math.round(x * 10) / 10 : (ai ? fromAi : 0); };
+    const pick = (own, fromAi) => { const x = parseFloat(String(own).replace(',', '.')); if (own == null) return ai ? fromAi : 0; return x >= 0 ? Math.round(x * 10) / 10 : 0; };
     return {
       kcal: pick(s.fKcal, ai ? ai.kcal : 0), p: pick(s.fP, ai ? ai.p : 0), c: pick(s.fC, ai ? ai.c : 0), f: pick(s.fF, ai ? ai.f : 0),
-      fromAi: !!ai && (s.fKcal === '' || s.fP === '' || s.fC === '' || s.fF === '')
+      fromAi: !!ai && (s.fKcal == null || s.fP == null || s.fC == null || s.fF == null)
     };
   }
   fieldVals(ai) {
     const s = this.state;
     const out = {};
     [['Kcal', 'fKcal', 'kcal'], ['P', 'fP', 'p'], ['C', 'fC', 'c'], ['F', 'fF', 'f']].forEach((d) => {
-      const own = s[d[1]] !== '';
+      const own = s[d[1]] != null;
       out['v' + d[0]] = own ? s[d[1]] : (ai ? String(ai[d[2]]) : '');
       out['v' + d[0]] = String(out['v' + d[0]]).replace('.', ',');
       out['src' + d[0]] = own ? 'angepasst' : (ai ? 'KI' : '');
@@ -467,7 +467,7 @@ class Component extends DCLogic {
       if (storedM && this.mealLabels[storedM] && storedM !== this.meal) {
         this.meal = storedM;
         this.state.tab = 'plan'; this.state.ai = 'idle'; this.state.scan = 'idle';
-        this.state.fName = ''; this.state.fAmount = ''; this.state.fKcal = ''; this.state.fP = ''; this.state.fC = ''; this.state.fF = '';
+        this.state.fName = ''; this.state.fAmount = ''; this.state.fKcal = null; this.state.fP = null; this.state.fC = null; this.state.fF = null;
         this.state.scanSel = {}; this.state.scanGrams = {}; this.state.recipe = null;
         this.state.logs = this.loadLogs();
       }
@@ -476,7 +476,7 @@ class Component extends DCLogic {
     const aiRaw = s.ai === 'done' ? this.estimate(s.fName, s.fAmount) : null;
     const ai = aiRaw;
     const fv = this.fieldVals(ai);
-    const edited = s.fKcal !== '' || s.fP !== '' || s.fC !== '' || s.fF !== '';
+    const edited = s.fKcal != null || s.fP != null || s.fC != null || s.fF != null;
     const aiLine = s.ai === 'thinking' ? 'Einen Moment, die KI schaut sich das an.'
       : (ai ? ((ai.sure ? 'KI-Schätzung: ' : 'Unsicher, bitte kurz prüfen: ') + (s.fName || '').trim() + ', ca. ' + ai.grams + ' g = ' + ai.kcal + ' kcal')
       : 'Tipp ein, was du gegessen hast. Die KI trägt die Nährwerte automatisch ein.');
@@ -578,7 +578,7 @@ class Component extends DCLogic {
         const vals = this.freeValues(ai);
         const amount = (this.state.fAmount || '').trim() || (ai ? 'ca. ' + ai.grams + ' g' : '');
         this.addEntry({ name: n, amount: amount + (ai && vals.fromAi ? ' · KI' : ''), grams: ai ? ai.grams : undefined, kcal: vals.kcal, p: vals.p, c: vals.c, f: vals.f, src: 'frei' });
-        this.setState({ fName: '', fAmount: '', fKcal: '', fP: '', fC: '', fF: '', ai: 'idle', editVals: false });
+        this.setState({ fName: '', fAmount: '', fKcal: null, fP: null, fC: null, fF: null, ai: 'idle', editVals: false });
       },
       aiLine: aiLine,
       aiTitle: s.ai === 'thinking' ? 'KI berechnet …' : (ai ? (edited ? 'Nährwerte (angepasst)' : 'Nährwerte von der KI') : 'Nährwerte von der KI'),

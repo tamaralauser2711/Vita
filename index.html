@@ -26,7 +26,7 @@
   #vita { box-sizing: border-box; padding-bottom: env(safe-area-inset-bottom, 0px); }
   #vita:has(nav) { padding-bottom: 0; }
   /* Menüleiste: größer, reicht bis ganz unten, weiße Fläche hinter dem Home-Balken */
-  #vita nav { padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px)) !important; }
+  #vita nav { position: relative; z-index: 20; overflow: visible !important; padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px)) !important; }
   #vita nav > a { min-height: 60px; justify-content: center; gap: 5px !important; font-size: 13px !important; -webkit-user-select: none; user-select: none; }
   #vita nav > a svg { width: 27px; height: 27px; }
   #vita nav > button { flex-basis: 72px !important; }
@@ -40,7 +40,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="config.js?v=202609280900"></script>
-<script src="vita-runtime.js?v=202609280900"></script>
+<script src="config.js?v=202609280910"></script>
+<script src="vita-runtime.js?v=202609280910"></script>
 </body>
 </html>
