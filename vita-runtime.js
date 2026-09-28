@@ -452,7 +452,7 @@
 
   /* screen state that the prototype only kept in memory, now saved and shared */
   var PERSIST = {
-    Einkaufsliste: { key: 'vitaState:Einkaufsliste' + (window.VITA_WOCHE ? ':' + window.VITA_WOCHE.id : ''), fields: ['addedBy', 'checkedBy', 'onList', 'checked', 'custom', 'nextId', 'selected'] },
+    Einkaufsliste: { key: 'vitaState:Einkaufsliste' + (window.VITA_WOCHE ? ':' + window.VITA_WOCHE.id : ''), fields: ['addedBy', 'checkedBy', 'onList', 'checked', 'custom', 'nextId', 'selected', 'dismissed'] },
     Essensplan: { key: 'vitaState:Essensplan', fields: ['status', 'swaps'] },
     Training: { key: 'vitaState:Training', fields: ['swaps'] },
     Dashboard: { key: 'vitaState:Dashboard', fields: ['waterLogs', 'trainingLogs', 'wSaved'] },

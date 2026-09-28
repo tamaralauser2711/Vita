@@ -278,6 +278,20 @@ KAT = [
  ('leinoel', ['Leinöl'], 250, 'Leinöl, {n} Flasche', 3.49, {}),
  ('sojasauce', ['Sojasauce'], 250, 'Sojasauce, {n} Flasche', 1.39, {}),
 ]
+
+KAT_GRUPPE = {
+ 'Obst & Gemüse': ['kartoffeln', 'hokkaido', 'butternut', 'karotten', 'champignons', 'zwiebeln', 'lauch', 'blumenkohl', 'gurke', 'tomaten', 'romana', 'avocado', 'bananen', 'himbeeren', 'mandarinen', 'aepfel', 'kiwi'],
+ 'Fleisch & Fisch': ['huhn', 'pute', 'rind', 'lachs'],
+ 'Kühlregal': ['eier', 'skyr', 'quark', 'huettenkaese', 'frischkaese', 'feta', 'proteinmilch', 'milch'],
+ 'Brot & Backwaren': ['eiweissbrot', 'toast', 'wraps'],
+ 'Nudeln, Reis & Vorrat': ['hppasta', 'nudeln', 'reis', 'hafer', 'passiert', 'mandeln', 'erdnuss', 'olivenoel', 'honig', 'leinoel', 'sojasauce'],
+ 'Tiefkühl': ['edamame'],
+}
+KAT_REIHE = list(KAT_GRUPPE)
+def gruppe(cid):
+    for g, ids in KAT_GRUPPE.items():
+        if cid in ids: return g
+    return 'Sonstiges'
 VORRAT = {'mandeln', 'erdnuss', 'olivenoel', 'honig', 'leinoel', 'sojasauce'}
 
 def fmt_amount(n, g):
@@ -306,7 +320,7 @@ for cid, ings, pack, label, reg, offers in KAT:
     offer = min(offers, key=offers.get) if offers else None
     u = uses.get(ings[0], [])
     note = ', '.join(u[:3]) + (' u. a.' if len(u) > 3 else '')
-    catalog.append({'id': cid, 'label': label.format(n=cnt), 'note': note or 'Vorrat', 'prices': pr, 'offer': offer})
+    catalog.append({'id': cid, 'label': label.format(n=cnt), 'note': note or 'Vorrat', 'cat': gruppe(cid), 'prices': pr, 'offer': offer})
     if g > 0: needTxt[cid] = fmt_amount(ings[0], g)
     if g > 0 and cid not in VORRAT: onList.append(cid)
 
@@ -315,7 +329,7 @@ W = {
     'markets': [{'id': 'rewe', 'name': 'Rewe'}, {'id': 'edeka', 'name': 'Edeka'}, {'id': 'netto', 'name': 'Netto'}, {'id': 'kaufland', 'name': 'Kaufland'}],
     'extraMarkets': [{'id': 'lidl', 'name': 'Lidl', 'type': 'Discounter'}, {'id': 'aldi', 'name': 'Aldi Süd', 'type': 'Discounter'}],
     'week': week, 'mealAlts': alts, 'db': db, 'extras': extras,
-    'catalog': catalog, 'need': needTxt, 'onList': onList,
+    'catalog': sorted(catalog, key=lambda c: KAT_REIHE.index(c['cat']) if c['cat'] in KAT_REIHE else 99), 'catOrder': KAT_REIHE + ['Sonstiges'], 'need': needTxt, 'onList': onList,
 }
 root = os.path.join(os.path.dirname(__file__), '..')
 with open(os.path.join(root, 'woche.js'), 'w') as fh:

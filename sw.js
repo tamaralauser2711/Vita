@@ -1,6 +1,6 @@
 /* Vita service worker: always tries the network first (so updates arrive immediately),
    falls back to the last cached copy when the phone is offline. */
-const CACHE = 'vita-v7';
+const CACHE = 'vita-v8';
 self.addEventListener('install', (e) => { self.skipWaiting(); });
 self.addEventListener('activate', (e) => { e.waitUntil(self.clients.claim()); });
 self.addEventListener('fetch', (e) => {
