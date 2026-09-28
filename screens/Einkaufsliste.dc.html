@@ -98,6 +98,10 @@
       </div>
       <div style="background:#FFFFFF;border:1px solid #E6E3DC;border-radius:16px;padding:2px 16px;">
         <sc-for list="{{listItems}}" as="item" hint-placeholder-count="4">
+          <div>
+          <sc-if value="{{item.hasCat}}" hint-placeholder-val="{{false}}">
+            <div style="font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#1F4D3A;padding:14px 0 4px;border-bottom:1px solid #EDEAE3;">{{item.cat}}</div>
+          </sc-if>
           <div style="display:flex;align-items:center;gap:12px;border-bottom:1px solid #EDEAE3;">
             <button type="button" onClick="{{item.toggle}}" aria-label="{{item.aria}}" style="all:unset;box-sizing:border-box;cursor:pointer;flex:1;display:flex;align-items:center;gap:16px;padding:11px 0;min-width:0;">
               <span style="width:20px;height:20px;border-radius:10px;border:1.5px solid #C9C6BE;flex:0 0 auto;{{item.box}}"></span>
@@ -114,6 +118,7 @@
             <button type="button" onClick="{{item.remove}}" aria-label="{{item.removeAria}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:32px;height:44px;display:flex;align-items:center;justify-content:center;color:#8C8C86;">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
             </button>
+          </div>
           </div>
         </sc-for>
         <sc-if value="{{isAdding}}" hint-placeholder-val="{{false}}">
@@ -160,7 +165,11 @@
         </div>
         <div style="background:#FFFFFF;border:1px solid #E6E3DC;border-radius:16px;padding:2px 16px;">
           <sc-for list="{{suggestions}}" as="sg" hint-placeholder-count="4">
-            <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #EDEAE3;">
+            <div>
+            <sc-if value="{{sg.hasCat}}" hint-placeholder-val="{{false}}">
+            <div style="font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#1F4D3A;padding:14px 0 4px;border-bottom:1px solid #EDEAE3;">{{sg.cat}}</div>
+          </sc-if>
+          <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #EDEAE3;">
               <span style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;">
                 <span style="font-family:'Inter',sans-serif;font-size:13px;">{{sg.label}}</span>
                 <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{sg.note}}</span>
@@ -169,6 +178,10 @@
               <button type="button" onClick="{{sg.add}}" aria-label="{{sg.aria}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:44px;height:44px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;">
                 <span style="width:30px;height:30px;border-radius:50%;background:#1F4D3A;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:18px;line-height:1;">+</span>
               </button>
+              <button type="button" onClick="{{sg.dismiss}}" aria-label="{{sg.dismissAria}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:32px;height:44px;display:flex;align-items:center;justify-content:center;color:#8C8C86;flex:0 0 auto;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+              </button>
+            </div>
             </div>
           </sc-for>
         </div>
@@ -268,7 +281,7 @@ class Component extends DCLogic {
       adding: false,
       draftLabel: ''
     };
-    if (W) { this.state.onList = W.onList.slice(); this.state.custom = []; this.state.selected = { rewe: true, edeka: true, netto: true, kaufland: true }; }
+    if (W) { this.state.dismissed = {}; this.state.onList = W.onList.slice(); this.state.custom = []; this.state.selected = { rewe: true, edeka: true, netto: true, kaufland: true }; }
   }
   euro(n) { return n.toFixed(2).replace('.', ',') + ' €'; }
   byId(id) { return this.catalog.find((c) => c.id === id); }
@@ -403,7 +416,12 @@ class Component extends DCLogic {
     }
     const onOfferAt = (c, mid) => !!mid && this.priceOf(c, mid) < Math.max(...this.markets.map((m) => this.priceOf(c, m.id)));
     const offerFor = (c) => (best && sorted.length > 1 && onOfferAt(c, best.id)) ? ('Angebot ' + best.name) : '';
-    const listItems = listed.map((c) => {
+    const dismissed = s.dismissed || {};
+    const catOrder = (window.VITA_WOCHE && window.VITA_WOCHE.catOrder) || [];
+    const catIdx = (c) => { const i = catOrder.indexOf(c.cat || 'Sonstiges'); return i < 0 ? 99 : i; };
+    const suggestions = this.catalog.filter((c) => s.onList.indexOf(c.id) === -1 && !dismissed[c.id]).sort((a, b) => catIdx(a) - catIdx(b));
+    const withHeads = (arr) => { let last = null; return arr.map((x) => { const cat = x.cat || 'Sonstiges'; const r = { ...x, cat, hasCat: !!catOrder.length && cat !== last }; last = cat; return r; }); };
+    const listItems = withHeads(listed.slice().sort((a, b) => catIdx(a) - catIdx(b)).map((c) => {
       const on = !!s.checked[c.id];
       const o = offerFor(c);
       return {
@@ -414,7 +432,7 @@ class Component extends DCLogic {
         aria: c.label + (on ? ', im Wagen' : ', abhaken'),
         removeAria: c.label + ' entfernen',
         toggle: () => this.setState({ checked: { ...this.state.checked, [c.id]: !on }, checkedBy: { ...this.state.checkedBy, [c.id]: this.activeP() } }),
-        remove: () => this.remove(c.id)
+        remove: () => this.remove(c.id), cat: c.cat
       };
     }).concat(s.custom.map((c) => {
       const on = !!s.checked[c.id];
@@ -438,8 +456,7 @@ class Component extends DCLogic {
         toggle: () => this.setState({ checked: { ...this.state.checked, [c.id]: !on }, checkedBy: { ...this.state.checkedBy, [c.id]: this.activeP() } }),
         remove: () => this.remove(c.id)
       };
-    }));
-    const suggestions = this.catalog.filter((c) => s.onList.indexOf(c.id) === -1);
+    })));
     const total = listItems.length;
     const done = Object.keys(s.checked).filter((k) => s.checked[k]).length;
     return {
@@ -509,15 +526,18 @@ class Component extends DCLogic {
       }),
       confirmAdd: () => this.confirmAdd(),
       hasSuggestions: suggestions.length > 0,
-      suggestions: suggestions.map((c) => {
+      suggestions: withHeads(suggestions.map((c) => {
         const o = offerFor(c);
         return {
           label: c.label, note: (this.need[c.id] ? 'Plan: ' + this.need[c.id] + ', Packung gerundet · ' : '') + 'für ' + c.note, offer: o, offerStyle: o ? '' : 'display:none;',
           aria: c.label + ' zur Liste hinzufügen',
-          add: () => this.setState({ onList: [...this.state.onList, c.id], addedBy: { ...this.state.addedBy, [c.id]: this.activeP() } })
+          add: () => this.setState({ onList: [...this.state.onList, c.id], addedBy: { ...this.state.addedBy, [c.id]: this.activeP() } }),
+          dismissAria: c.label + ' aus den Vorschlägen entfernen',
+          dismiss: () => this.setState({ dismissed: { ...(this.state.dismissed || {}), [c.id]: true } }),
+          cat: c.cat
         };
-      }),
-      addAll: () => { const ab = { ...this.state.addedBy }; this.catalog.forEach((c) => { if (this.state.onList.indexOf(c.id) < 0) ab[c.id] = this.activeP(); }); this.setState({ onList: this.catalog.map((c) => c.id), addedBy: ab }); }
+      })),
+      addAll: () => { const ab = { ...this.state.addedBy }; const dm = this.state.dismissed || {}; const add = this.catalog.filter((c) => this.state.onList.indexOf(c.id) < 0 && !dm[c.id]).map((c) => c.id); add.forEach((id) => { ab[id] = this.activeP(); }); this.setState({ onList: [...this.state.onList, ...add], addedBy: ab }); }
     };
   }
 }
