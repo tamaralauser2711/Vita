@@ -260,6 +260,25 @@ class Component extends DCLogic {
       dinner: { extras: [{ who: 'Cristian', text: '+ Vollkornnudeln als Beilage' }], key: 'ofengemuese_feta', f: { tamara: 1, basti: 1.82 }, note: { basti: 'Extra für Cristian: + Vollkornnudeln als Beilage' }, alts: ['omelett_brot', 'wrap_pute'] },
       snack: { keyBy: { tamara: 'studentenfutter', basti: 'quark_shake' }, f: { tamara: 1, basti: 1 }, note: {}, alts: ['apfel_mandeln', 'joghurt_beeren'] }
     };
+    const W = window.VITA_WOCHE;
+    if (W) {
+      const di = (new Date().getDay() + 6) % 7;
+      const d = W.week[di];
+      this.db = Object.assign({}, this.db, W.db);
+      this.extrasAll = W.extras;
+      this.planDay = di;
+      const exOf = (m) => ((W.extras[String(di)] || {})[m] || []);
+      const mk = (m) => {
+        const ex = exOf(m);
+        const txt = (w) => ex.filter((x) => x.who === w).map((x) => (x.type === '-' ? 'weniger ' : '+ ') + x.name.replace(/ \(roh\)| \(geschält\)|, mager/g, '')).join(', ');
+        const note = {};
+        if (txt('Tami')) note.tamara = 'Extra für Tami: ' + txt('Tami');
+        if (txt('Cristian')) note.basti = 'Extra für Cristian: ' + txt('Cristian');
+        return { extras: ['Tami', 'Cristian'].filter((w) => txt(w)).map((w) => ({ who: w, text: txt(w) })), key: d[m].key, f: { tamara: 1, basti: 1 }, note, alts: W.mealAlts[m].map((a) => a[2]).filter((k) => k !== d[m].key).slice(0, 2) };
+      };
+      this.plan = { breakfast: mk('breakfast'), lunch: mk('lunch'), dinner: mk('dinner'),
+        snack: { keyBy: { tamara: d.snackTami.key, basti: d.snackCristian.key }, f: { tamara: 1, basti: 1 }, note: {}, alts: W.mealAlts.snack.map((a) => a[2]).filter((k) => k !== d.snackTami.key && k !== d.snackCristian.key).slice(0, 2) } };
+    }
     this.scanResults = {
       breakfast: [['Skyr', 250, 0.63, 11, 4, 0.2], ['Haferflocken', 40, 3.7, 13, 59, 7], ['Heidelbeeren', 80, 0.57, 0.7, 12, 0.3]],
       lunch: [['Hähnchenbrust', 150, 1.1, 23, 0, 1.5], ['Reis, gekocht', 180, 1.3, 2.7, 28, 0.3], ['Ofengemüse', 150, 0.75, 1.5, 6, 5]],
@@ -490,7 +509,7 @@ class Component extends DCLogic {
     const pl = this.plan[this.meal];
     const mainKey = pl.keyBy ? pl.keyBy[this.person] : pl.key;
     const altF = this.person === 'basti' ? 1.5 : 1;
-    const todayExtras = this.meal === 'snack' ? [] : (((this.extrasAll['2'] || {})[this.meal]) || []);
+    const todayExtras = this.meal === 'snack' ? [] : (((this.extrasAll[String(this.planDay != null ? this.planDay : 2)] || {})[this.meal]) || []);
     const whoName = this.person === 'basti' ? 'Cristian' : 'Tami';
     const ownEx = todayExtras.filter((x) => x.who === whoName).reduce((a, x) => ({ g: a.g + x.g, kcal: a.kcal + x.kcal, p: a.p + x.p, c: a.c + x.c, f: a.f + x.f }), { g: 0, kcal: 0, p: 0, c: 0, f: 0 });
     const ownExText = todayExtras.filter((x) => x.who === whoName).map((x) => (x.type === '-' ? 'weniger ' : '+ ') + x.name.replace(/ \(roh\)/, '')).join(', ');
