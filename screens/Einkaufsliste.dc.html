@@ -100,7 +100,7 @@
         <sc-for list="{{listItems}}" as="item" hint-placeholder-count="4">
           <div>
           <sc-if value="{{item.hasCat}}" hint-placeholder-val="{{false}}">
-            <div style="font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#1F4D3A;padding:14px 0 4px;border-bottom:1px solid #EDEAE3;">{{item.cat}}</div>
+            <div style="font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#1F4D3A;padding:14px 0 4px;border-bottom:1px solid #EDEAE3;">{{item.catLabel}}</div>
           </sc-if>
           <div style="display:flex;align-items:center;gap:12px;border-bottom:1px solid #EDEAE3;">
             <button type="button" onClick="{{item.toggle}}" aria-label="{{item.aria}}" style="all:unset;box-sizing:border-box;cursor:pointer;flex:1;display:flex;align-items:center;gap:16px;padding:11px 0;min-width:0;">
@@ -167,7 +167,7 @@
           <sc-for list="{{suggestions}}" as="sg" hint-placeholder-count="4">
             <div>
             <sc-if value="{{sg.hasCat}}" hint-placeholder-val="{{false}}">
-            <div style="font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#1F4D3A;padding:14px 0 4px;border-bottom:1px solid #EDEAE3;">{{sg.cat}}</div>
+            <div style="font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#1F4D3A;padding:14px 0 4px;border-bottom:1px solid #EDEAE3;">{{sg.catLabel}}</div>
           </sc-if>
           <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #EDEAE3;">
               <span style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;">
@@ -420,7 +420,8 @@ class Component extends DCLogic {
     const catOrder = (window.VITA_WOCHE && window.VITA_WOCHE.catOrder) || [];
     const catIdx = (c) => { const i = catOrder.indexOf(c.cat || 'Sonstiges'); return i < 0 ? 99 : i; };
     const suggestions = this.catalog.filter((c) => s.onList.indexOf(c.id) === -1 && !dismissed[c.id]).sort((a, b) => catIdx(a) - catIdx(b));
-    const withHeads = (arr) => { let last = null; return arr.map((x) => { const cat = x.cat || 'Sonstiges'; const r = { ...x, cat, hasCat: !!catOrder.length && cat !== last }; last = cat; return r; }); };
+    const catEmoji = { 'Obst & Gemüse': '🥕', 'Fleisch & Fisch': '🍗', 'Kühlregal': '🧀', 'Brot & Backwaren': '🍞', 'Nudeln, Reis & Vorrat': '🍝', 'Tiefkühl': '❄️', 'Sonstiges': '🛒' };
+    const withHeads = (arr) => { let last = null; return arr.map((x) => { const cat = x.cat || 'Sonstiges'; const r = { ...x, cat, catLabel: (catEmoji[cat] ? catEmoji[cat] + '  ' : '') + cat, hasCat: !!catOrder.length && cat !== last }; last = cat; return r; }); };
     const listItems = withHeads(listed.slice().sort((a, b) => catIdx(a) - catIdx(b)).map((c) => {
       const on = !!s.checked[c.id];
       const o = offerFor(c);
