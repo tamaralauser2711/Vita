@@ -385,7 +385,7 @@ class Component extends DCLogic {
     const best = sorted[0];
     const worst = sorted[sorted.length - 1];
     const max = worst ? worst.total : 1;
-    const offersAtBest = best ? listed.filter((c) => c.offer === best.id).length : 0;
+    const offersAtBest = best ? listed.filter((c) => this.priceOf(c, best.id) < Math.max(...this.markets.map((m) => this.priceOf(c, m.id)))).length : 0;
     const carries = (p, mid) => (mid in p.prices) ? p.prices[mid] !== null : p.prices.lidl !== null;
     const cheapestAt = (p) => { const opts = active.filter((m) => carries(p, m.id)).map((m) => ({ m, v: this.prodPrice(p, m.id) })).sort((a, b) => a.v - b.v); return opts[0] || null; };
     const notAt = (p) => active.filter((m) => !carries(p, m.id)).map((m) => m.name);
@@ -400,22 +400,9 @@ class Component extends DCLogic {
     } else if (best) {
       tipHeadline = 'Geh heute zu ' + best.name + '.';
       tipLine = 'Du sparst insgesamt ' + this.euro(worst.total - best.total) + ' im Vergleich zu ' + worst.name + '.' + (offersAtBest ? (' ' + offersAtBest + (offersAtBest === 1 ? ' Artikel ist' : ' Artikel sind') + ' dort gerade im Angebot.') : '');
-      // Angebote aus mehreren Märkten: nur Märkte, bei denen sich der Weg lohnt (mind. 2 € gespart)
-      let shops = active.filter((m) => listed.some((c) => c.offer === m.id));
-      const cost = (set) => listed.reduce((sum, c) => sum + Math.min(...set.map((m) => this.priceOf(c, m.id))), 0) + prodItems.reduce((sum, p) => sum + Math.min(...set.map((m) => this.prodPrice(p, m.id))), 0);
-      let changed = shops.length > 1;
-      while (changed && shops.length > 1) {
-        changed = false;
-        const gains = shops.map((m) => ({ m, g: cost(shops.filter((x) => x.id !== m.id)) - cost(shops) })).sort((a, b) => a.g - b.g);
-        if (gains[0].g < 2) { shops = shops.filter((x) => x.id !== gains[0].m.id); changed = true; }
-      }
-      const split = shops.length ? cost(shops) : best.total;
-      if (shops.length > 1 && best.total - split >= 2) {
-        tipHeadline = 'Kauf diese Woche bei ' + shops.map((m) => m.name).join(', ').replace(/, ([^,]*)$/, ' und $1') + '.';
-        tipLine = 'Mit den Angeboten zahlst du ' + this.euro(split) + ', also ' + this.euro(best.total - split) + ' weniger als nur bei ' + best.name + '.';
-      }
     }
-    const offerFor = (c) => (c.offer && s.selected[c.offer]) ? ('Angebot ' + this.marketName(c.offer)) : '';
+    const onOfferAt = (c, mid) => !!mid && this.priceOf(c, mid) < Math.max(...this.markets.map((m) => this.priceOf(c, m.id)));
+    const offerFor = (c) => (best && sorted.length > 1 && onOfferAt(c, best.id)) ? ('Angebot ' + best.name) : '';
     const listItems = listed.map((c) => {
       const on = !!s.checked[c.id];
       const o = offerFor(c);
