@@ -74,8 +74,29 @@
     <sc-if value="{{isPlan}}" hint-placeholder-val="{{true}}">
       <div style="display:flex;flex-direction:column;gap:12px;">
         <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">Aus deinem Essensplan für heute, passend portioniert für {{name}}.</span>
-        <sc-for list="{{planOptions}}" as="po" hint-placeholder-count="3">
-          <div style="background:#FFFFFF;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;{{po.cardStyle}}">
+        <sc-for list="{{mainOptions}}" as="mp" hint-placeholder-count="1">
+          <div style="background:#FFFFFF;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;{{mp.cardStyle}}">
+            <button type="button" onClick="{{mp.openRecipe}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;text-align:left;">
+              <span style="display:flex;flex-direction:column;gap:2px;">
+                <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;{{mp.tagStyle}}">{{mp.tag}}</span>
+                <span style="font-family:'Inter',sans-serif;font-size:14px;font-weight:600;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;">{{mp.name}}</span>
+                <sc-if value="{{mp.hasNote}}" hint-placeholder-val="{{false}}"><span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{mp.note}}</span></sc-if>
+              </span>
+              <span style="font-family:'Geist',sans-serif;font-size:14px;font-weight:700;white-space:nowrap;">{{mp.kcalLabel}}</span>
+            </button>
+            <span style="font-family:'Inter',sans-serif;font-size:12px;color:#111111;">{{mp.macroLine}}</span>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <button type="button" onClick="{{mp.openRecipe}}" style="all:unset;box-sizing:border-box;cursor:pointer;flex:1;text-align:center;padding:12px 12px;border-radius:999px;background:#E3EEE6;color:#1F4D3A;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;white-space:nowrap;">Rezept</button>
+              <button type="button" onClick="{{mp.add}}" style="all:unset;box-sizing:border-box;cursor:pointer;flex:1;text-align:center;padding:12px 12px;border-radius:999px;background:#1F4D3A;color:#FFFFFF;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;white-space:nowrap;">Hinzufügen</button>
+              <button type="button" onClick="{{toggleSwap}}" aria-expanded="{{swapExpanded}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:4px;padding:12px 14px;border-radius:999px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;{{swapStyle}}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13l-3-3M20 16H7l3 3"></path></svg>Tauschen</button>
+            </div>
+          </div>
+        </sc-for>
+        <sc-if value="{{swapOpen}}" hint-placeholder-val="{{false}}">
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#6F706D;">Stattdessen</span>
+            <sc-for list="{{altOptions}}" as="po" hint-placeholder-count="2">
+              <div style="background:#FFFFFF;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:8px;{{po.cardStyle}}">
             <button type="button" onClick="{{po.openRecipe}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;text-align:left;">
               <span style="display:flex;flex-direction:column;gap:2px;">
                 <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;{{po.tagStyle}}">{{po.tag}}</span>
@@ -90,7 +111,25 @@
               <button type="button" onClick="{{po.add}}" style="all:unset;box-sizing:border-box;cursor:pointer;flex:1;text-align:center;padding:12px 12px;border-radius:999px;background:#1F4D3A;color:#FFFFFF;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;">Hinzufügen</button>
             </div>
           </div>
-        </sc-for>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{hasRecent}}" hint-placeholder-val="{{true}}">
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;">
+            <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:#6F706D;">Zuletzt gegessen</span>
+            <div style="background:#FFFFFF;border:1px solid #E6E3DC;border-radius:16px;display:flex;flex-direction:column;">
+              <sc-for list="{{recent}}" as="rc" hint-placeholder-count="3">
+                <button type="button" onClick="{{rc.add}}" aria-label="{{rc.aria}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 16px;{{rc.rowStyle}}">
+                  <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;">
+                    <span style="font-family:'Inter',sans-serif;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{rc.name}}</span>
+                    <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{rc.sub}}</span>
+                  </span>
+                  <span aria-hidden="true" style="flex:0 0 auto;width:32px;height:32px;border-radius:999px;background:#E3EEE6;color:#1F4D3A;display:flex;align-items:center;justify-content:center;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
       </div>
     </sc-if>
 
@@ -274,10 +313,10 @@ class Component extends DCLogic {
         const note = {};
         if (txt('Tami')) note.tamara = 'Extra für Tami: ' + txt('Tami');
         if (txt('Cristian')) note.basti = 'Extra für Cristian: ' + txt('Cristian');
-        return { extras: ['Tami', 'Cristian'].filter((w) => txt(w)).map((w) => ({ who: w, text: txt(w) })), key: d[m].key, f: { tamara: 1, basti: 1 }, note, alts: W.mealAlts[m].map((a) => a[2]).filter((k) => k !== d[m].key).slice(0, 2) };
+        return { extras: ['Tami', 'Cristian'].filter((w) => txt(w)).map((w) => ({ who: w, text: txt(w) })), key: d[m].key, f: { tamara: 1, basti: 1 }, note, alts: W.mealAlts[m].map((a) => a[2]).filter((k) => k !== d[m].key).slice(0, 4) };
       };
       this.plan = { breakfast: mk('breakfast'), lunch: mk('lunch'), dinner: mk('dinner'),
-        snack: { keyBy: { tamara: d.snackTami.key, basti: d.snackCristian.key }, f: { tamara: 1, basti: 1 }, note: {}, alts: W.mealAlts.snack.map((a) => a[2]).filter((k) => k !== d.snackTami.key && k !== d.snackCristian.key).slice(0, 2) } };
+        snack: { keyBy: { tamara: d.snackTami.key, basti: d.snackCristian.key }, f: { tamara: 1, basti: 1 }, note: {}, alts: W.mealAlts.snack.map((a) => a[2]).filter((k) => k !== d.snackTami.key && k !== d.snackCristian.key).slice(0, 4) } };
     }
     this.scanResults = {
       breakfast: [['Skyr', 250, 0.63, 11, 4, 0.2], ['Haferflocken', 40, 3.7, 13, 59, 7], ['Heidelbeeren', 80, 0.57, 0.7, 12, 0.3]],
@@ -296,14 +335,14 @@ class Component extends DCLogic {
     try { person = localStorage.getItem('vitaActivePerson') === 'basti' ? 'basti' : 'tamara'; } catch (e) {}
     this.meal = meal;
     this.person = person;
-    this.state = { logs: this.loadLogs(), tab: 'plan', fName: '', fAmount: '', fKcal: null, fP: null, fC: null, fF: null, ai: 'idle', scan: 'idle', scanSel: {}, scanGrams: {}, recipe: null };
+    this.state = { logs: this.loadLogs(), tab: 'plan', fName: '', fAmount: '', fKcal: null, fP: null, fC: null, fF: null, ai: 'idle', scan: 'idle', scanSel: {}, scanGrams: {}, recipe: null, swap: false };
     /* Poll localStorage for meal & person changes (DC Canvas may not re-construct or re-render on artboard revisit) */
     this._mealPoll = setInterval(() => {
       try {
         const sm = localStorage.getItem('vitaSelectedMeal');
         if (sm && this.mealLabels[sm] && sm !== this.meal) {
           this.meal = sm;
-          this.setState({ tab: 'plan', ai: 'idle', scan: 'idle', fName: '', fAmount: '', fKcal: null, fP: null, fC: null, fF: null, scanSel: {}, scanGrams: {}, recipe: null, logs: this.loadLogs() });
+          this.setState({ tab: 'plan', swap: false, ai: 'idle', scan: 'idle', fName: '', fAmount: '', fKcal: null, fP: null, fC: null, fF: null, scanSel: {}, scanGrams: {}, recipe: null, logs: this.loadLogs() });
         }
         const sp = localStorage.getItem('vitaActivePerson');
         const ep = sp === 'basti' ? 'basti' : 'tamara';
@@ -371,6 +410,25 @@ class Component extends DCLogic {
     logs[this.person] = pl;
     try { localStorage.setItem('vitaMealLogs', JSON.stringify(logs)); } catch (e) {}
     this.setState({ logs });
+  }
+  recentEntries() {
+    /* earlier days' entries for this person, same meal first, newest first, one per dish */
+    let days = [];
+    try { days = (localStorage.pastDays ? localStorage.pastDays('vitaMealLogs', 21) : []).map((v) => { try { return JSON.parse(v) || {}; } catch (e) { return {}; } }); } catch (e) {}
+    const today = this.entriesOf(this.state.logs).map((x) => x.name);
+    const seen = {}; const same = []; const other = [];
+    days.forEach((logs) => {
+      const mine = logs[this.person] || {};
+      ['breakfast', 'lunch', 'dinner', 'snack'].forEach((m) => {
+        const items = ((mine[m] || {}).items || []).slice().reverse();
+        items.forEach((x) => {
+          if (!x || !x.name || seen[x.name] || today.indexOf(x.name) >= 0) return;
+          seen[x.name] = true;
+          (m === this.meal ? same : other).push(x);
+        });
+      });
+    });
+    return same.concat(other).slice(0, 5);
   }
   addEntry(e) { this.writeEntries([...this.entriesOf(this.state.logs), { id: Date.now() + Math.random(), ...e }]); }
   startScan() {
@@ -487,7 +545,7 @@ class Component extends DCLogic {
         this.meal = storedM;
         this.state.tab = 'plan'; this.state.ai = 'idle'; this.state.scan = 'idle';
         this.state.fName = ''; this.state.fAmount = ''; this.state.fKcal = null; this.state.fP = null; this.state.fC = null; this.state.fF = null;
-        this.state.scanSel = {}; this.state.scanGrams = {}; this.state.recipe = null;
+        this.state.scanSel = {}; this.state.scanGrams = {}; this.state.recipe = null; this.state.swap = false;
         this.state.logs = this.loadLogs();
       }
     } catch (e) {}
@@ -522,6 +580,19 @@ class Component extends DCLogic {
       return { name: r[0], grams: g, kcal: Math.round(g * r[2]) + ' kcal', kcalNum: Math.round(g * r[2]), p: Math.round(g * r[3] / 100), c: Math.round(g * r[4] / 100), f: Math.round(g * r[5] / 100), on };
     });
     const scanTotal = scanItems.filter((x) => x.on).reduce((sum, x) => sum + x.kcalNum, 0);
+    const planCards = options.map((o) => {
+        const b = this.fromDb(o.dish, o.grams);
+        const v = { ...b, grams: b.grams + o.ex.g, baseG: b.grams, ex: o.ex, kcal: b.kcal + o.ex.kcal, p: b.p + o.ex.p, c: b.c + o.ex.c, f: b.f + o.ex.f };
+        return {
+          tag: o.tag, name: v.name, note: o.note, hasNote: !!o.note, kcalLabel: v.kcal + ' kcal',
+          macroLine: v.grams + ' g · ' + v.p + ' g Protein · ' + v.c + ' g Kohlenh. · ' + v.f + ' g Fett',
+          cardStyle: o.main ? 'border:1.5px solid #1F4D3A;' : 'border:1px solid #E6E3DC;',
+          tagStyle: o.main ? 'color:#1F4D3A;' : 'color:#6F706D;',
+          openRecipe: () => this.setState({ recipe: { key: o.dish, grams: v.baseG, note: '', extras: o.extras, editId: null } }),
+          add: () => this.addEntry({ ...v, extrasList: o.extras, amount: v.grams + ' g', src: 'plan' })
+        };
+      });
+    const recent = this.recentEntries();
     const tabDefs = [['plan', 'Aus dem Plan'], ['frei', 'Frei eintragen'], ['foto', 'Foto-Scan']];
     return {
       name: p.name,
@@ -550,18 +621,20 @@ class Component extends DCLogic {
       isPlan: s.tab === 'plan',
       isFree: s.tab === 'frei',
       isPhoto: s.tab === 'foto',
-      planOptions: options.map((o) => {
-        const b = this.fromDb(o.dish, o.grams);
-        const v = { ...b, grams: b.grams + o.ex.g, baseG: b.grams, ex: o.ex, kcal: b.kcal + o.ex.kcal, p: b.p + o.ex.p, c: b.c + o.ex.c, f: b.f + o.ex.f };
-        return {
-          tag: o.tag, name: v.name, note: o.note, hasNote: !!o.note, kcalLabel: v.kcal + ' kcal',
-          macroLine: v.grams + ' g · ' + v.p + ' g Protein · ' + v.c + ' g Kohlenh. · ' + v.f + ' g Fett',
-          cardStyle: o.main ? 'border:1.5px solid #1F4D3A;' : 'border:1px solid #E6E3DC;',
-          tagStyle: o.main ? 'color:#1F4D3A;' : 'color:#6F706D;',
-          openRecipe: () => this.setState({ recipe: { key: o.dish, grams: v.baseG, note: '', extras: o.extras, editId: null } }),
-          add: () => this.addEntry({ ...v, extrasList: o.extras, amount: v.grams + ' g', src: 'plan' })
-        };
-      }),
+      swapOpen: !!s.swap,
+      swapExpanded: s.swap ? 'true' : 'false',
+      swapStyle: s.swap ? 'background:#1F4D3A;color:#FFFFFF;' : 'background:#F3F1EC;color:#1F4D3A;',
+      toggleSwap: () => this.setState({ swap: !this.state.swap }),
+      hasRecent: recent.length > 0,
+      recent: recent.map((x, i) => ({
+        name: x.name,
+        sub: [x.amount || '', (Number(x.kcal) || 0) + ' kcal'].filter(Boolean).join(' · '),
+        aria: x.name + ' wieder hinzufügen',
+        rowStyle: i > 0 ? 'border-top:1px solid #EFEDE7;' : '',
+        add: () => { const c = { ...x }; delete c.id; this.addEntry(c); }
+      })),
+      mainOptions: planCards.slice(0, 1),
+      altOptions: planCards.slice(1),
       fName: s.fName, fAmount: s.fAmount, fKcal: s.fKcal,
       setFName: (e) => { this.setState({ fName: e.target.value }); this.kickAi(); },
       setFAmount: (e) => { this.setState({ fAmount: e.target.value }); this.kickAi(); },

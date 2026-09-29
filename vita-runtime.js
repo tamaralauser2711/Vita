@@ -110,6 +110,16 @@
       if (!(e in mem)) return;
       delete mem[e]; saveCache(); push(e);
     },
+    /* values of a daily key from earlier days (newest first), e.g. last meal logs */
+    pastDays: function (k, n) {
+      var out = [];
+      for (var i = 1; i <= (n || 14); i++) {
+        var d = new Date(); d.setDate(d.getDate() - i);
+        var e = String(k) + '@' + dayKey(d);
+        if (e in mem) out.push(mem[e]);
+      }
+      return out;
+    },
     key: function () { return null; },
     clear: function () {},
     get length() { return 0; }
