@@ -33,13 +33,14 @@
       </div>
       <div style="display:flex;flex-direction:column;gap:8px;">
         <sc-for list="{{marketRows}}" as="m" hint-placeholder-count="4">
-          <div style="display:flex;align-items:center;gap:12px;">
+          <button type="button" onClick="{{m.pick}}" aria-pressed="{{m.pressed}}" aria-label="{{m.aria}}" style="all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:12px;padding:6px 8px;margin:0 -8px;border-radius:10px;{{m.rowStyle}}">
             <span style="width:96px;flex:0 0 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:'Inter',sans-serif;font-size:12px;{{m.nameStyle}}">{{m.name}}</span>
             <div style="flex:1;height:8px;border-radius:999px;background:#EDEAE3;overflow:hidden;"><div style="height:100%;border-radius:999px;{{m.barStyle}}"></div></div>
             <span style="width:58px;text-align:right;font-family:'Inter',sans-serif;font-size:12px;{{m.nameStyle}}">{{m.total}}</span>
-          </div>
+          </button>
         </sc-for>
       </div>
+      <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{pickNote}}</span>
       <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{priceNote}}</span>
     </div>
 
@@ -108,7 +109,7 @@
               <span style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;">
                 <span style="font-family:'Inter',sans-serif;font-size:13px;{{item.text}}">{{item.label}}</span>
                 <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{item.note}}</span>
-                <span style="align-self:flex-start;margin-top:4px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#1F4D3A;background:#E3EEE6;padding:4px 8px;border-radius:999px;white-space:nowrap;{{item.offerStyle}}">{{item.offer}}</span>
+                <span style="align-self:flex-start;margin-top:4px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#1F4D3A;background:#E3EEE6;padding:4px 8px;border-radius:999px;line-height:1.35;{{item.offerStyle}}">{{item.offer}}</span>
               </span>
             </button>
             <span title="{{item.whoTitle}}" aria-label="{{item.whoTitle}}" style="width:22px;height:22px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-family:'Geist',sans-serif;font-size:11px;font-weight:700;{{item.whoStyle}}">{{item.who}}</span>
@@ -173,7 +174,7 @@
               <span style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;">
                 <span style="font-family:'Inter',sans-serif;font-size:13px;">{{sg.label}}</span>
                 <span style="font-family:'Inter',sans-serif;font-size:12px;color:#6F706D;">{{sg.note}}</span>
-                <span style="align-self:flex-start;margin-top:4px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#1F4D3A;background:#E3EEE6;padding:4px 8px;border-radius:999px;white-space:nowrap;{{sg.offerStyle}}">{{sg.offer}}</span>
+                <span style="align-self:flex-start;margin-top:4px;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#1F4D3A;background:#E3EEE6;padding:4px 8px;border-radius:999px;line-height:1.35;{{sg.offerStyle}}">{{sg.offer}}</span>
               </span>
               <button type="button" onClick="{{sg.add}}" aria-label="{{sg.aria}}" style="all:unset;box-sizing:border-box;cursor:pointer;width:44px;height:44px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;">
                 <span style="width:30px;height:30px;border-radius:50%;background:#1F4D3A;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:18px;line-height:1;">+</span>
@@ -398,6 +399,8 @@ class Component extends DCLogic {
     const best = sorted[0];
     const worst = sorted[sorted.length - 1];
     const max = worst ? worst.total : 1;
+    const chosen = (s.shopAt && sorted.length > 1 && active.find((m) => m.id === s.shopAt)) ? totals.find((t) => t.id === s.shopAt) : best;
+    const ownPick = !!(chosen && best && chosen.id !== best.id);
     const offersAtBest = best ? listed.filter((c) => this.priceOf(c, best.id) < Math.max(...this.markets.map((m) => this.priceOf(c, m.id)))).length : 0;
     const carries = (p, mid) => (mid in p.prices) ? p.prices[mid] !== null : p.prices.lidl !== null;
     const cheapestAt = (p) => { const opts = active.filter((m) => carries(p, m.id)).map((m) => ({ m, v: this.prodPrice(p, m.id) })).sort((a, b) => a.v - b.v); return opts[0] || null; };
@@ -413,9 +416,17 @@ class Component extends DCLogic {
     } else if (best) {
       tipHeadline = 'Geh heute zu ' + best.name + '.';
       tipLine = 'Du sparst insgesamt ' + this.euro(worst.total - best.total) + ' im Vergleich zu ' + worst.name + '.' + (offersAtBest ? (' ' + offersAtBest + (offersAtBest === 1 ? ' Artikel ist' : ' Artikel sind') + ' dort gerade im Angebot.') : '');
+      if (ownPick) {
+        const n = listed.filter((c) => this.priceOf(c, chosen.id) < Math.max(...this.markets.map((m) => this.priceOf(c, m.id)))).length;
+        tipHeadline = 'Du kaufst bei ' + chosen.name + ' ein.';
+        tipLine = 'Das sind ' + this.euro(chosen.total - best.total) + ' mehr als bei ' + best.name + ', dem günstigsten Markt.' + (n ? (' ' + n + (n === 1 ? ' Artikel ist' : ' Artikel sind') + ' bei ' + chosen.name + ' im Angebot.') : '');
+      }
     }
     const onOfferAt = (c, mid) => !!mid && this.priceOf(c, mid) < Math.max(...this.markets.map((m) => this.priceOf(c, m.id)));
-    const offerFor = (c) => (best && sorted.length > 1 && onOfferAt(c, best.id)) ? ('Angebot ' + best.name) : '';
+    /* every selected market where the item is on offer; the market you shop at first, then cheapest first */
+    const offersOf = (c) => active.filter((m) => onOfferAt(c, m.id)).sort((a, b) => ((chosen && b.id === chosen.id) - (chosen && a.id === chosen.id)) || (this.priceOf(c, a.id) - this.priceOf(c, b.id)));
+    const offerFor = (c) => { const at = offersOf(c); return at.length ? ('Angebot ' + at.map((m) => m.name).join(' · ')) : ''; };
+    const offerStyleFor = (c) => { const at = offersOf(c); if (!at.length) return 'display:none;'; return (chosen && at[0].id === chosen.id) ? '' : 'background:#EEF0F2;color:#4A5560;'; };
     const dismissed = s.dismissed || {};
     const catOrder = (window.VITA_WOCHE && window.VITA_WOCHE.catOrder) || [];
     const catIdx = (c) => { const i = catOrder.indexOf(c.cat || 'Sonstiges'); return i < 0 ? 99 : i; };
@@ -426,7 +437,7 @@ class Component extends DCLogic {
       const on = !!s.checked[c.id];
       const o = offerFor(c);
       return {
-        label: c.label, note: (this.need[c.id] ? 'Zu zweit: ' + this.need[c.id] + ' · ' : '') + c.note, offer: o, offerStyle: o ? '' : 'display:none;',
+        label: c.label, note: (this.need[c.id] ? 'Zu zweit: ' + this.need[c.id] + ' · ' : '') + c.note, offer: o, offerStyle: offerStyleFor(c),
         ...this.whoFor(c.id, on),
         box: on ? 'background:#1F4D3A;border-color:#1F4D3A;' : '',
         text: on ? 'color:#8C8C86;text-decoration:line-through;' : '',
@@ -472,9 +483,14 @@ class Component extends DCLogic {
       switchPerson: () => { try { localStorage.setItem('vitaActivePerson', this.activeP() === 'tami' ? 'basti' : 'tamara'); } catch (e) {} this.setState({ pRev: (this.state.pRev || 0) + 1 }); },
       tipHeadline, tipLine,
       priceNote: window.VITA_WOCHE ? ('Angebote vom ' + window.VITA_WOCHE.gueltig + '. Preise ohne Angebot sind Richtwerte.') : 'Beispielpreise für den Prototyp.',
+      pickNote: sorted.length > 1 ? (ownPick ? ('Tippe auf ' + chosen.name + ', um zur Empfehlung zurückzugehen.') : 'Tippe auf einen Markt, wenn du lieber dort einkaufst. Grüne Angebote gelten für deinen Markt.') : '',
       marketRows: totals.map((t) => {
-        const isBest = best && t.id === best.id && sorted.length > 1;
+        const isBest = chosen && t.id === chosen.id && sorted.length > 1;
         return {
+          pressed: isBest ? 'true' : 'false',
+          aria: t.name + ', ' + this.euro(t.total) + (isBest ? ', ausgewählt' : ', hier einkaufen'),
+          rowStyle: isBest ? 'background:#F3F1EC;' : '',
+          pick: () => this.setState({ shopAt: (ownPick && t.id === chosen.id) || (best && t.id === best.id) ? null : t.id }),
           name: t.name, total: this.euro(t.total),
           nameStyle: isBest ? 'color:#111111;font-weight:700;' : 'color:#6F706D;',
           barStyle: 'width:' + Math.max(8, Math.round((t.total / max) * 100)) + '%;background:' + (isBest ? '#1F4D3A' : '#D3D0C8') + ';'
@@ -530,7 +546,7 @@ class Component extends DCLogic {
       suggestions: withHeads(suggestions.map((c) => {
         const o = offerFor(c);
         return {
-          label: c.label, note: (this.need[c.id] ? 'Zu zweit: ' + this.need[c.id] + ' · ' : '') + c.note, offer: o, offerStyle: o ? '' : 'display:none;',
+          label: c.label, note: (this.need[c.id] ? 'Zu zweit: ' + this.need[c.id] + ' · ' : '') + c.note, offer: o, offerStyle: offerStyleFor(c),
           aria: c.label + ' zur Liste hinzufügen',
           add: () => this.setState({ onList: [...this.state.onList, c.id], addedBy: { ...this.state.addedBy, [c.id]: this.activeP() } }),
           dismissAria: c.label + ' aus den Vorschlägen entfernen',
